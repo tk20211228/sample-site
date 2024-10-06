@@ -1,5 +1,9 @@
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { ThemeProvider } from "../components/theme-provider";
+import Footer from "./components/footer";
+import Header from "./components/header";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -24,11 +28,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={cn(
+          `${geistSans.variable} ${geistMono.variable} antialiased`,
+          "h-dvh flex flex-col"
+        )}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {/* ヘッダーを固定しない */}
+          {/* <Header />
+          {children} */}
+
+          {/* ヘッダーを固定 */}
+          <Header className="fixed top-0 left-0 w-full z-10 bg-background" />
+          <div className="mt-[56px] md:mt-[76px]">{children}</div>
+
+          {/* うまく調整できなかった */}
+          {/* <div className="fixed bottom-4 right-10">
+            <ModeToggle />
+          </div> */}
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
