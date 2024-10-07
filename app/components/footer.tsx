@@ -1,6 +1,7 @@
 import { AppConfig } from "@/app.config";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -11,7 +12,11 @@ export default function Footer() {
           <Button variant="ghost">
             <p className="text-muted-foreground">&copy; {AppConfig.company}</p>
           </Button>
-          <Button variant="ghost">利用規約</Button>
+          <Button variant="ghost">
+            <Link href="/terms" className="">
+              利用規約
+            </Link>
+          </Button>
           <Button variant="ghost">プライバシーポリシー</Button>
           <Button variant="ghost">特定商法表示</Button>
           <Button variant="ghost">言語</Button>
