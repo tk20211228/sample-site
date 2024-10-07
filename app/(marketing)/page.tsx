@@ -60,9 +60,15 @@ export default function Home() {
               height={400}
               className="w-[150px] md:w-auto md:h-[500px] relative left-[4px] md:left-[7px]"
             />
-            <Button className="mb-10 md:mb-0 bg-red-500 dark:bg-red-300 shadow-lg ">
+            {/* <Button className="mb-10 md:mb-0 bg-red-500 dark:bg-red-300 shadow-lg ">
               今すぐお試しください。
-            </Button>
+            </Button> */}
+            <a
+              className="bg-red-300 text-black text-sm h-10 px-6 inline-flex items-center justify-center rounded-full hover:bg-red-300/90"
+              href="/"
+            >
+              今すぐお試しください！
+            </a>
           </div>
         </div>
         <div className="p-5 pt-20 flex items-center justify-evenly">

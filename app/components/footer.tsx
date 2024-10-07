@@ -1,6 +1,13 @@
 import { AppConfig } from "@/app.config";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { LightbulbIcon, PawPrint } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -20,6 +27,20 @@ export default function Footer() {
           <Button variant="ghost">プライバシーポリシー</Button>
           <Button variant="ghost">特定商法表示</Button>
           <Button variant="ghost">言語</Button>
+        </div>
+        <div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" asChild size="icon">
+                  <Link href="/pokemon" replace>
+                    <PawPrint size={18} />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>ポケモン</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <div>
           <ModeToggle />
