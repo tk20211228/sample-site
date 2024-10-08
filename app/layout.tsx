@@ -5,7 +5,6 @@ import { ThemeProvider } from "../components/theme-provider";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import "./globals.css";
-import { ModeToggle } from "@/components/mode-toggle";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { pokemons } from "../data/pokemon";
+import Image from "next/image";
 
 export default function Page() {
   return (
@@ -24,7 +25,7 @@ export default function Page() {
         {pokemons.map((pokemon) => (
           <div key={pokemon.id} className="p-5 border-2 rounded-2xl relative">
             <h2 className="font-bold text-center pb-2">{pokemon.name}</h2>
-            <img
+            <Image
               src={pokemon.image}
               alt={pokemon.name}
               width={200}

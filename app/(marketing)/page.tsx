@@ -1,7 +1,6 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { marketingItems } from "../data/marketing-item";
 import { CardDemo } from "../components/card-deme";
+import { marketingItems } from "../data/marketing-item";
 
 export default function Home() {
   return (

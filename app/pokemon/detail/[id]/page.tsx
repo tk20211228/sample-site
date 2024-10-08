@@ -1,5 +1,4 @@
 import { pokemons } from "@/app/data/pokemon";
-import Image from "next/image";
 
 export default function Page({ params: { id } }: { params: { id: string } }) {
   const pokemon = pokemons.find((pokemon) => pokemon.id === id);

@@ -1,4 +1,3 @@
-import Page from "../pokemon/detail/[id]/page";
 export type Pokemon = {
   id: string;
   name: string;

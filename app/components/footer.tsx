@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { LightbulbIcon, PawPrint } from "lucide-react";
+import { PawPrint } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
