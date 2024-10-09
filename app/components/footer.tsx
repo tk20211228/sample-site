@@ -14,17 +14,16 @@ export default function Footer() {
   return (
     <footer className="sticky top-full border-t ">
       <div className="flex py-4 items-center justify-center px-4 gap-2">
-        {/* いかをdivタグでわけないとスマホ画面がうまく調整できなかった */}
         <div>
           <Button variant="ghost">
             <p className="text-muted-foreground">&copy; {AppConfig.company}</p>
           </Button>
           <Button variant="ghost">
-            <Link href="/terms" className="">
-              利用規約
-            </Link>
+            <Link href="/terms">利用規約</Link>
           </Button>
-          <Button variant="ghost">プライバシーポリシー</Button>
+          <Button variant="ghost">
+            <Link href="/privacy">プライバシーポリシー</Link>
+          </Button>
           <Button variant="ghost">特定商法表示</Button>
           <Button variant="ghost">言語</Button>
         </div>

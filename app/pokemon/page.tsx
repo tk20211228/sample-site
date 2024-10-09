@@ -21,9 +21,12 @@ export default function Page() {
       </div> */}
       {/* flex と　grid の使い分けがわからない　*/}
       {/* footerのButtonのように調整されない理由を知りたい*/}
-      <div className="flex flex-wrap py-4 items-center justify-center px-4 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 py-4 justify-items-center gap-2">
         {pokemons.map((pokemon) => (
-          <div key={pokemon.id} className="p-5 border-2 rounded-2xl relative">
+          <div
+            key={pokemon.id}
+            className="py-5 px-7 border-2 rounded-2xl relative"
+          >
             <h2 className="font-bold text-center pb-2">{pokemon.name}</h2>
             <Image
               src={pokemon.image}

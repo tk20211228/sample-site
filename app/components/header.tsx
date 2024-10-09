@@ -10,7 +10,7 @@ export default function Header({ className }: { className?: string }) {
     <header
       className={cn("px-2 py-2 sm:py-4 flex items-center gap-1", className)}
     >
-      <Button variant="ghost" className="text-xl sm:text-3xl">
+      <Button variant="ghost" className="text-xl sm:text-3xl" asChild>
         <Link href="/" className="flex items-center gap-2" replace>
           {/* ボタンからアイコンが飛び出る */}
           <Image
