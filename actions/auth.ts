@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 const host =
   process.env.NODE_ENV === "production"
-    ? "https://example.com" // 本番環境の URL
+    ? "https://sample-site-pearl.vercel.app/" // 本番環境の URL
     : "http://localhost:3000";
 
 export const signInWithGithub = async () => {
