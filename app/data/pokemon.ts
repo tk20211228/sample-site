@@ -113,4 +113,11 @@ export const pokemons: Pokemon[] = [
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/16.png",
     types: ["ノーマル", "ひこう"],
   },
+  {
+    id: "17",
+    name: "ピジョン",
+    image:
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/17.png",
+    types: ["ノーマル", "ひこう"],
+  },
 ];
