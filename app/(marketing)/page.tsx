@@ -32,14 +32,14 @@ export default function Home() {
                 // ↓ なにをどのように設定するのかよくわからない
                 width={170}
                 height={100}
-                className="h-16"
+                className="h-16 w-auto"
               />
               <Image
                 src="/images/AndroidEnterpriseSilverPartner.webp"
                 alt="AndroidEnterpriseSilverPartner"
                 width={120}
                 height={100}
-                className="h-16"
+                className="h-16 w-auto"
               />
             </div>
             {marketingItems.map((item, _) => (

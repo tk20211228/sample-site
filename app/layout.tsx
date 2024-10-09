@@ -28,12 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" suppressHydrationWarning>
       <body
         className={cn(
           `${geistSans.variable} ${geistMono.variable} antialiased`,
-          "h-dvh flex flex-col"
+          "min-h-dvh flex flex-col"
         )}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"
@@ -46,8 +47,8 @@ export default function RootLayout({
           {children} */}
 
           {/* ヘッダーを固定 */}
-          <Header className="fixed top-0 left-0 w-full z-10 bg-background" />
-          <div className="mt-[56px] md:mt-[76px]">{children}</div>
+          <Header className="sticky top-0 z-10 bg-background" />
+          <div className="flex-1">{children}</div>
 
           {/* うまく調整できなかった */}
           {/* <div className="fixed bottom-4 right-10">

@@ -38,6 +38,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
   console.log("supabase user:", user);
 
+  // 一時的にコメントアウト
   // if (
   //   !user &&
   //   !request.nextUrl.pathname.startsWith("/login") &&

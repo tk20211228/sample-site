@@ -1,11 +1,14 @@
+import { signOut } from "@/actions/auth";
 import { AppConfig } from "@/app.config";
 import { Button } from "@/components/ui/button";
-import { Book, Info, LogIn } from "lucide-react";
+import { Book, Info, LogIn, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "../../lib/utils";
+import { currentUser } from "../data/auth";
 
-export default function Header({ className }: { className?: string }) {
+export default async function Header({ className }: { className?: string }) {
+  const user = await currentUser();
   return (
     <header
       className={cn("px-2 py-2 sm:py-4 flex items-center gap-1", className)}
@@ -19,6 +22,7 @@ export default function Header({ className }: { className?: string }) {
             width={64}
             height={64}
             className="size-8 sm:size-16 dark:brightness-150 drop-shadow-lg"
+            priority
           />
           {AppConfig.title}
         </Link>
@@ -33,12 +37,22 @@ export default function Header({ className }: { className?: string }) {
           <p className="hidden sm:block">ドキュメント</p>
           <Book size={20} />
         </Button>
-        <Button variant="ghost" className="gap-2">
-          <p className="hidden sm:block">ログイン</p>
-          <LogIn size={20} />
-        </Button>
+        {user ? (
+          <form action={signOut}>
+            <Button variant="ghost" className="gap-2">
+              <p className="hidden sm:block">ログアウト</p>
+              <LogOut size={20} />
+            </Button>
+          </form>
+        ) : (
+          <Button variant="ghost" className="gap-2" asChild>
+            <Link href="/auth/login">
+              <p className="hidden sm:block">ログイン</p>
+              <LogIn size={20} />
+            </Link>
+          </Button>
+        )}
       </nav>
-      {/* ここはナビでよいのか？ */}
     </header>
   );
 }
