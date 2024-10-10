@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { ThemeProvider } from "../components/theme-provider";
 import Footer from "./components/footer";
 import Header from "./components/header";
+import { ModeToggle } from "@/components/mode-toggle";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -51,9 +52,9 @@ export default function RootLayout({
           <div className="flex-1">{children}</div>
 
           {/* うまく調整できなかった */}
-          {/* <div className="fixed bottom-4 right-10">
+          <div className="fixed bottom-4 right-10 z-50">
             <ModeToggle />
-          </div> */}
+          </div>
           <Footer />
         </ThemeProvider>
       </body>
