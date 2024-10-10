@@ -13,15 +13,15 @@ export default async function Header({ className }: { className?: string }) {
     <header
       className={cn("px-2 py-2 sm:py-4 flex items-center gap-1", className)}
     >
-      <Button variant="ghost" className="text-xl sm:text-3xl" asChild>
-        <Link href="/" className="flex items-center gap-2" replace>
+      <Button variant="ghost" className="text-lg" asChild>
+        <Link href="/" className="flex items-center font-bold gap-2" replace>
           {/* ボタンからアイコンが飛び出る */}
           <Image
             src="/images/logo.png"
             alt={AppConfig.title}
             width={64}
             height={64}
-            className="size-8 sm:size-16 dark:brightness-150 drop-shadow-lg"
+            className="size-8 dark:brightness-150 drop-shadow-lg"
             priority
           />
           {AppConfig.title}

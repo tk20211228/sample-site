@@ -1,78 +1,67 @@
 import Image from "next/image";
 import { CardDemo } from "../components/card-deme";
 import { marketingItems } from "../data/marketing-item";
+import Hero from "./hero";
+import Wave from "./wave";
+import Link from "next/link";
+
+// import aerBadgeImage from "./images/aer-badge.webp";
+// import androidEnterImage from "./images/android-enter.webp";
 
 export default function Home() {
   return (
     <main className="flex flex-col">
-      <section>
-        <h1 className="text-center text-2xl md:text-3xl lg:text-4xl my-6 px-4">
-          ビジネス向けモバイルデバイス管理ソリューション
-        </h1>
-      </section>
-      <section className="w-full">
-        {/* https://webspe.net/tools/wave-svg/  */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          // viewBox="0 0 1280 100" から　viewBox="0 0 1280 99"に変更するしたら下部に細い線が消えた
-          viewBox="0 0 1280 99"
-          preserveAspectRatio="none"
-          className="fill-[#57B0FF] dark:fill-zinc-900 canvas"
-        >
-          <path d="M -256 29 C -96 29 -96 68 64 68 C 224 68 224 35 384 35 C 544 35 544 99 704 99 C 864 99 864 25 1024 25 C 1184 25 1184 37 1344 37 L 1280 100 L 0 100 Z"></path>
-        </svg>
-      </section>
-      <section className="bg-[#57B0FF] dark:bg-zinc-900 w-full pt-10">
-        <div className="flex flex-col-reverse md:flex-row justify-evenly items-center">
-          <div className="flex flex-col justify-evenly items-center gap-12">
-            <div className="mt-5 gap-14 flex flex-row items-center">
-              <Image
-                src="/images/AER_Badge_2023.webp"
-                alt="AER_Badge"
-                // ↓ なにをどのように設定するのかよくわからない
-                width={170}
-                height={100}
-                className="h-16 w-auto"
-              />
-              <Image
-                src="/images/AndroidEnterpriseSilverPartner.webp"
-                alt="AndroidEnterpriseSilverPartner"
-                width={120}
-                height={100}
-                className="h-16 w-auto"
-              />
-            </div>
-            {marketingItems.map((item, _) => (
-              <div key={_} className="flex flex-col items-center gap-6 mx-3">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl ">
-                  {item.title}
-                </h2>
-                <p className="text-center">{item.description}</p>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col items-center gap-5">
-            <Image
-              src="/images/phone.webp"
-              alt="phone"
-              width={400}
-              height={400}
-              className="w-[150px] md:w-auto md:h-[500px] relative left-[4px] md:left-[7px]"
+      <Hero />
+
+      <section className="flex py-10 dark:bg-zinc-900 bg-[#57B0FF] flex-col-reverse md:flex-row justify-evenly items-center">
+        <div className="flex flex-col justify-evenly items-center gap-12">
+          <div className="mt-5 gap-14 flex flex-row items-center">
+            {/* <Image
+              src={aerBadgeImage}
+              alt="AER_Badge"
+              // ↓ なにをどのように設定するのかよくわからない
+              className="h-16 w-auto"
             />
-            {/* <Button className="mb-10 md:mb-0 bg-red-500 dark:bg-red-300 shadow-lg ">
+            <Image
+              src={androidEnterImage}
+              alt="AndroidEnterpriseSilverPartner"
+              className="h-16 w-auto"
+            /> */}
+          </div>
+          {marketingItems.map((item, _) => (
+            <div
+              key={item.title}
+              className="flex flex-col items-center gap-6 mx-3"
+            >
+              <h2 className="text-2xl md:text-3xl lg:text-4xl ">
+                {item.title}
+              </h2>
+              <p className="text-center">{item.description}</p>
+            </div>
+          ))}
+        </div>
+        <div>
+          <Image
+            src="/images/phone.webp"
+            alt=""
+            width={400}
+            height={400}
+            className="w-[150px] md:w-auto md:h-[500px] ml-1 md:ml-2"
+          />
+          {/* <Button className="mb-10 md:mb-0 bg-red-500 dark:bg-red-300 shadow-lg ">
               今すぐお試しください。
             </Button> */}
-            <a
-              className="bg-red-300 text-black text-sm h-10 px-6 inline-flex items-center justify-center rounded-full hover:bg-red-300/90"
-              href="/"
-            >
-              今すぐお試しください！
-            </a>
-          </div>
+          <Link
+            className="mt-5 flex items-center w-fit mx-auto text-black text-sm h-10 px-6 justify-center rounded-full bg-red-300 hover:bg-red-300/90"
+            href="/"
+          >
+            今すぐお試しください！
+          </Link>
         </div>
-        <div className="p-5 pt-20 flex items-center justify-evenly">
-          <CardDemo />
-        </div>
+      </section>
+      <section className="pb-20">
+        <Wave direction="up" />
+        <CardDemo className="mx-auto" />
       </section>
     </main>
   );
