@@ -1,5 +1,4 @@
 import { AppConfig } from "@/app.config";
-import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
