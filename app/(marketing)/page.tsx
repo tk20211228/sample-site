@@ -28,7 +28,7 @@ export default function Home() {
               className="h-16 w-auto"
             /> */}
           </div>
-          {marketingItems.map((item, _) => (
+          {marketingItems.map((item) => (
             <div
               key={item.title}
               className="flex flex-col items-center gap-6 mx-3"
