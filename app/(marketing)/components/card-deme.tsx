@@ -22,7 +22,7 @@ export function CardDemo({ className, ...props }: CardProps) {
         <div className="pt-4 flex flex-row items-center gap-5">
           <div>
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src="https://github.com/shadcn.png" alt="avatar" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>
