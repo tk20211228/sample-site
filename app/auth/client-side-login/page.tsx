@@ -1,5 +1,5 @@
 // import { createClient } from "@/lib/supabase/client";
-import Header from "../cilent-side-login/components/header";
+import Header from "./components/header";
 
 export default function Page() {
   // const supabase = createClient();
