@@ -40,8 +40,8 @@ pnpm dlx supabase link
 ※ 事前にマイグレーションを忘れないようにしましょう。
 
 ```bash
-bunx supabase:generate-migration <マイグレーションタイトル> # マイグレーションしてない場合
-bunx supabase db push
+pnpm dlx supabase:generate-migration <マイグレーションタイトル> # マイグレーションしてない場合
+pnpm dlx supabase db push
 ```
 
 ## ストレージの設定

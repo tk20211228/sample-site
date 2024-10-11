@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 
-export default function IsSignedOut({
+export default function IsSignedLoading({
   children,
 }: {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export default function IsSignedOut({
     });
   }, []);
 
-  if (userId || userId === undefined) {
+  if (userId || userId === null) {
     return null;
   }
 
