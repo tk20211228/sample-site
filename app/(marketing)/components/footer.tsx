@@ -29,7 +29,7 @@ export default function Footer() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="outline" asChild size="icon">
-                  <Link href="/pokemon" replace>
+                  <Link href="/pokemon" aria-label="ポケモン" replace>
                     <PawPrint size={18} />
                   </Link>
                 </Button>
