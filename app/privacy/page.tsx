@@ -2,7 +2,7 @@ import { AppConfig } from "@/app.config";
 
 export default function Page() {
   return (
-    <main className="container prose pt-8 pb-10 px-6 sm:px-0">
+    <div className="container prose pt-8 pb-10 px-6 sm:px-0">
       <h1 className="dark:text-accent-foreground text-center">
         プライバシーポリシー
       </h1>
@@ -189,6 +189,6 @@ export default function Page() {
       <p className="dark:text-muted-foreground dark:hover:text-accent-foreground transition duration-500 text-right">
         以上
       </p>
-    </main>
+    </div>
   );
 }
