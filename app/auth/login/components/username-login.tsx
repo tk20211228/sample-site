@@ -58,6 +58,10 @@ export function UsernameLogin() {
                 This is your public display name.
               </FormDescription> */}
               <FormMessage />
+              <FormLabel>パスワード</FormLabel>
+              <FormControl>
+                <Input placeholder="test123!!" {...field} />
+              </FormControl>
             </FormItem>
           )}
         />
