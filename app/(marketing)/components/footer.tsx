@@ -13,11 +13,10 @@ export default function Footer() {
   return (
     <footer className="sticky top-full">
       <div className="flex py-4 items-center justify-center px-4 gap-2">
+        <p className="text-muted-foreground">&copy; {AppConfig.company}</p>
         <div>
-          <Button variant="ghost" className="text-muted-foreground">
-            &copy; {AppConfig.company}
-          </Button>
-          <Button variant="ghost">
+          {/* <Button variant="ghost" className="text-muted-foreground"></Button> */}
+          <Button variant="ghost" asChild>
             <Link href="/terms">利用規約</Link>
           </Button>
           <Button variant="ghost" asChild>

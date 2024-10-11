@@ -1,11 +1,11 @@
-import { Database } from "@/types/database"; // 公式ドキュメントにはないが一応、型定義を追加
+import { Database } from "@/types/database";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export function createClient() {
   const cookieStore = cookies();
 
-  return createServerClient<Database>( // 公式ドキュメントにはないが一応、型定義を追加
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {

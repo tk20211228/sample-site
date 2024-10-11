@@ -1,32 +1,31 @@
 import Image from "next/image";
-import { CardDemo } from "../components/card-deme";
+import { CardDemo } from "./components/card-deme";
 import { marketingItems } from "../data/marketing-item";
 import Hero from "./hero";
 import Wave from "./wave";
 import Link from "next/link";
 
-// import aerBadgeImage from "./images/aer-badge.webp";
-// import androidEnterImage from "./images/android-enter.webp";
+import aerBadgeImage from "./images/aer-badge.webp";
+import androidEnterImage from "../../public/images/android-enterprise.webp";
 
 export default function Home() {
   return (
-    <main className="flex flex-col">
+    <div className="flex flex-col">
       <Hero />
 
       <section className="flex py-10 dark:bg-zinc-900 bg-[#57B0FF] flex-col-reverse md:flex-row justify-evenly items-center">
         <div className="flex flex-col justify-evenly items-center gap-12">
           <div className="mt-5 gap-14 flex flex-row items-center">
-            {/* <Image
+            <Image
               src={aerBadgeImage}
               alt="AER_Badge"
-              // ↓ なにをどのように設定するのかよくわからない
               className="h-16 w-auto"
             />
             <Image
               src={androidEnterImage}
               alt="AndroidEnterpriseSilverPartner"
               className="h-16 w-auto"
-            /> */}
+            />
           </div>
           {marketingItems.map((item) => (
             <div
@@ -63,6 +62,6 @@ export default function Home() {
         <Wave direction="up" />
         <CardDemo className="mx-auto" />
       </section>
-    </main>
+    </div>
   );
 }

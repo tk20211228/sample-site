@@ -1,14 +1,12 @@
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { ThemeProvider } from "../components/theme-provider";
-import Footer from "./components/footer";
-import Header from "./components/header";
-import { ModeToggle } from "@/components/mode-toggle";
+
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
@@ -43,19 +41,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* ヘッダーを固定しない */}
-          {/* <Header />
-          {children} */}
-
-          {/* ヘッダーを固定 */}
-          <Header className="sticky top-0 z-10 bg-background" />
-          <div className="flex-1">{children}</div>
-
-          {/* うまく調整できなかった */}
-          <div className="fixed bottom-4 right-10 z-50">
-            <ModeToggle />
-          </div>
-          <Footer />
+          <main className="flex-1">{children}</main>
         </ThemeProvider>
       </body>
     </html>

@@ -5,13 +5,11 @@ import { UsernameLogin } from "./components/username-login";
 
 export default async function Page() {
   return (
-    <main className="flex h-[75vh] min-h-[600px]">
+    <div className="flex h-[75vh] min-h-[600px]">
       <div className="flex flex-col gap-2 m-auto items-center">
         <GitHubLoginButton />
         <Button variant="ghost" className="border gap-2">
-          <Link href="/auth/supabase-client-auth/login">
-            Client Side ログイン
-          </Link>
+          <Link href="/auth/client-side-login">Client Side ログイン</Link>
         </Button>
 
         <div className="w-full flex items-center gap-4 my-4">
@@ -24,6 +22,6 @@ export default async function Page() {
           <UsernameLogin />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

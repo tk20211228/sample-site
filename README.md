@@ -28,6 +28,33 @@ pnpm dlx supabase stop
 
 ## 2. ローカル環境のリンク
 
+[Supabase](https://supabase.com/) より新しいプロジェクトを作成し、以下のコマンドでローカル Supabase とリンクします。
+
 ```bash
 pnpm dlx supabase link
 ```
+
+## デプロイ
+
+以下のコマンドで本番環境にデプロイします。  
+※ 事前にマイグレーションを忘れないようにしましょう。
+
+```bash
+bunx supabase:generate-migration <マイグレーションタイトル> # マイグレーションしてない場合
+bunx supabase db push
+```
+
+## ストレージの設定
+
+上記コマンドではストレージの情報は反映されないので、  
+本番環境の管理コンソールからストレージの設定を行います。
+
+## 認証の設定
+
+本番環境の管理コンソールから GitHub 認証の設定を行います。  
+また、本番用 GitHub 認証アプリの作成も行います。  
+次に、認証設定画面の URL Configuration で本番サイトの URL を設定します。
+
+## 環境変数の更新
+
+本番環境の管理コンソールから各種 API キーをコピーし、Vercel 本番環境の環境変数に Supabase の「Project URL」「API_key_anon」「API_key_Service」を設定します。
