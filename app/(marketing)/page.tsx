@@ -39,7 +39,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div>
+        <div className="flex flex-col items-center">
           <Image
             src="/images/phone.webp"
             alt=""
@@ -51,7 +51,7 @@ export default function Home() {
               今すぐお試しください。
             </Button> */}
           <Link
-            className="mt-5 flex items-center w-fit mx-auto text-black text-sm h-10 px-6 justify-center rounded-full bg-red-300 hover:bg-red-300/90"
+            className="my-5 flex items-center w-fit mx-auto text-black text-sm h-10 px-6 justify-center rounded-full bg-red-300 hover:bg-red-300/90"
             href="/"
           >
             今すぐお試しください！
@@ -60,7 +60,9 @@ export default function Home() {
       </section>
       <section className="pb-20">
         <Wave direction="up" />
-        <CardDemo className="mx-auto" />
+        <div className="px-4">
+          <CardDemo className="mx-auto" />
+        </div>
       </section>
     </div>
   );

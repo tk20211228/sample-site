@@ -6,15 +6,18 @@ type CardProps = React.ComponentProps<typeof Card>;
 
 export function CardDemo({ className, ...props }: CardProps) {
   return (
-    <Card className={cn("w-[500px]", className)} {...props}>
+    <Card
+      className={cn("flex-grow min-w-[300px] max-w-[500px] ", className)}
+      {...props}
+    >
       <CardContent className="p-6">
-        <div>
-          <p>
+        <div className="flex flex-col">
+          <div className="flex-1">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus
             maxime quisquam repellendus numquam perferendis repellat dolorum
             nemo architecto molestias quas vel sint deserunt tenetur, earum
             velit aut ratione reprehenderit laboriosam.
-          </p>
+          </div>
         </div>
         <div className="pt-4 flex flex-row items-center gap-5">
           <div>
