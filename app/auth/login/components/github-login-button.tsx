@@ -2,11 +2,12 @@
 
 import { signInWithGithub } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
-export function GitHubLoginButton() {
+export function GitHubLoginButton({ className }: { className?: string }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async (event: React.FormEvent) => {
@@ -23,8 +24,12 @@ export function GitHubLoginButton() {
   };
 
   return (
-    <form onSubmit={handleSignIn}>
-      <Button variant="ghost" className="border gap-2" disabled={isLoading}>
+    <form onSubmit={handleSignIn} className={cn("", className)}>
+      <Button
+        variant="ghost"
+        className={cn("border gap-2", className)}
+        disabled={isLoading}
+      >
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
