@@ -11,8 +11,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <>
       <main className="flex-1">{children}</main>
-    </div>
+    </>
   );
 }
