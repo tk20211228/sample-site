@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { pokemons } from "../data/pokemon";
+import { pokemons } from "../../data/pokemon";
 import Image from "next/image";
 
 export default function Page() {

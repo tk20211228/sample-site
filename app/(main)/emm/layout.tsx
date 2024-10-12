@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <div>
       <Header className="sticky top-0 z-10 bg-background" />
-      <div className="flex-1">{children}</div>
+      <main className="flex-1">{children}</main>
 
       <div className="fixed bottom-4 right-10 z-50">
         <ModeToggle />
