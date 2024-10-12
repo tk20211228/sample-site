@@ -26,12 +26,16 @@ export default async function Header({ className }: { className?: string }) {
       </Button>
       <nav className="flex ml-auto">
         <Button variant="ghost" className="gap-2" asChild>
-          <span className="hidden sm:block">特徴</span>
-          <Info size={20} />
+          <Link href="/features" replace>
+            <span className="hidden sm:block">特徴</span>
+            <Info size={20} />
+          </Link>
         </Button>
         <Button variant="ghost" className="gap-2" asChild>
-          <span className="hidden sm:block">ドキュメント</span>
-          <Book size={20} />
+          <Link href="/docs/books" replace>
+            <span className="hidden sm:block">ドキュメント</span>
+            <Book size={20} />
+          </Link>
         </Button>
         <LogoutButton />
       </nav>

@@ -9,10 +9,10 @@ import aerBadgeImage from "./images/aer-badge.webp";
 import androidEnterImage from "../../public/images/android-enterprise.webp";
 
 export default function Home() {
+  // return <p>test</p>;
   return (
     <div className="flex flex-col">
       <Hero />
-
       <section className="flex py-10 dark:bg-zinc-900 bg-[#57B0FF] flex-col-reverse md:flex-row justify-evenly items-center">
         <div className="flex flex-col justify-evenly items-center gap-12">
           <div className="mt-5 gap-14 flex flex-row items-center">

@@ -16,7 +16,7 @@ export default function LogoutButton() {
 
   return (
     <form onSubmit={handleSignIn}>
-      <Button variant="ghost" className="gap-2" disabled={isLoading} asChild>
+      <Button variant="ghost" className="gap-2" disabled={isLoading}>
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
