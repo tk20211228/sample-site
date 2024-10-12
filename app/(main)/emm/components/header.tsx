@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Book } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { cn } from "../../../lib/utils";
+
 import LogoutButton from "./logout-button";
+import { cn } from "@/lib/utils";
 
 export default async function Header({ className }: { className?: string }) {
   return (
