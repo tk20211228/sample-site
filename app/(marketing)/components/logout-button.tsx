@@ -16,15 +16,15 @@ export default function LogoutButton() {
 
   return (
     <form onSubmit={handleSignIn}>
-      <Button variant="ghost" className="gap-2" disabled={isLoading}>
+      <Button variant="ghost" className="gap-2" disabled={isLoading} asChild>
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            <p className="hidden sm:block">ログアウト中...</p>
+            <span className="hidden sm:block">ログアウト中...</span>
           </>
         ) : (
           <>
-            <p className="hidden sm:block">ログアウト</p>
+            <span className="hidden sm:block">ログアウト</span>
             <LogOut size={20} />
           </>
         )}

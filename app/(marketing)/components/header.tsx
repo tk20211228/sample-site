@@ -25,12 +25,12 @@ export default async function Header({ className }: { className?: string }) {
         {/* replace は履歴をのこさないため？' */}
       </Button>
       <nav className="flex ml-auto">
-        <Button variant="ghost" className="gap-2">
-          <p className="hidden sm:block">特徴</p>
+        <Button variant="ghost" className="gap-2" asChild>
+          <span className="hidden sm:block">特徴</span>
           <Info size={20} />
         </Button>
-        <Button variant="ghost" className="gap-2">
-          <p className="hidden sm:block">ドキュメント</p>
+        <Button variant="ghost" className="gap-2" asChild>
+          <span className="hidden sm:block">ドキュメント</span>
           <Book size={20} />
         </Button>
         <LogoutButton />

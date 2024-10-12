@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <>
       <Header className="sticky top-0 z-10 bg-background" />
       <main className="flex-1">{children}</main>
 
@@ -23,6 +23,6 @@ export default function RootLayout({
         <ModeToggle />
       </div>
       <Footer />
-    </div>
+    </>
   );
 }
