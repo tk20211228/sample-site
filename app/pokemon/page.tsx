@@ -6,21 +6,6 @@ export default function Page() {
   return (
     <div className="container">
       <h1 className="text-center font-bold text-3xl py-5">ポケモンリスト</h1>
-      {/* <div className="grid grid-cols-4 justify-items-center px-4 gap-2 ">
-        {pokemons.map((pokemon) => (
-          <div key={pokemon.id} className="p-5">
-            <h2 className="font-bold text-center">{pokemon.name}</h2>
-            <img
-              src={pokemon.image}
-              alt={pokemon.name}
-              width={200}
-              height={200}
-            />
-          </div>
-        ))}
-      </div> */}
-      {/* flex と　grid の使い分けがわからない　*/}
-      {/* footerのButtonのように調整されない理由を知りたい*/}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 py-4 justify-items-center gap-2">
         {pokemons.map((pokemon) => (
           <div
