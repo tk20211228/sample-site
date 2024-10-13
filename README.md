@@ -42,6 +42,8 @@ pnpm dlx supabase link
 4. マイグレーションの確認
 5. ローカル環境のデプロイ
 6. 外部サービスでの認証（Github など）は本番用の認証 APP、認証設定を更新する
+7. Vercel の環境構築
+8.
 
 以下のコマンドで本番環境にデプロイします。  
 ※ 事前にマイグレーションを忘れないすること。
@@ -64,8 +66,9 @@ pnpm dlx supabase db push
 本番環境の管理コンソールから GitHub 認証の設定を行います。  
 また、本番用 GitHub 認証アプリの作成も行います。  
 次に、認証設定画面の URL Configuration で本番サイトの URL を設定します。
-supabase に　本番用に作成したクライアント ID とシークレットキーを保存
 
-### 環境変数の更新
+### Vercel 環境変数の更新
 
 本番環境の管理コンソールから各種 API キーをコピーし、Vercel 本番環境の環境変数に Supabase の「Project URL」「API_key_anon」「API_key_Service」を設定します。
+
+### Vercel の環境構築
