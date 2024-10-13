@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function ClientSideLoginButton({
   className,
@@ -18,15 +19,18 @@ export default function ClientSideLoginButton({
     | null;
 }) {
   const supabase = createClient();
+  const router = useRouter();
   return (
     <Button
       onClick={() => {
-        supabase.auth.signInAnonymously();
+        supabase.auth.signInAnonymously().then(() => {
+          router.push("/emm");
+        });
       }}
       variant={variant}
       className={cn("", className)}
     >
-      ログイン
+      匿名 ログイン
     </Button>
   );
 }

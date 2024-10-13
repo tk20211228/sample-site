@@ -9,7 +9,7 @@ export default async function Page() {
       <div className="flex flex-col gap-2 m-auto items-center">
         <GitHubLoginButton className="w-full" />
         <Button variant="ghost" className="flex border gap-2 w-full" asChild>
-          <Link href="/auth/client-side-login">Client Side ログイン</Link>
+          <Link href="/login/client-side-login">Client Side ログイン</Link>
         </Button>
 
         <div className="w-full flex items-center gap-4 my-4">

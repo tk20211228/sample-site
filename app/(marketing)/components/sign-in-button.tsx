@@ -1,17 +1,20 @@
 "use client";
 
-import { signOut } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
-import { Loader2, LogOut } from "lucide-react";
+import { Loader2, LogIn } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 
-export default function LogoutButton() {
+export default function SingInButton() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSignIn = (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
-    signOut();
+    router.push("/login");
+    // signOut();
   };
 
   return (
@@ -20,12 +23,12 @@ export default function LogoutButton() {
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            <span className="hidden sm:block">ログアウト中...</span>
+            <span className="hidden sm:block">ログイン中...</span>
           </>
         ) : (
           <>
-            <span className="hidden sm:block">ログアウト</span>
-            <LogOut size={20} />
+            <p className="hidden sm:block">ログイン</p>
+            <LogIn size={20} />
           </>
         )}
       </Button>

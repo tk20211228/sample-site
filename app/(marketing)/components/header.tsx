@@ -4,8 +4,8 @@ import { Book, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "../../../lib/utils";
-import LogoutButton from "./logout-button";
 import logo from "../../../public/images/logo.png";
+import SingInButton from "./sign-in-button";
 
 export default async function Header({ className }: { className?: string }) {
   return (
@@ -37,7 +37,7 @@ export default async function Header({ className }: { className?: string }) {
             <Book size={20} />
           </Link>
         </Button>
-        <LogoutButton />
+        <SingInButton />
       </nav>
     </header>
   );

@@ -41,8 +41,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* <main className="flex-1">{children}</main> */}
-          {/* <div>test</div> */}
           {children}
         </ThemeProvider>
       </body>

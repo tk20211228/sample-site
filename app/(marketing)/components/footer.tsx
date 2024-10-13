@@ -6,7 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { PawPrint } from "lucide-react";
+import { MessageSquareMore, PawPrint, Server } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -29,7 +29,7 @@ export default function Footer() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="outline" asChild size="icon">
-                  <Link href="/pokemon" aria-label="ポケモン" replace>
+                  <Link href="/pokemon" aria-label="ポケモン">
                     <PawPrint size={18} />
                   </Link>
                 </Button>
@@ -37,6 +37,16 @@ export default function Footer() {
               <TooltipContent>ポケモン</TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          <Button variant="outline" asChild size="icon" className="ml-2">
+            <Link href="/comments" aria-label="コメント">
+              <MessageSquareMore size={18} />
+            </Link>
+          </Button>
+          <Button variant="outline" asChild size="icon" className="ml-2">
+            <Link href="/storage" aria-label="ストレージ">
+              <Server size={18} />
+            </Link>
+          </Button>
         </div>
       </div>
     </footer>

@@ -13,7 +13,7 @@ export default async function Header({ className }: { className?: string }) {
       className={cn("px-2 py-2 sm:py-4 flex items-center gap-1", className)}
     >
       <Button variant="ghost" className="text-lg" asChild>
-        <Link href="/emm" className="flex items-center font-bold gap-2" replace>
+        <Link href="/" className="flex items-center font-bold gap-2" replace>
           <Image
             src="/images/logo.png"
             alt={AppConfig.title}

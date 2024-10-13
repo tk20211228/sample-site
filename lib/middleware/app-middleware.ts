@@ -1,0 +1,65 @@
+import { User } from "@supabase/supabase-js";
+import { NextRequest, NextResponse } from "next/server";
+
+// 誰でもアクセスできるパス
+const publicRoutes = [
+  "/",
+  "/terms",
+  "/privacy",
+  "/login",
+  "/register",
+  "/auth/callback",
+  "/login/client-side-login",
+];
+
+// ゲスト専用ルート(ログインしている人はアクセスできない)
+const guestRoutes = ["/login", "/register"];
+
+export default async function AppMiddleware(
+  request: NextRequest,
+  response: NextResponse,
+  user: User | null
+) {
+  // リクエストのパスを取得
+  const path = request.nextUrl.pathname;
+  // ユーザーがサインインしているかどうかを確認
+  // ユーザーオブジェクトが存在するかどうかを確認し、存在する場合はサインインしているとみなす
+  // user が null または undefined の場合は false になり、サインインしていないとみなす
+  const signedIn = Boolean(user);
+  // パスがパブリックルートかどうかを確認
+  const isPublicRoute = publicRoutes.includes(path);
+  // パスがゲスト専用ルートかどうかを確認
+  const isGuestRoute = guestRoutes.includes(path);
+  // パスがプライベートルートかどうかを確認
+  const isPrivateRoute = !isPublicRoute && !isGuestRoute;
+
+  // // ユーザーが所属する組織があるかどうかを確認
+  // const hasOrganization = user?.app_metadata?.organization;
+  // // ユーザーがプロフィールを持っているかどうかを確認
+  // const hasProfile = user?.app_metadata?.hasProfile;
+
+  // ゲスト専用ルートにサインイン済みのユーザーがアクセスしようとした場合、emmページにリダイレクト
+  if (isGuestRoute && signedIn) {
+    return NextResponse.redirect(new URL("/emm", request.url));
+  }
+
+  if (isPrivateRoute) {
+    // サインインしていない場合、ログインページにリダイレクト
+    if (!signedIn) {
+      return NextResponse.redirect(new URL(`/login?from=${path}`, request.url));
+    }
+
+    // プロフィールを持っていない場合、プロフィール登録ページにリダイレクト
+    // if (!hasProfile) {
+    //   return NextResponse.redirect(new URL(`/register/profile`, request.url));
+    // }
+
+    // プロフィールを持っているが組織に所属していない場合、組織作成ページにリダイレクト
+    // if (hasProfile && !hasOrganization && path !== "/organization/new") {
+    //   return NextResponse.redirect(new URL(`/organization/new`, request.url));
+    // }
+  }
+
+  // 何もリダイレクトが発生しない場合、元のレスポンスを返す
+  return response;
+}

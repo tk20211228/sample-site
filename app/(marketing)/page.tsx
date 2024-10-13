@@ -6,7 +6,7 @@ import Wave from "./wave";
 import Link from "next/link";
 
 import aerBadgeImage from "./images/aer-badge.webp";
-import androidEnterImage from "../../public/images/android-enterprise.webp";
+import androidEnterImage from "./images/android-enterprise.webp";
 
 export default function Home() {
   // return <p>test</p>;
@@ -47,12 +47,9 @@ export default function Home() {
             height={400}
             className="w-[150px] md:w-auto md:h-[500px] ml-1 md:ml-2"
           />
-          {/* <Button className="mb-10 md:mb-0 bg-red-500 dark:bg-red-300 shadow-lg ">
-              今すぐお試しください。
-            </Button> */}
           <Link
             className="my-5 flex items-center w-fit mx-auto text-black text-sm h-10 px-6 justify-center rounded-full bg-red-300 hover:bg-red-300/90"
-            href="/"
+            href="/login"
           >
             今すぐお試しください！
           </Link>

@@ -12,7 +12,7 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <main className="flex-1">{children}</main>
+      <main>{children}</main>
     </>
   );
 }

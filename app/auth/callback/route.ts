@@ -21,5 +21,5 @@ export async function GET(request: NextRequest) {
   }
 
   // 処理完了後、ホームページにリダイレクト
-  return NextResponse.redirect(new URL("/", request.url));
+  return NextResponse.redirect(new URL("/emm", request.url));
 }

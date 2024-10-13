@@ -25,7 +25,7 @@ export const signInWithGithub = async () => {
 export const signOut = async () => {
   const supabase = createClient();
   await supabase.auth.signOut();
-  redirect("/auth/login");
+  redirect("/");
 };
 
 // import { createClient } from "../lib/supabase/server";
