@@ -43,7 +43,6 @@ pnpm dlx supabase link
 5. ローカル環境のデプロイ
 6. 外部サービスでの認証（Github など）は本番用の認証 APP、認証設定を更新する
 7. Vercel の環境構築
-8.
 
 以下のコマンドで本番環境にデプロイします。  
 ※ 事前にマイグレーションを忘れないすること。
@@ -71,4 +70,21 @@ pnpm dlx supabase db push
 
 本番環境の管理コンソールから各種 API キーをコピーし、Vercel 本番環境の環境変数に Supabase の「Project URL」「API_key_anon」「API_key_Service」を設定します。
 
-### Vercel の環境構築
+## LIFF 連携
+
+### LIFF 連携の基本の流れ
+
+1. LIFF アプリを作成して、LIFF_ID と CHANNEL_ID を取得。※ [公式ドキュメント](https://developers.line.biz/ja/docs/liff/overview/)を参照
+2. ngrok を使用してローカル環境の公開 URL を作成する。※ [公式ドキュメント](https://dashboard.ngrok.com/get-started/setup/nodejs)を参照
+   2-1. npm install @ngrok/ngrok  
+   2-2. ngrok config add-authtoken $YOUR_AUTHTOKEN ※ アクセストークンは公式ドキュメントを参照
+   2-3. pnpm dev
+   2-4. pnpm dlx ngrok http 3000
+   ⇨ localhost:3000 が公開 URL で確認できる。
+
+3. [.env.local]に LIFF_ID と CHANNEL_ID を保存する。
+4. supabase のクライアントにクッキーからトークンを取得し、クライアントにセットする
+5. ログインの ServerAction を実装する
+   1. [pnpm add jsonwebtoken] をコマンドで実行する
+   2. [pnpm install --save @types/jsonwebtoken]をコマンド実行
+6. クライアントを実装する

@@ -5,10 +5,19 @@ import { cookies } from "next/headers";
 export function createClient() {
   const cookieStore = cookies();
 
+  // LIFFアプリ認証のため、クッキーからトークンを取得
+  const accessToken = cookieStore.get("token");
+
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // LIFFアプリ認証のため、トークンを設定
+      global: {
+        headers: {
+          Authorization: `Bearer ${accessToken?.value || ""}`,
+        },
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll();

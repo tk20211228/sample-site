@@ -6,6 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { SiLine } from "@icons-pack/react-simple-icons";
 import { MessageSquareMore, PawPrint, Server } from "lucide-react";
 import Link from "next/link";
 
@@ -45,6 +46,11 @@ export default function Footer() {
           <Button variant="outline" asChild size="icon" className="ml-2">
             <Link href="/storage" aria-label="ストレージ">
               <Server size={18} />
+            </Link>
+          </Button>
+          <Button variant="outline" asChild size="icon" className="ml-2">
+            <Link href="/line" aria-label="line">
+              <SiLine size={18} />
             </Link>
           </Button>
         </div>
