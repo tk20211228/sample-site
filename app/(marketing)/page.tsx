@@ -9,7 +9,6 @@ import aerBadgeImage from "./images/aer-badge.webp";
 import androidEnterImage from "./images/android-enterprise.webp";
 
 export default function Home() {
-  // return <p>test</p>;
   return (
     <div className="flex flex-col">
       <Hero />
