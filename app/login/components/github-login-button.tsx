@@ -27,7 +27,7 @@ export function GitHubLoginButton({ className }: { className?: string }) {
     <form onSubmit={handleSignIn} className={cn("", className)}>
       <Button
         variant="ghost"
-        className={cn("border gap-2", className)}
+        className={cn("border", className)}
         disabled={isLoading}
       >
         {isLoading ? (
@@ -37,8 +37,8 @@ export function GitHubLoginButton({ className }: { className?: string }) {
           </>
         ) : (
           <>
-            <SiGithub size={20} className="mr-2" />
-            GitHub ログイン
+            <SiGithub size={20} className="mr-4" />
+            ログイン
           </>
         )}
       </Button>

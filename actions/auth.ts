@@ -13,7 +13,7 @@ export const signInWithGithub = async () => {
   const { data } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo: `${host}/auth/callback`,
+      redirectTo: `${host}/api/auth/callback`,
     },
   });
 
@@ -27,11 +27,3 @@ export const signOut = async () => {
   await supabase.auth.signOut();
   redirect("/");
 };
-
-// import { createClient } from "../lib/supabase/server";
-
-// export const signInWithAnonymously = async () => {
-//   const supabase = createClient();
-
-//   await supabase.auth.signInAnonymously();
-// };

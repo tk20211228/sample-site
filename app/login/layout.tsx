@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import WaveAnimation from "./client-side-login/components/wave-animation";
 import Header from "./components/header";
 
 export const metadata: Metadata = {
@@ -12,9 +13,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
       <Header />
-      <main>{children}</main>
-    </>
+      <main className="flex-1 -translate-y-16 xl:translate-y-1 2xl:translate-y-16 z-50">
+        {children}
+      </main>
+      <div className="absolute bottom-0 left-0 w-full">
+        <WaveAnimation />
+      </div>
+    </div>
+    // <>
+    //   <Header />
+    //   <main className="flex-1">{children}</main>
+    //   <WaveAnimation />
+    // </>
   );
 }

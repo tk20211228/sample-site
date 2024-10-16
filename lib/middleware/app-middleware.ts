@@ -8,14 +8,12 @@ const publicRoutes = [
   "/privacy",
   "/storage",
   "/line",
-  "/login",
-  "/register",
-  "/auth/callback",
+  "/api/auth/callback",
   "/login/client-side-login",
 ];
 
 // ゲスト専用ルート(ログインしている人はアクセスできない)
-const guestRoutes = ["/login", "/register"];
+const guestRoutes = ["/login", "/login/sign-up"];
 
 export default async function AppMiddleware(
   request: NextRequest,
