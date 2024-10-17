@@ -1,5 +1,9 @@
 import type { Config } from "tailwindcss";
 
+const {
+  default: flattenColorPalette,
+} = require("tailwindcss/lib/util/flattenColorPalette");
+
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -71,7 +75,20 @@ const config: Config = {
   plugins: [
     require("tailwindcss-animate"),
     require("@tailwindcss/typography"),
-    // require("@tailwindcss/forms"),
+    // https://ui.aceternity.com/components/signup-form　　にあるものを参考にしています。
+    addVariablesForColors,
   ],
 };
 export default config;
+
+// https://ui.aceternity.com/components/signup-form　　にあるものを参考にしています。
+function addVariablesForColors({ addBase, theme }: any) {
+  let allColors = flattenColorPalette(theme("colors"));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": newVars,
+  });
+}

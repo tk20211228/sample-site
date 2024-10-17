@@ -1,9 +1,10 @@
 "use client";
 
+import HeaderLogoButton from "@/components/header-logo-button";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import ClientSideLoginButton from "./client-side-login-button";
+import ClientSideLoginButton from "./sign-login-button";
 
 export default function Header() {
   const [userId, setUserId] = useState<string | null | undefined>(undefined);
@@ -21,7 +22,7 @@ export default function Header() {
 
   return (
     <header className="flex mx-auto justify-between items-center container h-16 border-b px-2 py-3 ">
-      <h1 className="text-bold">Client Side LogIn</h1>
+      <HeaderLogoButton />
       {isLoggedIn && (
         <Image
           src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${userId}`}

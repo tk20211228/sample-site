@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/aceternity-input";
 import { Label } from "@/components/ui/aceternity-label";
 import { cn } from "@/lib/utils";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface FormData {
@@ -14,10 +15,13 @@ interface FormData {
 }
 
 export function SignUpFormDemo() {
+  const day = new Date();
+  // ダミーのユーザー情報を定義する ex)20241017164100
+  const dummyUserName = `test${day.getFullYear()}-${day.getMonth()}${day.getDate()}-${day.getHours()}${day.getMinutes()}-${day.getSeconds()}`;
   const [formData, setFormData] = useState<FormData>({
-    email: "",
-    password: "",
-    userName: "",
+    email: `${dummyUserName}@gmail.com`,
+    password: `test123!!`,
+    userName: dummyUserName,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
@@ -56,8 +60,9 @@ export function SignUpFormDemo() {
     }
   };
 
+  const router = useRouter();
   if (signUpSuccess) {
-    return <div>メールアドレスに確認メールを送信しました。</div>;
+    router.push("/sign-up/verify-email-address");
   }
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
@@ -75,6 +80,7 @@ export function SignUpFormDemo() {
             name="userName"
             placeholder="山田太郎"
             type="text"
+            value={formData.userName}
             onChange={handleInputChange}
           />
         </LabelInputContainer>
@@ -85,6 +91,7 @@ export function SignUpFormDemo() {
             name="email"
             placeholder="projectmayhem@fc.com"
             type="email"
+            value={formData.email}
             onChange={handleInputChange}
           />
         </LabelInputContainer>
@@ -95,6 +102,7 @@ export function SignUpFormDemo() {
             name="password"
             placeholder="••••••••"
             type="password"
+            value={formData.password}
             onChange={handleInputChange}
           />
         </LabelInputContainer>

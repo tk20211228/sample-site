@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-export default function ClientSideLoginButton({
+export default function SignLoginButton({
   className,
   variant,
 }: {

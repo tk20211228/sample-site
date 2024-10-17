@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import ClientSideLoadingButton from "./components/client-side-loading-button";
-import ClientSideLoginButton from "./components/client-side-login-button";
+import SignLoadingButton from "./components/sign-loading-button";
+import SignLoginButton from "./components/sign-login-button";
 import IsSignedIn from "./components/is-signed-in";
 import IsSignedLoading from "./components/is-signed-loading";
 import IsSignedOut from "./components/is-signed-out";
@@ -12,12 +12,12 @@ export default function Page() {
   return (
     <div className="flex flex-col container mt-5">
       <IsSignedLoading>
-        <ClientSideLoadingButton className="w-1/3 mx-auto mb-2" />
+        <SignLoadingButton className="w-1/3 mx-auto mb-2" />
       </IsSignedLoading>
       <IsSignedOut>
-        <ClientSideLoginButton className="w-1/3 mx-auto mb-2" />
+        <SignLoginButton className="w-1/3 mx-auto mb-2" />
         <Button variant="ghost" className="w-1/3 mx-auto mb-2" asChild>
-          <Link href="/login">戻る</Link>
+          <Link href="/sign-in">戻る</Link>
         </Button>
       </IsSignedOut>
       <IsSignedIn>

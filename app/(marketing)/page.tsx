@@ -48,7 +48,7 @@ export default function Home() {
           />
           <Link
             className="my-5 flex items-center w-fit mx-auto text-black text-sm h-10 px-6 justify-center rounded-full bg-red-300 hover:bg-red-300/90"
-            href="/login"
+            href="/sign-in"
           >
             今すぐお試しください！
           </Link>

@@ -40,11 +40,11 @@ export async function updateSession(request: NextRequest) {
   // リダイレクトの処理は、app-middleware.ts に移動
   // if (
   //   !user &&
-  //   !request.nextUrl.pathname.startsWith("/login") &&
+  //   !request.nextUrl.pathname.startsWith("/sign-in") &&
   //   !request.nextUrl.pathname.startsWith("/auth")
   // ) {
   //   const url = request.nextUrl.clone();
-  //   url.pathname = "/login";
+  //   url.pathname = "/sign-in";
   //   return NextResponse.redirect(url);
   // }
 

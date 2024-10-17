@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
-export default function ClientSideLogoutButton({
+export default function SignLoadingButton({
   className,
-  variant,
+  variant = "ghost",
 }: {
   className?: string;
   variant?:
@@ -21,12 +21,13 @@ export default function ClientSideLogoutButton({
   return (
     <Button
       onClick={() => {
-        supabase.auth.signOut();
+        supabase.auth.signInAnonymously();
       }}
       variant={variant}
-      className={cn("", className)}
+      className={cn("border gap-2", className)}
+      disabled={false}
     >
-      ログアウト
+      loading...
     </Button>
   );
 }

@@ -9,11 +9,17 @@ const publicRoutes = [
   "/storage",
   "/line",
   "/api/auth/callback",
-  "/login/client-side-login",
+  "/api/auth/confirm",
+  "/api/auth/route",
 ];
 
 // ゲスト専用ルート(ログインしている人はアクセスできない)
-const guestRoutes = ["/login", "/login/sign-up"];
+const guestRoutes = [
+  "/sign-in",
+  "/sign-up",
+  "/sign-in-anonymous",
+  "/sign-up/verify-email-address",
+];
 
 export default async function AppMiddleware(
   request: NextRequest,
@@ -46,7 +52,9 @@ export default async function AppMiddleware(
   if (isPrivateRoute) {
     // サインインしていない場合、ログインページにリダイレクト
     if (!signedIn) {
-      return NextResponse.redirect(new URL(`/login?from=${path}`, request.url));
+      return NextResponse.redirect(
+        new URL(`/sign-in?from=${path}`, request.url)
+      );
     }
 
     // プロフィールを持っていない場合、プロフィール登録ページにリダイレクト

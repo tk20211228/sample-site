@@ -22,6 +22,34 @@ export const signInWithGithub = async () => {
   }
 };
 
+export const signInWithGoogle = async () => {
+  const supabase = createClient();
+  const { data } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${host}/api/auth/callback`,
+    },
+  });
+
+  if (data.url) {
+    redirect(data.url);
+  }
+};
+
+export const signInWithDiscord = async () => {
+  const supabase = createClient();
+  const { data } = await supabase.auth.signInWithOAuth({
+    provider: "discord",
+    options: {
+      redirectTo: `${host}/api/auth/callback`,
+    },
+  });
+
+  if (data.url) {
+    redirect(data.url);
+  }
+};
+
 export const signOut = async () => {
   const supabase = createClient();
   await supabase.auth.signOut();

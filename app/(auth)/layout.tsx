@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import WaveAnimation from "./client-side-login/components/wave-animation";
+import WaveAnimation from "./components/wave-animation";
 import Header from "./components/header";
 
 export const metadata: Metadata = {

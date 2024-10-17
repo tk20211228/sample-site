@@ -1,22 +1,26 @@
 "use client";
 
-import { signInWithGithub } from "@/actions/auth";
+import { signInWithGoogle } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SiGithub } from "@icons-pack/react-simple-icons";
+import { SiGoogle } from "@icons-pack/react-simple-icons";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
-export function GitHubLoginButton({ className }: { className?: string }) {
+export default function GoogleSingInButton({
+  className,
+}: {
+  className?: string;
+}) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
     try {
-      await signInWithGithub();
+      await signInWithGoogle();
     } catch (error) {
-      console.error("GitHub login failed:", error);
+      console.error("Google login failed:", error);
       setIsLoading(false);
     } finally {
       // setIsLoading(false);
@@ -26,8 +30,8 @@ export function GitHubLoginButton({ className }: { className?: string }) {
   return (
     <form onSubmit={handleSignIn} className={cn("", className)}>
       <Button
-        variant="ghost"
-        className={cn("border", className)}
+        variant="outline"
+        className={cn("", className)}
         disabled={isLoading}
       >
         {isLoading ? (
@@ -37,8 +41,8 @@ export function GitHubLoginButton({ className }: { className?: string }) {
           </>
         ) : (
           <>
-            <SiGithub size={20} className="mr-4" />
-            ログイン
+            <SiGoogle size={20} className="mr-4" />
+            Google
           </>
         )}
       </Button>

@@ -70,7 +70,7 @@ export const useAuth = (props?: { redirect?: boolean }) => {
 
   // 認証ユーザーがいない場合、リダイレクトオプションが有効ならログインページにリダイレクト
   if (context.authUser === null && props?.redirect) {
-    router.push("/login");
+    router.push("/sign-in");
   }
 
   return context;

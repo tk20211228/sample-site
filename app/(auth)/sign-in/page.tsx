@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import ClerkSingInButton from "./components/clerk-sing-in-button";
-import DiscordSingInButton from "./components/discord-sing-in_button";
-import { GitHubLoginButton } from "./components/github-login-button";
-import GoogleSingInButton from "./components/google-sing-in-button";
-import { UsernameLogin } from "./components/username-login";
-import SingleWelcome from "./images/single-welcome.webp";
+import ClerkSingInButton from "../components/clerk-sing-in-button";
+import DiscordSingInButton from "../components/discord-sing-in_button";
+import { GitHubLoginButton } from "../components/github-login-button";
+import GoogleSingInButton from "../components/google-sing-in-button";
+import { UsernameLogin } from "../components/username-login";
+import SingleWelcome from "../images/single-welcome.webp";
 
 export default async function Page() {
   return (
@@ -44,7 +44,7 @@ export default async function Page() {
           <DiscordSingInButton className="w-full" />
           <ClerkSingInButton className="w-full" />
           <Button variant="ghost" className="flex border gap-2 w-full" asChild>
-            <Link href="/login/client-side-login">匿名 ログイン</Link>
+            <Link href="/client-side-login">匿名 ログイン</Link>
           </Button>
 
           <div className="w-full flex items-center gap-4 my-4">
@@ -61,7 +61,7 @@ export default async function Page() {
               </div>
               <Button variant="link" className="relative" asChild>
                 <Link
-                  href="/login/sign-up"
+                  href="/sign-up"
                   className="text-xs font-bold absolute top-0 right-0"
                 >
                   アカウントを新規作成する
