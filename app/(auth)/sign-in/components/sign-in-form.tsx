@@ -15,23 +15,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { signInWithEmail } from "@/actions/auth-supabase-password";
 
 const FormSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
 });
 
-export function UsernameLogin() {
+export function SignInForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
+      username: "kubokidev",
+      email: "kubokidev@gmail.com",
+      password: "test123!!",
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    alert("ログインしました" + data);
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    // alert(`ログインしました。${data.email},${data.password}`);
+    return signInWithEmail({ email: data.email, password: data.password });
     // toast({
     //   title: "You submitted the following values:",
     //   description: (
@@ -40,28 +50,56 @@ export function UsernameLogin() {
     //     </pre>
     //   ),
     // });
-  }
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
+        {/* <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
             <FormItem>
               <FormLabel>ユーザー名</FormLabel>
               <FormControl>
-                <Input placeholder="山田 太郎" {...field} />
+                <Input autoComplete="off" placeholder="山田 太郎" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        /> */}
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>メールアドレス</FormLabel>
+              <FormControl>
+                <Input
+                  autoComplete="off"
+                  placeholder="xxx@gmail.com"
+                  {...field}
+                />
               </FormControl>
               {/* <FormDescription>
                 This is your public display name.
               </FormDescription> */}
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
               <FormLabel>パスワード</FormLabel>
               <FormControl>
-                <Input placeholder="test123!!" {...field} />
+                <Input autoComplete="off" placeholder="test123!!" {...field} />
               </FormControl>
+              {/* <FormDescription>
+                This is your public display name.
+              </FormDescription> */}
+              <FormMessage />
             </FormItem>
           )}
         />

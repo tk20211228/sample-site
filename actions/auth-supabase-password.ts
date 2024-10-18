@@ -1,6 +1,13 @@
 "use server";
 
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+
+const host =
+  process.env.NODE_ENV === "production" //本番環境にデプロイされていれば、本番とみなす
+    ? "https://sample-site-pearl.vercel.app/" // 本番環境の URL
+    : "http://localhost:3000";
 
 export const signUpNewUser = async ({
   email,
@@ -14,7 +21,7 @@ export const signUpNewUser = async ({
     email,
     password,
     options: {
-      emailRedirectTo: "/emm",
+      emailRedirectTo: `${host}/emm`,
     },
   });
 };
@@ -31,4 +38,16 @@ export const signInWithEmail = async ({
     email, //" example@email.com",
     password, // "example-password",
   });
+  if (!error) {
+    // redirect user to specified redirect URL or root of app
+    redirect("/emm");
+  }
+  redirect("/error");
+};
+
+export const signInWithUsername = async (
+  username: string,
+  password: string
+) => {
+  const supabaseAdmin = createAdminClient();
 };

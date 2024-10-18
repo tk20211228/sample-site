@@ -3,8 +3,10 @@
 import { signUpNewUser } from "@/actions/auth-supabase-password";
 import { Input } from "@/components/ui/aceternity-input";
 import { Label } from "@/components/ui/aceternity-label";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -15,17 +17,18 @@ interface FormData {
 }
 
 export function SignUpFormDemo() {
-  const day = new Date();
-  // ダミーのユーザー情報を定義する ex)20241017164100
-  const dummyUserName = `test${day.getFullYear()}-${day.getMonth()}${day.getDate()}-${day.getHours()}${day.getMinutes()}-${day.getSeconds()}`;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  // const day = new Date();
+  // ダミーのユーザー情報を定義する ex)2024-1017-1641-00
+  // const dummyUserName = `test${day.getFullYear()}-${day.getMonth()}${day.getDate()}-${day.getHours()}${day.getMinutes()}-${day.getSeconds()}`;
+  const dummyUserName = `kubokidev`;
   const [formData, setFormData] = useState<FormData>({
     email: `${dummyUserName}@gmail.com`,
     password: `test123!!`,
     userName: dummyUserName,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [signUpSuccess, setSignUpSuccess] = useState(false);
-  const [signUpError, setSignUpError] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,7 +41,6 @@ export function SignUpFormDemo() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // フォームのデフォルトの動作を防ぐ
     setIsSubmitting(true);
-    setSignUpError(null);
 
     // フォームの値をログに出力
     console.log("フォーム送信値:", formData);
@@ -49,21 +51,15 @@ export function SignUpFormDemo() {
         password: formData.password,
       });
       console.log("ユーザー登録成功:", res);
-      setSignUpSuccess(true);
+      router.push("/sign-up/verify-email-address");
     } catch (error) {
       console.error("ユーザー登録エラー:", error);
-      setSignUpError("ユーザー登録に失敗しました。もう一度お試しください。");
-      console.log(signUpError);
     } finally {
       setIsSubmitting(false);
       console.log("isSubmitting", isSubmitting);
     }
   };
 
-  const router = useRouter();
-  if (signUpSuccess) {
-    router.push("/sign-up/verify-email-address");
-  }
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
       <h2 className="font-bold text-center text-xl text-neutral-800 dark:text-neutral-200">
@@ -78,6 +74,7 @@ export function SignUpFormDemo() {
           <Input
             id="userName"
             name="userName"
+            autoComplete="off" // フォームの自動入力を無効にする
             placeholder="山田太郎"
             type="text"
             value={formData.userName}
@@ -89,6 +86,7 @@ export function SignUpFormDemo() {
           <Input
             id="email"
             name="email"
+            autoComplete="off" // フォームの自動入力を無効にする
             placeholder="projectmayhem@fc.com"
             type="email"
             value={formData.email}
@@ -107,13 +105,31 @@ export function SignUpFormDemo() {
           />
         </LabelInputContainer>
 
-        <button
+        {/* <button
           className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           type="submit"
         >
           Sign up &rarr;
           <BottomGradient />
-        </button>
+        </button> */}
+
+        <Button
+          type="submit"
+          className="text-md bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <div className="flex items-center justify-center gap-2">
+              <Loader2 className="animate-spin h-5 w-5" />
+              <span>サインアップ中...</span>
+            </div>
+          ) : (
+            <>
+              Sign up &rarr;
+              <BottomGradient />
+            </>
+          )}
+        </Button>
 
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
 

@@ -5,7 +5,7 @@ import ClerkSingInButton from "../components/clerk-sing-in-button";
 import DiscordSingInButton from "../components/discord-sing-in_button";
 import { GitHubLoginButton } from "../components/github-login-button";
 import GoogleSingInButton from "../components/google-sing-in-button";
-import { UsernameLogin } from "../components/username-login";
+import { SignInForm } from "./components/sign-in-form";
 import SingleWelcome from "../images/single-welcome.webp";
 
 export default async function Page() {
@@ -54,7 +54,7 @@ export default async function Page() {
           </div>
 
           <div className="flex-1">
-            <UsernameLogin />
+            <SignInForm />
             <div className="pt-4">
               <div className="pl-4 text-xs text-muted-foreground">
                 アカウントをお持ちではありませんか？
