@@ -24,6 +24,12 @@ export const signUpNewUser = async ({
       emailRedirectTo: `${host}/emm`,
     },
   });
+  if (!error) {
+    console.log(data);
+    return data;
+  }
+  console.error(error.message);
+  return error.message;
 };
 
 export const signInWithEmail = async ({
@@ -42,6 +48,7 @@ export const signInWithEmail = async ({
     // redirect user to specified redirect URL or root of app
     redirect("/emm");
   }
+  console.error(error.message);
   redirect("/error");
 };
 

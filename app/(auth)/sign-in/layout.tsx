@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import WaveAnimation from "./components/wave-animation";
-import Header from "./components/header";
+import Header from "../components/header";
+import WaveAnimation from "../components/wave-animation";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,7 +15,9 @@ export default function RootLayout({
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
       <Header />
-      <main className="flex-1">{children}</main>
+      <div className="flex-1 -translate-y-16 xl:translate-y-1 2xl:translate-y-16 z-50">
+        {children}
+      </div>
       <div className="absolute bottom-0 left-0 w-full">
         <WaveAnimation />
       </div>

@@ -17,6 +17,8 @@ const publicRoutes = [
 const guestRoutes = [
   "/sign-in",
   "/sign-up",
+  "/sign-up/form-client",
+  "/sign-up/form-server",
   "/sign-in-anonymous",
   "/sign-up/verify-email-address",
 ];
