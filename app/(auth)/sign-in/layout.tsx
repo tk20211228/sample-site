@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Header from "../components/header";
-import WaveAnimation from "../components/wave-animation";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,19 +11,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      <Header />
-      <div className="flex-1 -translate-y-16 xl:translate-y-1 2xl:translate-y-16 z-50">
-        {children}
-      </div>
-      <div className="absolute bottom-0 left-0 w-full">
-        <WaveAnimation />
-      </div>
+    <div className="-translate-y-16 xl:translate-y-1 2xl:translate-y-16">
+      {children}
     </div>
-    // <>
-    //   <Header />
-    //   <main className="flex-1">{children}</main>
-    //   <WaveAnimation />
-    // </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { signUpNewUser } from "@/actions/auth-supabase-password";
+import { signUpNewUser } from "@/actions/supabase-auth-actions";
 import { Input } from "@/components/ui/aceternity-input";
 import { Label } from "@/components/ui/aceternity-label";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,9 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface FormData {
+  username: string;
   email: string;
   password: string;
-  userName: string;
 }
 
 export function SignUpFormClientSide() {
@@ -25,9 +25,9 @@ export function SignUpFormClientSide() {
   // const dummyUserName = `test${day.getFullYear()}-${day.getMonth()}${day.getDate()}-${day.getHours()}${day.getMinutes()}-${day.getSeconds()}`;
   const dummyUserName = `kubokidev`;
   const [formData, setFormData] = useState<FormData>({
+    username: dummyUserName,
     email: `${dummyUserName}@gmail.com`,
     password: `test123!!`,
-    userName: dummyUserName,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,10 +46,7 @@ export function SignUpFormClientSide() {
     console.log("フォーム送信値:", formData);
 
     try {
-      const res = await signUpNewUser({
-        email: formData.email,
-        password: formData.password,
-      });
+      const res = await signUpNewUser(formData);
       console.log("ユーザー登録成功:", res);
       router.push("/sign-up/verify-email-address");
     } catch (error) {
@@ -77,7 +74,7 @@ export function SignUpFormClientSide() {
             autoComplete="off" // フォームの自動入力を無効にする
             placeholder="山田太郎"
             type="text"
-            value={formData.userName}
+            value={formData.username}
             onChange={handleInputChange}
           />
         </LabelInputContainer>

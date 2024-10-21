@@ -26,6 +26,12 @@ pnpm dlx supabase status
 pnpm dlx supabase stop
 ```
 
+### 1.5 ローカル環境の再起動
+
+```bash
+pnpm dlx supabase stop && pnpm dlx supabase start
+```
+
 ## 2. ローカル環境のリンク
 
 [Supabase](https://supabase.com/) より新しいプロジェクトを作成し、以下のコマンドでローカル Supabase とリンクします。
@@ -50,7 +56,7 @@ pnpm dlx supabase link
 ### マイグレーションの更新とローカル環境のデプロイ
 
 ```bash
-pnpm dlx supabase:generate-migration <マイグレーションタイトル> # マイグレーションしてない場合
+pnpm supabase:generate-migration <マイグレーションタイトル> # マイグレーションしてない場合
 pnpm dlx supabase db push
 ```
 

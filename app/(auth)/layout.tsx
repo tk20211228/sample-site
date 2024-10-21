@@ -15,15 +15,10 @@ export default function RootLayout({
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
       <Header />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 z-50">{children}</main>
       <div className="absolute bottom-0 left-0 w-full">
         <WaveAnimation />
       </div>
     </div>
-    // <>
-    //   <Header />
-    //   <main className="flex-1">{children}</main>
-    //   <WaveAnimation />
-    // </>
   );
 }

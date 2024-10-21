@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signInWithEmail } from "@/actions/auth-supabase-password";
+import { signInWithEmail } from "@/actions/supabase-auth-actions";
 
 const FormSchema = z.object({
   username: z.string().min(2, {

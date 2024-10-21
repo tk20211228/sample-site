@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { ModeToggle } from "@/components/mode-toggle";
-import Header from "./components/header";
+import Header from "./emm/components/header";
 
 export const metadata: Metadata = {
   title: "Create Next App",

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 // 誰でもアクセスできるパス
 const publicRoutes = [
   "/",
+  "/error",
   "/terms",
   "/privacy",
   "/storage",

@@ -120,24 +120,24 @@ max_frequency = "1s"
 
 # Use a production-ready SMTP server
 [auth.email.smtp]
-# resend smtp
-# host = "smtp.resend.com"
-# port = 465
-# user = "resend"
-# pass = "env(SUPABAS_SMTP_RESEND_API_KEY)"
-# admin_email = "noreply@devnoob-strategy-lab.site"
-# sender_name = "SAMPLE SITE DEV"
-# gmail smtp
-host = "smtp.gmail.com"
+## resend smtp
+host = "smtp.resend.com"
 port = 465
-user = "t3kuboki@gmail.com"
-pass = "env(SUPABAS_SMTP_GOOGLE_API_KEY)"
-admin_email = "t3kuboki@gmail.com"
+user = "resend"
+pass = "env(SUPABAS_SMTP_RESEND_API_KEY)"
+admin_email = "noreply@devnoob-strategy-lab.site"
 sender_name = "SAMPLE SITE DEV"
+## gmail smtp
+# host = "smtp.gmail.com"
+# port = 465
+# user = "t3kuboki@gmail.com"
+# pass = "env(SUPABAS_SMTP_GOOGLE_API_KEY)"
+# admin_email = "t3kuboki@gmail.com"
+# sender_name = "SAMPLE SITE DEV"
 
 # Uncomment to customize email template
 [auth.email.template.confirmation]
-subject = "You have been confirmation"
+subject = "メールアドレスを確認してください"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.sms]

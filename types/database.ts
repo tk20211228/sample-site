@@ -38,12 +38,36 @@ export type Database = {
           },
         ]
       }
+      usernames: {
+        Row: {
+          createdAt: string
+          email: string
+          id: string
+          username: string
+        }
+        Insert: {
+          createdAt?: string
+          email: string
+          id: string
+          username: string
+        }
+        Update: {
+          createdAt?: string
+          email?: string
+          id?: string
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      liff_uid: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
