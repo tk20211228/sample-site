@@ -22,20 +22,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { passwordSchema } from "../../schemas/password-schema";
+import PasswordForm from "../../components/password-form";
+import { signUpFormSchema } from "../../schemas/sign-up-schema";
 
-const schema = z.object({
-  username: z
-    .string()
-    .trim() // 先頭と末尾の空白を削除
-    .min(4, "ユーザー名は4文字以上で設定してください")
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      "ユーザー名には英数字とアンダースコア(_)のみ使用できます"
-    ),
-  email: z.string().email("有効なメールアドレスを入力してください"),
-  password: passwordSchema,
-});
+const schema = signUpFormSchema;
 
 type FormData = z.infer<typeof schema>;
 
@@ -117,22 +107,10 @@ export default function UsernamePasswordSignUpForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
+            <PasswordForm
+              form={form}
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>パスワード</FormLabel>
-                  <FormControl>
-                    <Input
-                      autoComplete="new-password"
-                      placeholder="abcABC123!!"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              autoComplete={"new-password"}
             />
 
             <Button

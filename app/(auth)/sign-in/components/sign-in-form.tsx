@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 // import { toast } from "@/components/hooks/use-toast";
+import { signInWithEmailOrUsername } from "@/actions/supabase-auth-actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,95 +16,73 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signInWithEmail } from "@/actions/supabase-auth-actions";
+import { Loader2 } from "lucide-react";
+import PasswordForm from "../../components/password-form";
+import { signInFormSchema } from "../../schemas/sign-up-schema";
 
-const FormSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
-});
+const schema = signInFormSchema;
+
+type FormData = z.infer<typeof schema>;
 
 export function SignInForm() {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(schema),
     defaultValues: {
-      username: "kubokidev",
-      email: "kubokidev@gmail.com",
-      password: "test123!!",
+      emailOrUsername: "kubokidev@gmail.com",
+      password: "testTEST123!!",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    // alert(`ログインしました。${data.email},${data.password}`);
-    return signInWithEmail({ email: data.email, password: data.password });
-    // toast({
-    //   title: "You submitted the following values:",
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
+  const onSubmit = async (data: FormData) => {
+    await signInWithEmailOrUsername({
+      emailOrUsername: data.emailOrUsername,
+      password: data.password,
+    }).then((res) => {
+      if (res?.errorMessage) {
+        alert(res.errorMessage);
+        return;
+      }
+    });
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ユーザー名</FormLabel>
-              <FormControl>
-                <Input autoComplete="off" placeholder="山田 太郎" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        /> */}
         <FormField
           control={form.control}
-          name="email"
+          name="emailOrUsername"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>メールアドレス</FormLabel>
+              <FormLabel>メールアドレス or ユーザー名</FormLabel>
               <FormControl>
-                <Input
-                  autoComplete="off"
-                  placeholder="xxx@gmail.com"
-                  {...field}
-                />
+                <Input autoComplete="off" placeholder="" {...field} />
               </FormControl>
-              {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
+        <PasswordForm
+          form={form}
           name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>パスワード</FormLabel>
-              <FormControl>
-                <Input autoComplete="off" placeholder="test123!!" {...field} />
-              </FormControl>
-              {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
-              <FormMessage />
-            </FormItem>
-          )}
+          autoComplete={"new-password"}
         />
-        <Button type="submit">ログイン</Button>
+        <Button
+          disabled={
+            !form.formState.isValid ||
+            form.formState.isSubmitting ||
+            form.formState.isValidating
+          }
+        >
+          {form.formState.isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ログイン中...
+            </>
+          ) : (
+            <>ログイン</>
+          )}
+        </Button>
       </form>
     </Form>
   );

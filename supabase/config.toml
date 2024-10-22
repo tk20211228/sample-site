@@ -126,7 +126,7 @@ port = 465
 user = "resend"
 pass = "env(SUPABAS_SMTP_RESEND_API_KEY)"
 admin_email = "noreply@devnoob-strategy-lab.site"
-sender_name = "SAMPLE SITE DEV"
+sender_name = "MyEMM DEV"
 ## gmail smtp
 # host = "smtp.gmail.com"
 # port = 465
@@ -137,7 +137,7 @@ sender_name = "SAMPLE SITE DEV"
 
 # Uncomment to customize email template
 [auth.email.template.confirmation]
-subject = "メールアドレスを確認してください"
+subject = "【MyEMM DEV】メールアドレス認証のお知らせ"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.sms]
