@@ -11,7 +11,7 @@ export default function WaveAnimation({
 }: Props) {
   return (
     //生成URL https://svgwave.in/
-    <svg
+    (<svg
       width="100%"
       height="100%"
       id="svg"
@@ -33,6 +33,6 @@ export default function WaveAnimation({
         // fill-opacity="1"
         className="transition-all duration-300 ease-in-out delay-150 wave-animation"
       ></path>
-    </svg>
+    </svg>)
   );
 }

@@ -48,8 +48,8 @@ export function AuthProviderProvider({ children }: { children: ReactNode }) {
     };
   }, [supabase.auth]);
 
+  // コンテキストプロバイダーを返す
   return (
-    // コンテキストプロバイダーを返す
     <Context.Provider
       value={{
         authUser,

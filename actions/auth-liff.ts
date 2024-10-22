@@ -52,7 +52,7 @@ export const signIn = async (idToken: string) => {
   // JWT の署名は、supabaseのJWT_SECRETの秘密鍵を使用することで、 supabase側で同じ秘密鍵を使用して検証できる。
 
   // JWT をクッキーにセット
-  cookies().set("token", token);
+  (await cookies()).set("token", token);
 
   return liffToken;
 };

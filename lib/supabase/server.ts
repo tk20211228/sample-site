@@ -1,9 +1,9 @@
 import { Database } from "@/types/database";
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
 
 export function createClient() {
-  const cookieStore = cookies();
+  const cookieStore = (cookies() as unknown as UnsafeUnwrappedCookies);
 
   // LIFFアプリ認証のため、クッキーからトークンを取得
   const accessToken = cookieStore.get("token");
