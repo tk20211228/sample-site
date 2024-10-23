@@ -5,7 +5,6 @@ import { getSeverDate } from "@/lib/date-fns/get-date";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { string } from "zod";
 
 const host =
   process.env.NODE_ENV === "production" //本番環境にデプロイされていれば
@@ -56,6 +55,9 @@ export const signUpNewUser = async (formData: {
     password,
     options: {
       emailRedirectTo: `${host}/welcome`, // メールアドレス確認後のリダイレクト先
+      data: {
+        username,
+      },
     },
   });
   console.error(error?.message);
