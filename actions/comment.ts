@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export const addComment = async (formData: FormData) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const user = await currentUser();
   if (!user) {
@@ -26,7 +26,7 @@ export const deleteComment = async (id: number) => {
     throw new Error("ログインしてください。");
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("comments")
     .delete()
@@ -42,7 +42,7 @@ export const updateComment = async (id: number, body: string) => {
     throw new Error("ログインしてください。");
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("comments")
     .update({ body })

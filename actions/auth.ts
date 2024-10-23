@@ -9,7 +9,7 @@ const host =
     : "http://localhost:3000";
 
 export const signInWithGithub = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
@@ -23,7 +23,7 @@ export const signInWithGithub = async () => {
 };
 
 export const signInWithGoogle = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -37,7 +37,7 @@ export const signInWithGoogle = async () => {
 };
 
 export const signInWithDiscord = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase.auth.signInWithOAuth({
     provider: "discord",
     options: {
@@ -51,7 +51,7 @@ export const signInWithDiscord = async () => {
 };
 
 export const signOut = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/");
 };

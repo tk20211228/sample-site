@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     // Supabaseクライアントを作成
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // 認証コードをセッションと交換
     const { error } = await supabase.auth.exchangeCodeForSession(code);

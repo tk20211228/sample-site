@@ -9,7 +9,7 @@ export const uploadImage = async (formData: FormData) => {
     throw new Error("ログインしてください。");
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const file = formData.get("file") as File;
   const ext = file.name.split(".").pop(); // 拡張子を取得
   const path = `${user.id}/avatar.${ext}`;
@@ -41,7 +41,7 @@ export const deleteImage = async () => {
     throw new Error("ログインしてください。");
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const path = `${user.id}/avatar.jpeg`;
   const { data, error } = await supabase.storage.from("avatars").remove([path]);
   console.log(data, error);

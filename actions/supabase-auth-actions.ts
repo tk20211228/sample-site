@@ -46,7 +46,7 @@ export const signUpNewUser = async (formData: {
     };
   }
   // フォームデータの検証に成功した場合, Supabase にユーザー登録を行う
-  const supabase = createClient();
+  const supabase = await createClient();
   const { username, email, password } = formData;
   const {
     data: { user },
@@ -86,7 +86,7 @@ export const signInWithEmail = async ({
   email: string;
   password: string;
 }) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -125,7 +125,7 @@ export const signInWithUsername = async (
       errorMessage: "ユーザー名またはパスワードが違います",
     };
   }
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error: sigInError } = await supabase.auth.signInWithPassword({
     email: user.email,
     password,
