@@ -22,6 +22,9 @@ const guestRoutes = [
   "/sign-up/form-server",
   "/sign-in-anonymous",
   "/sign-up/verify-email-address",
+  "/password-reset",
+  "/update-password",
+  "/sign-in/reconfirm",
 ];
 
 export default async function AppMiddleware(

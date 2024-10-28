@@ -1,6 +1,6 @@
 "use client";
 
-import { signInWithGithub } from "@/actions/auth";
+import { signInWithGithub } from "@/actions/auth-social ";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SiGithub } from "@icons-pack/react-simple-icons";

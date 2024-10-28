@@ -3,9 +3,7 @@ import { cn } from "../../../lib/utils";
 
 export default async function Header({ className }: { className?: string }) {
   return (
-    <header
-      className={cn("px-2 py-4 sm:py-4 flex items-center gap-1", className)}
-    >
+    <header className={cn("px-2 py-4 flex items-center gap-1", className)}>
       <HeaderLogoButton />
     </header>
   );

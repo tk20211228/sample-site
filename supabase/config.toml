@@ -119,14 +119,14 @@ secure_password_change = true
 max_frequency = "1s"
 
 # Use a production-ready SMTP server
-[auth.email.smtp]
+# [auth.email.smtp]
 ## resend smtp
-host = "smtp.resend.com"
-port = 465
-user = "resend"
-pass = "env(SUPABAS_SMTP_RESEND_API_KEY)"
-admin_email = "noreply@devnoob-strategy-lab.site"
-sender_name = "MyEMM DEV"
+# host = "smtp.resend.com"
+# port = 465
+# user = "resend"
+# pass = "env(SUPABAS_SMTP_RESEND_API_KEY)"
+# admin_email = "noreply@devnoob-strategy-lab.site"
+# sender_name = "MyEMM DEV"
 ## gmail smtp
 # host = "smtp.gmail.com"
 # port = 465
@@ -136,9 +136,14 @@ sender_name = "MyEMM DEV"
 # sender_name = "SAMPLE SITE DEV"
 
 # Uncomment to customize email template
+# 設定値:https://supabase.com/docs/guides/local-development/customizing-email-templates#configuring-templates
 [auth.email.template.confirmation]
 subject = "【MyEMM DEV】メールアドレス認証のお知らせ"
 content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "【MyEMM DEV】パスワード再設定のお知らせ"
+content_path = "./supabase/templates/password-reset.html"
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.

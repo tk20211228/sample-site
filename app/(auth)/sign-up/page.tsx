@@ -2,8 +2,8 @@ import UsernamePasswordSignUpForm from "./components/username-password-sign-up-f
 
 export default function Page() {
   return (
-    <div className="flex flex-col items-center justify-center m-auto pt-2 lg:pt-10">
-      <div className="flex flex-row justify-items-center w-full px-4 lg:w-1/3">
+    <div className="absolute inset-0 flex place-items-center">
+      <div className="m-auto">
         <UsernamePasswordSignUpForm />
       </div>
     </div>

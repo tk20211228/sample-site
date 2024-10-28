@@ -1,10 +1,11 @@
+import OnboardingForm from "./components/onboardingForm";
+
 export default function Page() {
   return (
-    <div>
-      <h1>ようこそ！</h1>
-      <h2>プロジェクト名を設定してください。</h2>
-      <h2>組織名を設定してください。</h2>
-      <h2>利用規約、および、プライバシーポリシーに同意します。</h2>
+    <div className="lg:absolute inset-0 flex place-items-center p-4">
+      <div className="m-auto">
+        <OnboardingForm />
+      </div>
     </div>
   );
 }

@@ -1,8 +1,14 @@
+import { Suspense } from "react";
+import VerifyCard from "./components/verify-card";
+
 export default function Page() {
   return (
-    <div>
-      <h1>確認メールを送信</h1>
-      <div>設定したメールアドレスに認証メールを送信しました</div>
+    <div className="absolute inset-0 flex place-items-center">
+      <div className="m-auto">
+        <Suspense fallback={<div>Loading...</div>}>
+          <VerifyCard />
+        </Suspense>
+      </div>
     </div>
   );
 }

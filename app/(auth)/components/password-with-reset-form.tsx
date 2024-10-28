@@ -10,10 +10,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 
-export default function PasswordForm<
+export default function PasswordWithResetForm<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
@@ -35,7 +36,16 @@ export default function PasswordForm<
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <div className="flex items-center justify-between">
+            <FormLabel>{label}</FormLabel>
+            <Button
+              variant="link"
+              className="text-xs p-0 text-muted-foreground hover:text-primary"
+              asChild
+            >
+              <Link href="/password-reset">パスワードをお忘れですか？</Link>
+            </Button>
+          </div>
           <FormControl>
             {/* FormControl コンポーネントには単一の子要素（div）のみを渡すようにする */}
             <div className="relative">

@@ -2,10 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 // import { toast } from "@/components/hooks/use-toast";
-import { signInWithEmailOrUsername } from "@/actions/supabase-auth-actions";
+import { signInWithEmailOrUsername } from "@/actions/auth-supabase";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,32 +16,45 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
-import PasswordForm from "../../components/password-form";
+import PasswordWithResetForm from "../../components/password-with-reset-form";
 import { signInFormSchema } from "../../schemas/sign-up-schema";
+import { useEmailOrUsername } from "../../providers/user";
+import { useEffect } from "react";
 
 const schema = signInFormSchema;
 
-type FormData = z.infer<typeof schema>;
+type FormData = {
+  emailOrUsername: string;
+  password: string;
+};
 
 export function SignInForm() {
+  const { emailOrUsername, setEmailOrUsername } = useEmailOrUsername();
   const form = useForm({
     mode: "onChange",
     resolver: zodResolver(schema),
     defaultValues: {
-      emailOrUsername: "kubokidev@gmail.com",
+      emailOrUsername: emailOrUsername,
       password: "testTEST123!!",
     },
   });
 
-  const onSubmit = async (data: FormData) => {
-    await signInWithEmailOrUsername({
-      emailOrUsername: data.emailOrUsername,
-      password: data.password,
-    }).then((res) => {
-      if (res?.errorMessage) {
-        alert(res.errorMessage);
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "emailOrUsername" && value.emailOrUsername) {
+        setEmailOrUsername(value.emailOrUsername);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, setEmailOrUsername]);
+
+  const onSubmit = async (formData: FormData) => {
+    const parsedFormData = schema.parse(formData); //型にbrandメソッドを使って"SignIn"という名前があるため、zodのスキーマを使ってデータをパースする
+    await signInWithEmailOrUsername(parsedFormData).catch(async (error) => {
+      if (error.message === "NEXT_REDIRECT") {
         return;
       }
+      alert(error.message);
     });
   };
 
@@ -54,7 +66,9 @@ export function SignInForm() {
           name="emailOrUsername"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>メールアドレス or ユーザー名</FormLabel>
+              <FormLabel>
+                メールアドレス {"  "}or {"  "}ユーザー名
+              </FormLabel>
               <FormControl>
                 <Input autoComplete="off" placeholder="" {...field} />
               </FormControl>
@@ -62,7 +76,7 @@ export function SignInForm() {
             </FormItem>
           )}
         />
-        <PasswordForm
+        <PasswordWithResetForm
           form={form}
           name="password"
           autoComplete={"new-password"}
@@ -83,6 +97,11 @@ export function SignInForm() {
             <>ログイン</>
           )}
         </Button>
+        <Button
+          variant="ghost"
+          className="text-muted-foreground text-xs ml-4"
+          asChild
+        ></Button>
       </form>
     </Form>
   );

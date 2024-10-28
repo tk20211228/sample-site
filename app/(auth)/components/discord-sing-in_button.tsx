@@ -1,6 +1,6 @@
 "use client";
 
-import { signInWithDiscord } from "@/actions/auth";
+import { signInWithDiscord } from "@/actions/auth-social ";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SiDiscord } from "@icons-pack/react-simple-icons";
@@ -42,7 +42,7 @@ export default function DiscordSingInButton({
         ) : (
           <>
             <SiDiscord size={20} className="mr-4" />
-            Github
+            Discord
           </>
         )}
       </Button>

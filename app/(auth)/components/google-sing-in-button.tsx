@@ -1,6 +1,6 @@
 "use client";
 
-import { signInWithGoogle } from "@/actions/auth";
+import { signInWithGoogle } from "@/actions/auth-social ";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SiGoogle } from "@icons-pack/react-simple-icons";

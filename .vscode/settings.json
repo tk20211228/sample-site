@@ -5,7 +5,9 @@
     "LIFF",
     "Onlyfans",
     "pokemons",
-    "tabler"
+    "reauthentication",
+    "tabler",
+    "TOTP"
   ],
   "git.ignoreLimitWarning": true
 }

@@ -1,12 +1,14 @@
 import { z } from "zod";
-import { passwordSchema } from "./password-schema";
+import { passwordSchema } from "./password-email-schema";
 
-export const signInFormSchema = z.object({
-  emailOrUsername: z
-    .string()
-    .min(1, "メールアドレスまたはユーザー名を入力してください"),
-  password: passwordSchema,
-});
+export const signInFormSchema = z
+  .object({
+    emailOrUsername: z
+      .string()
+      .min(1, "メールアドレスまたはユーザー名を入力してください"),
+    password: passwordSchema,
+  })
+  .brand("SignIn");
 
 export const signUpFormSchema = z.object({
   username: z

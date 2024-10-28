@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import ClerkSingInButton from "../components/clerk-sing-in-button";
 import DiscordSingInButton from "../components/discord-sing-in_button";
 import { GitHubLoginButton } from "../components/github-login-button";
 import GoogleSingInButton from "../components/google-sing-in-button";
-import { SignInForm } from "./components/sign-in-form";
 import SingleWelcome from "../images/single-welcome.webp";
+import { SignInForm } from "./components/sign-in-form";
 
 export default async function Page() {
   return (
@@ -42,7 +41,7 @@ export default async function Page() {
           <GitHubLoginButton className="w-full" />
           <GoogleSingInButton className="w-full" />
           <DiscordSingInButton className="w-full" />
-          <ClerkSingInButton className="w-full" />
+          {/* <ClerkSingInButton className="w-full" /> */}
           <Button variant="ghost" className="flex border gap-2 w-full" asChild>
             <Link href="/client-side-login">匿名 ログイン</Link>
           </Button>
