@@ -44,12 +44,9 @@ export default function PasswordResetForm() {
   }, [form, setEmailOrUsername]);
 
   const onSubmit = async (data: FormData) => {
-    await resetPassword(data.emailOrUsername).then((res) => {
-      if ("errorMessage" in res) {
-        alert(res.errorMessage);
-        return;
-      } else if ("message" in res) {
-        alert(res.message);
+    await resetPassword(data.emailOrUsername).catch((error) => {
+      if (error.message !== "NEXT_REDIRECT") {
+        alert(error.message);
       }
     });
   };
@@ -57,9 +54,11 @@ export default function PasswordResetForm() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-center py-4 text-xl sm:text-2xl">
+        <CardTitle className="text-center py-3 text-xl sm:text-2xl">
           パスワードをお忘れですか？
         </CardTitle>
+      </CardHeader>
+      <CardContent>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -69,7 +68,7 @@ export default function PasswordResetForm() {
               control={form.control}
               name="emailOrUsername"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="pb-2">
                   <FormControl>
                     <Input
                       className="border-0 text-center text-xl text-primary"
@@ -100,9 +99,8 @@ export default function PasswordResetForm() {
             </Button>
           </form>
         </Form>
-      </CardHeader>
-      <CardContent>
-        <CardDescription className="mb-8 text-center text-xs sm:text-sm">
+
+        <CardDescription className="mb-8 text-center text-xs sm:text-sm pt-5">
           または、別の方法でサインインしてください。
         </CardDescription>
         <div className="flex flex-col gap-2 pb-4">

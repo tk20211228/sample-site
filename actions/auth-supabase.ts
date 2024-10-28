@@ -220,5 +220,26 @@ export async function resetPassword(email: string) {
     console.error(error.message);
     throw new Error(error.code);
   }
-  return { message: "ご登録のメールアドレスに確認メールを送信しました。" };
+  // return { message: "ご登録のメールアドレスに確認メールを送信しました。" };
+  return redirect("/password-reset/verify");
+}
+
+export async function resetPasswordVerify(formData: {
+  emailOrUsername: string;
+  pin: string;
+}) {
+  const { emailOrUsername: email, pin: token } = formData;
+  console.log({ email, token });
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: "email",
+  });
+  if (error) {
+    console.error(error.message);
+    const errorCode = error.code as SupabaseAuthErrorCode;
+    throw new Error(await authErrorMessage(errorCode));
+  }
+  return redirect("/password-update");
 }
