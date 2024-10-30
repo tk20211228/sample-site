@@ -4,6 +4,10 @@ import Image from "next/image";
 import logo from "@/public/images/logo.png";
 import { AppConfig } from "@/app.config";
 
+/**
+ *
+ * @returns the header logo button
+ */
 export default function HeaderLogoButton() {
   return (
     <>

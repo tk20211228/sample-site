@@ -94,3 +94,19 @@ pnpm dlx supabase db push
    1. [pnpm add jsonwebtoken] をコマンドで実行する
    2. [pnpm install --save @types/jsonwebtoken]をコマンド実行
 6. クライアントを実装する
+
+## PlayWrite の環境構築
+
+1. [公式ライブラリ](https://storybook.js.org/docs#install-storybook)をインストールする。
+2. 拡張機能を使用して、テストするページの Locator 情報を取得してテストコードを作成する
+   - Chrome のデベロッパーツールでも Locator を確認できます。
+     - F12 > デベロッパーツール　> 要素　> アクセシビリティ
+   1. Microsoft 公式の拡張機能をインストール
+   2. サイドバー　> フラスコアイコン
+   3. ナビゲーションバー > TOOLS > [Record new] >
+3. 簡単なテストを実施する
+
+## Storybook の環境構築
+
+1. 公式ドキュメントをダウンロードする、
+2. 管理するコンポートネントのデレクトリを設定する

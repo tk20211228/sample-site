@@ -27,7 +27,6 @@ yarn-error.log*
 
 # local env files
 .env*.local
-
 .env
 
 .env.prob
@@ -39,4 +38,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-react-email-starter
+# react-email
+.react-email
+/react-email/node_modules
+*storybook.log
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
