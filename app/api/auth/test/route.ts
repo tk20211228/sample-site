@@ -17,7 +17,7 @@ const date = getSeverDate();
 export async function GET(request: Request) {
   const userAgent = request.headers.get("user-agent") || "unknown";
   const browser = await chromium.launch();
-  console.log(browser);
+  // console.log(browser);
   const page = await browser.newPage();
   const webhookUrl =
     "https://discord.com/api/webhooks/1301066368807997471/8fkfLfnh70XW28HrZ64GLsTwG1ArQdQDOMMhbiArzrtDVkuNGlfbRVl5bQ6AOTFcddqL";
@@ -55,7 +55,8 @@ export async function GET(request: Request) {
 
     // discordに通知
     if (webhookUrl) {
-      await sendDiscordNotification(webhookUrl, message);
+      const res = await sendDiscordNotification(webhookUrl, message);
+      console.log(res);
     }
   } catch (error) {
     console.error(error);
@@ -65,7 +66,8 @@ export async function GET(request: Request) {
     const webhookUrl =
       "https://discord.com/api/webhooks/1301066368807997471/8fkfLfnh70XW28HrZ64GLsTwG1ArQdQDOMMhbiArzrtDVkuNGlfbRVl5bQ6AOTFcddqL";
     if (webhookUrl) {
-      await sendDiscordNotification(webhookUrl, message);
+      const res = await sendDiscordNotification(webhookUrl, message);
+      console.log(res);
     }
   } finally {
     await browser.close(); // ブラウザを閉じる
@@ -76,8 +78,12 @@ export async function GET(request: Request) {
 }
 
 async function sendDiscordNotification(webhookUrl: string, message: string) {
-  await fetch(webhookUrl, {
+  console.log(message);
+  return await fetch(webhookUrl, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json", // Content-Typeヘッダーを追加
+    },
     body: JSON.stringify({ content: message }),
   });
 }
