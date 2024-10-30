@@ -1,5 +1,7 @@
 import { getSeverDate } from "@/lib/date-fns/get-date";
-import { chromium, expect } from "@playwright/test";
+// import { chromium } from "@playwright/test";
+import { chromium } from "playwright";
+import { expect } from "playwright/test";
 
 export const dynamic = "force-dynamic"; // static by default, unless reading the request
 const date = getSeverDate();
@@ -15,8 +17,10 @@ const date = getSeverDate();
 export async function GET(request: Request) {
   const userAgent = request.headers.get("user-agent") || "unknown";
   const browser = await chromium.launch();
+  console.log(browser);
   const page = await browser.newPage();
-  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  const webhookUrl =
+    "https://discord.com/api/webhooks/1301066368807997471/8fkfLfnh70XW28HrZ64GLsTwG1ArQdQDOMMhbiArzrtDVkuNGlfbRVl5bQ6AOTFcddqL";
   try {
     // await page.goto("https://example.com");
     // // 画面をスクショし、ファイル名に日付を入れる

@@ -48,6 +48,7 @@
     "next": "15.0.0",
     "next-themes": "^0.3.0",
     "node-ipinfo": "^3.5.3",
+    "playwright": "^1.48.2",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
