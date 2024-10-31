@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build && pnpm dlx playwright install",
+    "build": "next build && pnpm exec playwright install --with-deps chromium",
     "start": "next start",
     "lint": "next lint",
     "supabase:generate-types": "pnpm dlx supabase gen types typescript --local --schema public > types/database.ts",
