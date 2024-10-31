@@ -14,7 +14,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "pnpm exec playwright test && pnpm exec playwright show-report",
-    "test-ui": "pnpm exec playwright test --ui"
+    "test-ui": "pnpm exec playwright test --ui",
+    "ngrok": "pnpm dlx ngrok http 3000"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -42,6 +43,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
+    "googleapis": "^144.0.0",
     "input-otp": "^1.2.4",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.447.0",

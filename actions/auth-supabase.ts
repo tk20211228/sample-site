@@ -1,6 +1,6 @@
 "use server";
 
-import { SupabaseAuthErrorCode } from "@/app/(auth)/data/supabase-error-code-ja";
+import { SupabaseAuthErrorCode } from "@/lib/supabase/supabase-error-code-ja";
 import { authErrorMessage } from "@/app/(auth)/lib/displayAuthError";
 import {
   signInFormSchema,

@@ -2,7 +2,7 @@ import { getSeverDate } from "@/lib/date-fns/get-date";
 import {
   getSupabaseAuthErrorMessage,
   SupabaseAuthErrorCode,
-} from "../data/supabase-error-code-ja";
+} from "../../../lib/supabase/supabase-error-code-ja";
 
 export const authErrorMessage = async (
   errorCode: SupabaseAuthErrorCode

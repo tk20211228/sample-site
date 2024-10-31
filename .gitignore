@@ -50,3 +50,9 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+
+# keys
+my-emm-next-20241017-56b56f9c5b12.json
+client_secret_202509729498-3eboqp9i856femqtr80i6ehoegs8g29e.apps.googleusercontent.com.json
+my-emm-next-dev-c0aa8f8ab195.json
