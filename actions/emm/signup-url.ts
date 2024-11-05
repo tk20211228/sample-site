@@ -45,6 +45,11 @@ import { encryptData } from "./crypto";
 //     });
 // };
 
+const host =
+  process.env.NODE_ENV === "production" //本番環境にデプロイされていれば、本番とみなす
+    ? "https://sample-site-pearl.vercel.app/" // 本番環境の URL
+    : process.env.EMM_SIGNUP_URL; // ローカル環境の URL
+
 export const getSignUpUrl = async (id: string) => {
   const supabase = await createClient();
   const {
@@ -56,7 +61,8 @@ export const getSignUpUrl = async (id: string) => {
   const androidmanagement = createAndroidManagementClient();
   const { data } = await androidmanagement.signupUrls
     .create({
-      callbackUrl: process.env.EMM_SIGNUP_URL + "/api/emm/callback",
+      // callbackUrl: process.env.EMM_SIGNUP_URL + "/api/emm/callback",
+      callbackUrl: `${host}/api/emm/callback`,
       projectId: process.env.EMM_PROJECT_ID,
     })
     .catch((error) => {
