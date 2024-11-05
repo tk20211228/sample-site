@@ -13,9 +13,7 @@ const Context = createContext<ContextType>({
 } as ContextType);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const [emailOrUsername, setEmailOrUsername] = useState<string>(
-    "kubokidev@gmail.com"
-  );
+  const [emailOrUsername, setEmailOrUsername] = useState<string>("kubokidev");
 
   return (
     <Context.Provider value={{ emailOrUsername, setEmailOrUsername }}>

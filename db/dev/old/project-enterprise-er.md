@@ -7,7 +7,9 @@ erDiagram
 users ||--o{ project_user_management : "1 人のユーザーは複数のプロジェクトに所属可能"
 projects ||--o{ project_user_management : "1 つのプロジェクトは複数のメンバーを持てる"
 project_roles ||--o{ project_user_management : "1 つのロールは複数のメンバーに割り当て可能"
-enterprises ||--o{ projects : "1 つのエンタープライズは複数のプロジェクトで使用可能"
+enterprises ||--o{ projects : "1 つのエンタープライズは複数のプロジェクトを持つ"
+enterprises ||--o{ enterprise_settings_history : "1 つのエンタープライズは複数の設定履歴を持つ"
+users ||--o{ enterprise_settings_history : "1 人のユーザーは複数の設定変更を行える"
 
     users {
         bigint id PK
@@ -19,7 +21,7 @@ enterprises ||--o{ projects : "1 つのエンタープライズは複数のプ�
 
     projects {
         bigint id PK
-        bigint enterprise_id FK
+        bigint enterprise_id FK "エンタープライズとの関連付け"
         varchar project_name
         varchar organization_name
         timestamp created_at
@@ -30,11 +32,18 @@ enterprises ||--o{ projects : "1 つのエンタープライズは複数のプ�
         bigint id PK
         varchar signup_url_name
         varchar enterprise_token
-        varchar enterprise_id
+        varchar enterprise_name
         varchar status
-        json settings
         timestamp created_at
         timestamp updated_at
+    }
+
+    enterprise_settings_history {
+        bigint id PK
+        bigint enterprise_id FK
+        json settings
+        bigint created_by FK
+        timestamp created_at
     }
 
     project_roles {

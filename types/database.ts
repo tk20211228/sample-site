@@ -12,47 +12,174 @@ export type Database = {
       comments: {
         Row: {
           body: string
-          createdAt: string
+          created_at: string
           id: number
+          updated_at: string
           userId: string
         }
         Insert: {
           body: string
-          createdAt?: string
+          created_at?: string
           id?: number
+          updated_at?: string
           userId?: string
         }
         Update: {
           body?: string
-          createdAt?: string
+          created_at?: string
           id?: number
+          updated_at?: string
           userId?: string
+        }
+        Relationships: []
+      }
+      enterprise_settings_history: {
+        Row: {
+          created_at: string
+          created_by_user_id: string
+          enterprise_id: string
+          id: number
+          settings: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by_user_id?: string
+          enterprise_id: string
+          id?: number
+          settings: Json
+        }
+        Update: {
+          created_at?: string
+          created_by_user_id?: string
+          enterprise_id?: string
+          id?: number
+          settings?: Json
         }
         Relationships: [
           {
-            foreignKeyName: "comments_userId_fkey"
-            columns: ["userId"]
+            foreignKeyName: "enterprise_settings_history_enterprise_id_fkey"
+            columns: ["enterprise_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "enterprises"
             referencedColumns: ["id"]
           },
         ]
       }
-      usernames: {
+      enterprises: {
         Row: {
-          createdAt: string
+          created_at: string
+          enterprise_name: string | null
+          enterprise_token: string | null
+          id: string
+          signup_url_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enterprise_name?: string | null
+          enterprise_token?: string | null
+          id?: string
+          signup_url_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enterprise_name?: string | null
+          enterprise_token?: string | null
+          id?: string
+          signup_url_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      project_members: {
+        Row: {
+          created_at: string
+          id: number
+          project_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          project_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          project_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_user_management_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          created_at: string
+          enterprise_id: string | null
+          id: string
+          organization_name: string
+          owner_id: string
+          project_name: string
+          updatee_at: string
+        }
+        Insert: {
+          created_at?: string
+          enterprise_id?: string | null
+          id?: string
+          organization_name: string
+          owner_id?: string
+          project_name: string
+          updatee_at?: string
+        }
+        Update: {
+          created_at?: string
+          enterprise_id?: string | null
+          id?: string
+          organization_name?: string
+          owner_id?: string
+          project_name?: string
+          updatee_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_enterprise_id_fkey"
+            columns: ["enterprise_id"]
+            isOneToOne: false
+            referencedRelation: "enterprises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          created_at: string
           email: string
           id: string
           username: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           email: string
           id: string
           username: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           email?: string
           id?: string
           username?: string
@@ -64,9 +191,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      liff_uid: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
+      is_project_user: {
+        Args: {
+          project_id: string
+        }
+        Returns: boolean
       }
     }
     Enums: {
@@ -158,5 +287,20 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 

@@ -44,6 +44,9 @@ export default async function AppMiddleware(
   // パスがプライベートルートかどうかを確認
   const isPrivateRoute = !isPublicRoute && !isGuestRoute;
 
+  const hasProject = user?.user_metadata?.has_created_project;
+  // console.log(hasProject, "hasProject");
+
   // // ユーザーが所属する組織があるかどうかを確認
   // const hasOrganization = user?.app_metadata?.organization;
   // // ユーザーがプロフィールを持っているかどうかを確認
@@ -51,7 +54,7 @@ export default async function AppMiddleware(
 
   // ゲスト専用ルートにサインイン済みのユーザーがアクセスしようとした場合、emmページにリダイレクト
   if (isGuestRoute && signedIn) {
-    return NextResponse.redirect(new URL("/emm", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   if (isPrivateRoute) {
@@ -60,6 +63,10 @@ export default async function AppMiddleware(
       return NextResponse.redirect(
         new URL(`/sign-in?from=${path}`, request.url)
       );
+    }
+    // プロジェクト作成チェック（/welcome以外のプライベートルートの場合のみ）
+    if (!hasProject && path !== "/welcome") {
+      return NextResponse.redirect(new URL("/welcome", request.url));
     }
 
     // プロフィールを持っていない場合、プロフィール登録ページにリダイレクト

@@ -5,7 +5,7 @@ import { authErrorMessage } from "@/app/(auth)/lib/displayAuthError";
 import {
   signInFormSchema,
   signUpFormSchema,
-} from "@/app/(auth)/schemas/sign-up-schema";
+} from "@/app/(auth)/schemas/sign-schema";
 import { getUserContextData } from "@/lib/context/user-context";
 
 import { getSeverDate } from "@/lib/date-fns/get-date";
@@ -13,6 +13,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { passwordUpdateSchema } from "@/app/(auth)/schemas/password-update-schema";
 
 const host =
   process.env.NODE_ENV === "production" //本番環境にデプロイされていれば
@@ -21,6 +22,7 @@ const host =
 
 type SignIn = z.infer<typeof signInFormSchema>; // zod のスキーマにbrandメソッドを使って"SignIn"という名前がある
 type SignUp = z.infer<typeof signUpFormSchema>;
+type PasswordUpdate = z.infer<typeof passwordUpdateSchema>;
 
 export const signUpNewUser = async (formData: SignUp) => {
   const result = await signUpFormSchema.safeParseAsync(formData);
@@ -65,7 +67,7 @@ export const signUpNewUser = async (formData: SignUp) => {
 
   const supabaseAdmin = createAdminClient();
   const { error: dbError } = await supabaseAdmin
-    .from("usernames")
+    .from("users")
     .insert([{ id: user.id, email, username }]);
   if (dbError && dbError.code !== "23505") {
     console.error(dbError.message);
@@ -100,7 +102,7 @@ async function signInWithUsername(formData: SignIn) {
   const supabaseAdmin = createAdminClient();
   const { emailOrUsername: username, password } = formData;
   const { data: user, error: dbError } = await supabaseAdmin
-    .from("usernames")
+    .from("users")
     .select("id, email")
     .eq("username", username)
     .single();
@@ -129,7 +131,7 @@ export const signInWithEmailOrUsername = async (formData: SignIn) => {
   isEmail
     ? await signInWithEmail(safeParsedFormData.data)
     : await signInWithUsername(safeParsedFormData.data);
-  redirect("/welcome");
+  redirect("/dashboard");
 };
 
 export const resendSignUpOPT = async ({
@@ -141,15 +143,21 @@ export const resendSignUpOPT = async ({
 }) => {
   const supabaseAdmin = await createAdminClient();
   const supabase = await createClient();
-  const { data, error } = await supabaseAdmin.auth.admin.getUserById(id);
-  console.error(error?.message);
-  if (!data) {
-    throw new Error("user is required");
+  const {
+    data: { user },
+    error,
+  } = await supabaseAdmin.auth.admin.getUserById(id);
+  if (!user) {
+    console.error(
+      "ユーザーが見つかりませんでした。サイン済みのユーザーが新規登録した可能性があります。",
+      error?.message
+    );
+    return;
   }
   // OPTの再送信　https://supabase.com/docs/reference/javascript/auth-resend
   // メール認証の再送信
   if (type === "signup") {
-    const email = data.user?.email;
+    const email = user.email;
     if (!email) {
       throw new Error("email is required");
     }
@@ -167,7 +175,7 @@ export const resendSignUpOPT = async ({
   }
   // SMS認証の再送信
   if (type === "sms") {
-    const phone = data.user?.phone;
+    const phone = user.phone;
     if (!phone) {
       throw new Error("phone is required");
     }
@@ -249,4 +257,24 @@ export async function resetPasswordVerify(formData: {
     throw new Error(await authErrorMessage(errorCode));
   }
   return redirect("/password-update");
+}
+
+export async function updatePassword(formData: PasswordUpdate) {
+  const result = await passwordUpdateSchema.safeParseAsync(formData);
+  if (result.success === false) {
+    console.error(result.error);
+    throw new Error("フォームデータの検証に失敗しました");
+  }
+  const { password } = formData;
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({
+    password,
+  });
+  if (error) {
+    console.error(error.message);
+    const errorCode = error.code as SupabaseAuthErrorCode;
+    throw new Error(await authErrorMessage(errorCode));
+  }
+  return redirect("/dashboard");
 }

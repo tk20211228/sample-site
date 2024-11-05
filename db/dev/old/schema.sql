@@ -1,28 +1,17 @@
--- プロジェクトテーブル：プロジェクトと組織の基本情報を管理するテーブル
 CREATE TABLE projects (
-    -- プロジェクトの一意識別子
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'プロジェクトID。システムで自動採番される一意の識別子',
-    
-    -- プロジェクト名（100文字まで）
+    enterprise_id BIGINT NOT NULL COMMENT 'エンタープライズID。どのエンタープライズに属しているかを示す',
     project_name VARCHAR(100) NOT NULL COMMENT 'プロジェクト名。ユーザーが設定する識別名。変更可能',
-    
-    -- 組織名（100文字まで）
     organization_name VARCHAR(100) NOT NULL COMMENT '組織名。ユーザーが設定する組織の名称。重複可能、変更可能',
-    
-    -- レコードの作成日時
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'レコード作成日時。システムで自動設定',
-    
-    -- レコードの最終更新日時
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'レコード更新日時。更新時に自動更新'
-);
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'レコード更新日時。更新時に自動更新',
+    FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) COMMENT 'エンタープライズテーブルとの関連付け'
+) COMMENT 'Supabaseでは、このテーブルに対してRLSポリシーを設定することで、プロジェクトごとのアクセス制御が可能';
 
 -- エンタープライズテーブル：Android Management APIとの連携情報を管理するテーブル
 CREATE TABLE enterprises (
     -- エンタープライズの一意識別子
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'エンタープライズID。システムで自動採番される一意の識別子',
-    
-    -- 紐づくプロジェクトのID
-    project_id BIGINT NOT NULL COMMENT 'プロジェクトテーブルの外部キー。どのプロジェクトに属しているかを示す',
     
     -- Android Management APIのサインアップURL名
     signup_url_name VARCHAR(255) NOT NULL COMMENT 'Android Management APIのsignupUrls.createで生成されるURL名',
@@ -30,15 +19,13 @@ CREATE TABLE enterprises (
     -- エンタープライズトークン
     enterprise_token VARCHAR(255) COMMENT 'Android Management APIのコールバックで返却されるトークン',
     
-    -- エンタープライズID
-    enterprise_id VARCHAR(255) COMMENT 'Android Management APIのenterprises.createで生成されるID',
+    -- エンタープライズ名
+    enterprise_name VARCHAR(255) COMMENT 'Android Management APIのenterprises.createで生成されるname',
     
     -- 進行状況を管理するステータス
-    status VARCHAR(50) CHECK (status IN ('SIGNUP_URL_CREATED', 'TOKEN_RECEIVED', 'ENTERPRISE_CREATED', 'COMPLETED')) 
+    status VARCHAR(50) NOT NULL DEFAULT 'SIGNUP_URL_CREATED' 
+    CHECK (status IN ('SIGNUP_URL_CREATED', 'TOKEN_RECEIVED', 'ENTERPRISE_CREATED', 'COMPLETED')) 
     COMMENT 'API連携の進行状況を示すステータス',
-    
-    -- enterprises.createのレスポンスデータ
-    settings JSON COMMENT 'enterprises.createのレスポンスデータ。JSONとして保存',
 
     -- レコードの作成日時
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'レコード作成日時。システムで自動設定',
@@ -49,6 +36,17 @@ CREATE TABLE enterprises (
     -- 外部キー制約
     FOREIGN KEY (project_id) REFERENCES projects(id) COMMENT 'プロジェクトテーブルとの関連付け'
 );
+
+-- enterprisesテーブルから settings カラムを削除し、履歴テーブルを新設
+CREATE TABLE enterprise_settings_history (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '設定履歴ID',
+    enterprise_id BIGINT NOT NULL COMMENT 'エンタープライズID',
+    settings JSON NOT NULL COMMENT 'enterprises.createのレスポンスデータ',
+    created_by BIGINT NOT NULL COMMENT '作成者のユーザーID',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '設定が作成された日時',
+    FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) COMMENT 'エンタープライズテーブルとの関連付け',
+    FOREIGN KEY (created_by) REFERENCES users(id) COMMENT '作成者との関連付け'
+) COMMENT 'エンタープライズ設定の変更履歴を管理するテーブル';
 
 -- ユーザーテーブル：ユーザーの基本情報を管理するテーブル
 CREATE TABLE users (

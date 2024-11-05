@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Loader2, LogIn } from "lucide-react";
+
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
@@ -10,10 +11,9 @@ export default function SingInButton() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const SignInTO = () => {
+  const handleSignIn = () => {
     setIsLoading(true);
-    router.push("/sign-in");
-    // setIsLoading(false);
+    router.replace("/sign-in"); // replaceを使用することで<Link replace>と同等の動作になります
   };
 
   return (
@@ -21,7 +21,7 @@ export default function SingInButton() {
       variant="ghost"
       className="gap-2"
       disabled={isLoading}
-      onClick={SignInTO}
+      onClick={handleSignIn}
     >
       {isLoading ? (
         <>

@@ -71,9 +71,11 @@ export default function PasswordResetForm() {
                 <FormItem className="pb-2">
                   <FormControl>
                     <Input
-                      className="border-0 text-center text-xl text-primary"
+                      className={`text-center text-xl text-primary ${
+                        field.value ? "border-0" : "border-zinc-700"
+                      }`}
                       autoComplete="off"
-                      placeholder="test@example.com"
+                      placeholder="メールアドレスを入力"
                       {...field}
                     />
                   </FormControl>

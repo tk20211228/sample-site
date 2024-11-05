@@ -16,7 +16,9 @@ export const addComment = async (formData: FormData) => {
   const { data, error } = await supabase
     .from("comments")
     .insert({ body, userId: user.id });
+
   console.log(data, error);
+
   revalidatePath("/comments");
 };
 
