@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const passwordSchema = z
   .string()
+  .trim()
   .min(8, "最小8文字以上で設定してください")
   .refine(
     isStrongPassword,

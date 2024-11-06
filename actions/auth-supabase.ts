@@ -5,7 +5,7 @@ import { authErrorMessage } from "@/app/(auth)/lib/displayAuthError";
 import {
   signInFormSchema,
   signUpFormSchema,
-} from "@/app/(auth)/schemas/sign-schema";
+} from "@/app/(auth)/schemas/auth-validation";
 import { getUserContextData } from "@/lib/context/user-context";
 
 import { getSeverDate } from "@/lib/date-fns/get-date";

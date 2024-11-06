@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import PasswordWithResetForm from "../../components/password-with-reset-form";
-import { signInFormSchema } from "../../schemas/sign-schema";
+import { signInFormSchema } from "../../schemas/auth-validation";
 import { useEmailOrUsername } from "../../providers/user";
 import { useEffect } from "react";
 

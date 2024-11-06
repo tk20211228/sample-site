@@ -34,8 +34,8 @@ enterprises ||--o{ enterprise_settings_history : "has history"
     enterprises {
         uuid id PK
         text signup_url_name
-        text enterprise_token
-        text enterprise_name
+        text enterprise_token "NULL許容"
+        text enterprise_name  "NULL許容"
         text status
         timestamptz created_at
         timestamptz updated_at
@@ -47,7 +47,7 @@ enterprises ||--o{ enterprise_settings_history : "has history"
         uuid created_by_user_id FK "auth.users.id：設定変更者"
         timestamptz created_at
     }
-    project_user_management {
+    project_members {
         bigint id PK
         uuid project_id FK
         uuid user_id FK"auth.users.id：プロジェクトメンバー"

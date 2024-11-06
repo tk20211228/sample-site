@@ -23,7 +23,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import PasswordForm from "../../components/password-form";
-import { signUpFormSchema } from "../../schemas/sign-schema";
+import { signUpFormSchema } from "../../schemas/auth-validation";
 import { notifyError } from "@/lib/notify-error";
 
 const schema = signUpFormSchema;

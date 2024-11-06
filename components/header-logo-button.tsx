@@ -10,18 +10,16 @@ import { AppConfig } from "@/app.config";
  */
 export default function HeaderLogoButton() {
   return (
-    <>
-      <Button variant="ghost" className="text-2xl" asChild>
-        <Link href="/" className="flex items-center font-bold gap-2">
-          <Image
-            src={logo}
-            alt=""
-            className="size-8 dark:brightness-150 drop-shadow-lg"
-            priority
-          />
-          {AppConfig.title}
-        </Link>
-      </Button>
-    </>
+    <Button variant="ghost" className="text-2xl" asChild>
+      <Link href="/" className="flex items-center font-bold gap-2">
+        <Image
+          src={logo}
+          alt=""
+          className="size-8 dark:brightness-150 drop-shadow-lg"
+          priority
+        />
+        {AppConfig.title}
+      </Link>
+    </Button>
   );
 }
