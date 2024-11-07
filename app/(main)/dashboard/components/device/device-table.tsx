@@ -41,7 +41,7 @@ export default function DeviceTable() {
       <div className="flex flex-row gap-2 border-b-2 border-gray-200 pb-2">
         <Button
           variant="outline"
-          className="w-32"
+          className="w-40"
           onClick={handleClick}
           disabled={isPending}
         >
@@ -51,7 +51,7 @@ export default function DeviceTable() {
               取得中...
             </>
           ) : (
-            "一覧を取得"
+            "デバイス一覧を取得"
           )}
         </Button>
         {enterprises_name && <CreateQrButton parent={enterprises_name} />}

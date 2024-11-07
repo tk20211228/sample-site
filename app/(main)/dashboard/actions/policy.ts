@@ -6,10 +6,7 @@ import { androidmanagement_v1 } from "googleapis";
 import { cameraOffPolicyRequestBody } from "../data/CameraOffPolicyRequestBody";
 import { cameraOnPolicyRequestBody } from "../data/CameraOnPolicyRequestBody";
 
-export const cameraOnOffPolicy = async (
-  enterpriseName: string,
-  mode: boolean
-) => {
+export const cameraOnOffPolicy = async (name: string, mode: boolean) => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -27,7 +24,7 @@ export const cameraOnOffPolicy = async (
   const androidmanagement = createAndroidManagementClient();
   const { data } = await androidmanagement.enterprises.policies
     .patch({
-      name: `${enterpriseName}/policies/first-policy`,
+      name,
       requestBody,
     })
     .catch((error) => {

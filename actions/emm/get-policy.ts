@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
 import { createAndroidManagementClient } from "./androidmanagement";
 
-export const getDevices = async (parent: string) => {
+export const getPolicies = async (parent: string) => {
   // 認証
   const supabase = await createClient();
   const {
@@ -14,21 +14,21 @@ export const getDevices = async (parent: string) => {
   if (!user) {
     throw new Error("User not found");
   }
-  // デバイス一覧取得
+  // ポリシー一覧取得
   const androidmanagement = createAndroidManagementClient();
-  const { data } = await androidmanagement.enterprises.devices
+  const { data } = await androidmanagement.enterprises.policies
     .list({
       parent,
     })
     .catch((error) => {
-      console.error("Error Get device list:", error.message);
+      console.error("Error get policies:", error.message);
       throw new Error(error.message);
     });
   console.log("data", data);
   if (!data) {
-    throw new Error("Get device list failed");
+    throw new Error("Get policies failed");
   }
-  console.log("Get device list:", data);
+  console.log("Get policies list:", data);
 
   return data;
   /**
