@@ -11,28 +11,25 @@ import {
 } from "@/components/ui/card";
 import { ChevronRight, Plus, Trash2Icon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { deleteProject, getProjects } from "../actions/projects";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-interface Project {
-  id: string;
-  project_name: string;
-  enterprise_id: string | null;
-  enterprises: {
-    enterprise_name: string | null;
-  } | null;
+import { Project } from "../../types/project";
+import { deleteProject } from "../../actions/projects";
+
+interface ProjectCardProps {
+  initialProjects: Project[];
 }
 
-export default function ProjectCard() {
+export default function ProjectCard({ initialProjects }: ProjectCardProps) {
   const router = useRouter();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>(initialProjects);
 
-  useEffect(() => {
-    getProjects().then((data) => {
-      setProjects(data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getProjects().then((data) => {
+  //     setProjects(data);
+  //   });
+  // }, []);
 
   console.log(projects);
   return (
@@ -47,7 +44,7 @@ export default function ProjectCard() {
               プロジェクト : {project.project_name}
             </CardTitle>
             <CardDescription>
-              {project.enterprises?.enterprise_name ?? "未設定"}
+              {project.enterprise_name ?? "未設定"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -69,7 +66,7 @@ export default function ProjectCard() {
             <Trash2Icon />
           </Button>
           <ChevronRight className="absolute right-6 top-7 text-muted-foreground transition-all duration-200 group-hover:right-5 group-hover:text-foreground" />
-          {!project.enterprises ? (
+          {!project.enterprise_name ? (
             <button onClick={() => getSignUpUrl(project.id)}>
               <span className="absolute inset-0 z-20"></span>
             </button>
@@ -77,7 +74,7 @@ export default function ProjectCard() {
             <button
               onClick={() => {
                 router.replace(
-                  `/dashboard?enterprises_name=${project.enterprises?.enterprise_name}`
+                  `/dashboard?enterprises_name=${project.enterprise_name}`
                 );
               }}
             >

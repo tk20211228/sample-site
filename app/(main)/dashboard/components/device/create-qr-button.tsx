@@ -23,6 +23,8 @@ export default function CreateQrButton({ parent }: { parent: string }) {
     console.log("qrData", qrData);
     if (qrData) {
       setQrCode(qrData);
+      // setQrCode(`http://192.168.10.117:3000/api/emm/qr?parent=${parent}`);
+      // setQrCode(`https://enterprise.google.com/android/enroll?et=${qrData}`);
     }
   };
   return (

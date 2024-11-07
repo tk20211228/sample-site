@@ -72,6 +72,7 @@ export default function CreateProjectForm({
       ...data,
       agreeToTerms: agreeToTermsButton ? data.agreeToTerms : true, // agreeToTermsButtonがfalseの場合は常にtrue
     };
+
     startTransition(async () => {
       await createProject(submitData).then(() => {
         // alert(JSON.stringify(res));

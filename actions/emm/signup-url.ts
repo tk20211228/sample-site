@@ -6,45 +6,6 @@ import { redirect } from "next/navigation";
 import { createAndroidManagementClient } from "./androidmanagement";
 import { encryptData } from "./crypto";
 
-// export const getSignUpUrlSample1 = async () => {
-//   const androidmanagement = createAndroidManagementClient();
-//   try {
-//     const res = await androidmanagement.signupUrls.create({
-//       callbackUrl: process.env.EMM_SIGNUP_URL + "/api/emm/callback",
-//       projectId: process.env.EMM_PROJECT_ID,
-//     });
-//     console.log(res.data);
-//     if (res.data.url) {
-//       redirect(res.data.url);
-//     }
-//   } catch (error) {
-//     console.error("Error creating signup URL:", error);
-//     throw error;
-//   }
-// };
-
-// export const getSignUpUrlSample2 = async () => {
-//   const androidmanagement = createAndroidManagementClient();
-//   await androidmanagement.signupUrls
-//     .create({
-//       callbackUrl: process.env.EMM_SIGNUP_URL + "/api/emm/callback",
-//       projectId: process.env.EMM_PROJECT_ID,
-//     })
-//     .then((res) => {
-//       console.log(res.data);
-//       if (res.data.url) {
-//         redirect(res.data.url);
-//       }
-//     })
-//     .catch((error) => {
-//       if (error.message === "NEXT_REDIRECT") {
-//         return;
-//       }
-//       console.error("Error creating signup URL:", error.message);
-//       throw new Error(error.message);
-//     });
-// };
-
 // const host =
 //   process.env.NODE_ENV === "production" //本番環境にデプロイされていれば、本番とみなす
 //     ? "https://sample-site-pearl.vercel.app" // 本番環境の URL
@@ -89,22 +50,5 @@ export const getSignUpUrl = async (id: string) => {
     maxAge: 3600, // 1時間で有効期限切れ
     path: "/",
   });
-
-  // // enterprisesテーブルにsignupUrlを保存
-  // const supabase = await createClient();
-  // const { data: enterprise, error } = await supabase
-  //   .from("enterprises")
-  //   .insert([
-  //     {
-  //       signup_url_name: data.url,
-  //     },
-  //   ])
-  //   .select()
-  //   .single();
-
-  // if (error) {
-  //   console.error("Signup URL insert error:", error);
-  //   throw new Error("Signup URL insert error");
-  // }
   redirect(data.url);
 };

@@ -1,5 +1,6 @@
 import { createAndroidManagementClient } from "@/actions/emm/androidmanagement";
 import { decryptData } from "@/actions/emm/crypto";
+import { createFirstPolicy } from "@/actions/emm/policy";
 import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -94,6 +95,11 @@ export async function GET(request: NextRequest) {
         console.error("Error updating projects:", projectsError);
         throw new Error("Error updating projects");
       }
+      await createFirstPolicy(data.name).catch((error) => {
+        console.error("Error creating first policy:", error);
+        throw new Error("Error creating first policy");
+      });
+
       redirect(`/dashboard?enterprise_name=${enterprise.enterprise_name}`);
     }
   }

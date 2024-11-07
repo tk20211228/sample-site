@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-
-import ProjectCard from "./project-card";
+import ProjectList from "./project-list";
 
 export default function InitialSettingForm() {
   return (
@@ -11,7 +10,7 @@ export default function InitialSettingForm() {
       <CardContent>
         <p>エンタープライズIDの作成</p>
         <div className="flex gap-2 pt-2">
-          <ProjectCard />
+          <ProjectList />
         </div>
       </CardContent>
     </Card>
