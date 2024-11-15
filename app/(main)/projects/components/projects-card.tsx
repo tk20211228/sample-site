@@ -9,29 +9,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChevronRight, Plus, Trash2Icon } from "lucide-react";
+import {
+  ChevronRight,
+  LayoutDashboardIcon,
+  Plus,
+  Trash2Icon,
+} from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { Project } from "../../types/project";
-import { deleteProject } from "../../actions/projects";
+import { deleteProject } from "../../dashboard/actions/projects";
+import { Project } from "../types/project";
 
 interface ProjectCardProps {
-  initialProjects: Project[];
+  projectsData: Project[];
 }
 
-export default function ProjectCard({ initialProjects }: ProjectCardProps) {
-  const router = useRouter();
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
-
-  // useEffect(() => {
-  //   getProjects().then((data) => {
-  //     setProjects(data);
-  //   });
-  // }, []);
-
+export default function ProjectsCard({ projectsData }: ProjectCardProps) {
+  const [projects, setProjects] = useState<Project[]>(projectsData);
   console.log(projects);
+
+  const handleProjectDelete = async (projectId: string) => {
+    await deleteProject(projectId);
+    setProjects((prev) => prev.filter((p) => p.id !== projectId));
+  };
+
+  //project.enterprise_nameから”enterprises”を除外する
+  const removeEnterprisesKeyword = (name: string) => {
+    return name.replace("enterprises/", "");
+  };
+
   return (
     <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
       {projects.map((project) => (
@@ -55,15 +62,21 @@ export default function ProjectCard({ initialProjects }: ProjectCardProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-3 bottom-6 text-muted-foreground size-10 transition-all duration-300 hover:right-5 hover:text-foreground z-30 "
-            onClick={() =>
-              deleteProject(project.id).then(() =>
-                // 削除が成功したら、状態を更新して削除されたプロジェクトをリストから除外
-                setProjects((prev) => prev.filter((p) => p.id !== project.id))
-              )
-            }
+            className="absolute right-3 bottom-6 text-muted-foreground transition-all duration-300 hover:right-5 hover:text-foreground z-30 "
+            onClick={() => handleProjectDelete(project.id)}
           >
             <Trash2Icon />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute left-3 bottom-6 text-muted-foreground hover:text-foreground z-30 "
+          >
+            <Link
+              href={`/dashboard?enterprises_name=${project.enterprise_name}`}
+            >
+              <LayoutDashboardIcon />
+            </Link>
           </Button>
           <ChevronRight className="absolute right-6 top-7 text-muted-foreground transition-all duration-200 group-hover:right-5 group-hover:text-foreground" />
           {!project.enterprise_name ? (
@@ -71,15 +84,16 @@ export default function ProjectCard({ initialProjects }: ProjectCardProps) {
               <span className="absolute inset-0 z-20"></span>
             </button>
           ) : (
-            <button
-              onClick={() => {
-                router.replace(
-                  `/dashboard?enterprises_name=${project.enterprise_name}`
-                );
-              }}
-            >
-              <span className="absolute inset-0 z-20"></span>
-            </button>
+            // <Link
+            //   href={`/dashboard?enterprises_name=${project.enterprise_name}`}
+            //   className="absolute inset-0 z-20"
+            // />
+            <Link
+              href={`/projects/${removeEnterprisesKeyword(
+                project.enterprise_name
+              )}/devices`}
+              className="absolute inset-0 z-20"
+            />
           )}
         </Card>
       ))}

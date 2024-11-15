@@ -9,6 +9,35 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      application_reports: {
+        Row: {
+          created_at: string
+          data: Json
+          device_table_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          device_table_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          device_table_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_reports_device_table_id_fkey"
+            columns: ["device_table_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           body: string
@@ -32,6 +61,57 @@ export type Database = {
           userId?: string
         }
         Relationships: []
+      }
+      devices: {
+        Row: {
+          created_at: string
+          device_config_data: Json
+          device_name: string
+          display_name: string
+          enterprise_table_id: string
+          id: string
+          policy_name: string
+          policy_table_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          device_config_data: Json
+          device_name: string
+          display_name: string
+          enterprise_table_id: string
+          id?: string
+          policy_name: string
+          policy_table_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          device_config_data?: Json
+          device_name?: string
+          display_name?: string
+          enterprise_table_id?: string
+          id?: string
+          policy_name?: string
+          policy_table_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devices_enterprise_table_id_fkey"
+            columns: ["enterprise_table_id"]
+            isOneToOne: false
+            referencedRelation: "enterprises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devices_policy_table_id_fkey"
+            columns: ["policy_table_id"]
+            isOneToOne: false
+            referencedRelation: "policies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       enterprise_settings_history: {
         Row: {
@@ -68,32 +148,125 @@ export type Database = {
       enterprises: {
         Row: {
           created_at: string
-          enterprise_name: string | null
-          enterprise_token: string | null
+          data: Json
+          enterprise_name: string
           id: string
-          signup_url_name: string
-          status: string
+          owner_id: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
-          enterprise_name?: string | null
-          enterprise_token?: string | null
+          data: Json
+          enterprise_name: string
           id?: string
-          signup_url_name: string
-          status?: string
+          owner_id?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
-          enterprise_name?: string | null
-          enterprise_token?: string | null
+          data?: Json
+          enterprise_name?: string
           id?: string
-          signup_url_name?: string
-          status?: string
+          owner_id?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      memory_events: {
+        Row: {
+          created_at: string
+          data: Json
+          device_table_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          device_table_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          device_table_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_events_device_table_id_fkey"
+            columns: ["device_table_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      policies: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          enterprise_table_id: string
+          id: string
+          policy_config_data: Json
+          policy_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          enterprise_table_id?: string
+          id?: string
+          policy_config_data: Json
+          policy_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          enterprise_table_id?: string
+          id?: string
+          policy_config_data?: Json
+          policy_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policies_enterprise_table_id_fkey"
+            columns: ["enterprise_table_id"]
+            isOneToOne: false
+            referencedRelation: "enterprises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      power_manegement_events: {
+        Row: {
+          created_at: string
+          data: Json
+          device_table_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          device_table_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          device_table_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "power_manegement_events_device_table_id_fkey"
+            columns: ["device_table_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_members: {
         Row: {
@@ -130,7 +303,7 @@ export type Database = {
       projects: {
         Row: {
           created_at: string
-          enterprise_id: string | null
+          enterprise_table_id: string | null
           id: string
           organization_name: string
           owner_id: string
@@ -139,7 +312,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          enterprise_id?: string | null
+          enterprise_table_id?: string | null
           id?: string
           organization_name: string
           owner_id?: string
@@ -148,7 +321,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          enterprise_id?: string | null
+          enterprise_table_id?: string | null
           id?: string
           organization_name?: string
           owner_id?: string
@@ -158,7 +331,7 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "projects_enterprise_id_fkey"
-            columns: ["enterprise_id"]
+            columns: ["enterprise_table_id"]
             isOneToOne: false
             referencedRelation: "enterprises"
             referencedColumns: ["id"]
@@ -191,6 +364,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_enterprise_access: {
+        Args: {
+          enterprise_table_id: string
+        }
+        Returns: boolean
+      }
       is_project_user: {
         Args: {
           project_id: string

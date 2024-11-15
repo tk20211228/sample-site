@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createAndroidManagementClient } from "./androidmanagement";
+import { createAndroidManagementClient } from "./client";
 import { encryptData } from "./crypto";
 
 // const host =
@@ -19,7 +19,7 @@ export const getSignUpUrl = async (id: string) => {
   if (!user) {
     throw new Error("User not found");
   }
-  const androidmanagement = createAndroidManagementClient();
+  const androidmanagement = await createAndroidManagementClient();
   const { data } = await androidmanagement.signupUrls
     .create({
       // callbackUrl: process.env.EMM_SIGNUP_URL + "/api/emm/callback",

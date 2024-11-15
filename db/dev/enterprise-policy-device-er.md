@@ -4,56 +4,87 @@
 
 ```mermaid
 erDiagram
-enterprises ||--o{ projects : "1 つのエンタープライズは複数のプロジェクトで使用可能"
-enterprises ||--o{ policies : "1 つのエンタープライズは複数のポリシーを持てる"
-policies ||--o{ devices : "1 つのポリシーは複数のデバイスで使用可能"
-enterprises ||--o{ enrollment_tokens : "1 つのエンタープライズは複数の登録トークンを持てる"
+    enterprises ||--o{ projects : "has"
+    enterprises ||--o{ policies : "has"
+    enterprises ||--o{ devices : "has"
+    policies ||--o{ devices : "has"
+    enterprises ||--o{ enrollment_tokens : "has"
+    devices ||--o{ application_reports : "has"
+    devices ||--o{ memory_evennts : "has"
+    devices ||--o{ power_manegement_events : "has"
 
     enterprises {
-        bigint id PK
-        varchar signup_url_name
-        varchar enterprise_token
-        varchar enterprise_id
-        varchar status
-        json settings
+        uuid id PK
+        text signup_url_name
+        text enterprise_token
+        text enterprise_name
+        jsons settings
         timestamp created_at
         timestamp updated_at
     }
 
     policies {
-        bigint id PK
-        bigint enterprise_id FK
-        varchar policy_name
-        varchar policy_id
+        uuid id PK　"DB側で生成するユニークなID"
+        uuid enterprise_table_id FK
+        text display_name
+        text policy_name "APIで使用する値"
+        json policy_settings
+        timestamp created_at
+        timestamp updated_at
+    }
+
+　　policies {
+        uuid enterprise_table_id FK
+        text display_name
+        text policy_name PK　"APIで使用する値"
         json policy_settings
         timestamp created_at
         timestamp updated_at
     }
 
     devices {
-        bigint id PK
-        bigint enterprise_id FK
-        bigint policy_id FK
-        varchar device_id
-        varchar device_name
-        varchar enrollment_token_name
-        json device_info
-        varchar status
-        timestamp last_sync_time
+        uuid id PK
+        uuid enterprise_table_id FK
+        uuid policy_table_id FK
+        text device_name "APIで使用する値"
+        text display_name
+        jsonb data
         timestamp created_at
         timestamp updated_at
     }
 
-    enrollment_tokens {
-        bigint id PK
-        bigint enterprise_id FK
-        bigint initial_policy_id FK
-        varchar token_name
-        varchar token_value
-        varchar qr_code_url
-        timestamp expires_at
-        varchar status
-        timestamp created_at
-        timestamp updated_at
+    application_reports {
+        uuid id PK
+        uuid device_table_id FK
+        jsonb data
+        timestamptz created_at
     }
+
+    memory_evennts {
+        uuid id PK
+        uuid device_table_id FK
+        jsonb data
+        timestamptz created_at
+    }
+
+    power_manegement_events {
+        uuid id PK
+        uuid device_table_id FK
+        jsonb data
+        timestamptz created_at
+    }
+
+
+    %% enrollment_tokens {
+    %%     bigint id PK
+    %%     bigint enterprise_id FK
+    %%     bigint initial_policy_id FK
+    %%     varchar token_name
+    %%     varchar token_value
+    %%     varchar qr_code_url
+    %%     timestamp expires_at
+    %%     varchar status
+    %%     timestamp created_at
+    %%     timestamp updated_at
+    %% }
 ```

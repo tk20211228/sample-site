@@ -1,6 +1,6 @@
 "use client";
 
-import { getDevices } from "@/actions/emm/device";
+import { getDevices } from "@/app/(main)/device/data/device";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -17,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import CreateQrButton from "./create-qr-button";
 import MenuButton from "./menu-button";
+import Link from "next/link";
 
 type Device = androidmanagement_v1.Schema$Device;
 
@@ -55,6 +56,14 @@ export default function DeviceTable() {
           )}
         </Button>
         {enterprises_name && <CreateQrButton parent={enterprises_name} />}
+        <Button variant="outline" className="" asChild>
+          <Link href="/sample">サンプルテーブル</Link>
+        </Button>
+        <Button variant="outline" className="" asChild>
+          <Link href={`/device?enterprises_name=${enterprises_name}`}>
+            デバイステーブル
+          </Link>
+        </Button>
       </div>
       <Table>
         <TableCaption>

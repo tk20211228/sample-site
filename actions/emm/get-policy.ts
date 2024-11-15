@@ -3,7 +3,7 @@
 import { firstPolicyRequestBody } from "@/data/firstPolicyRequestBody";
 import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
-import { createAndroidManagementClient } from "./androidmanagement";
+import { createAndroidManagementClient } from "./client";
 
 export const getPolicies = async (parent: string) => {
   // 認証
@@ -15,7 +15,7 @@ export const getPolicies = async (parent: string) => {
     throw new Error("User not found");
   }
   // ポリシー一覧取得
-  const androidmanagement = createAndroidManagementClient();
+  const androidmanagement = await createAndroidManagementClient();
   const { data } = await androidmanagement.enterprises.policies
     .list({
       parent,

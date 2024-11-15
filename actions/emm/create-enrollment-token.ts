@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { createAndroidManagementClient } from "./androidmanagement";
+import { createAndroidManagementClient } from "./client";
 
 /**
  * エンロールメントトークンを作成
@@ -18,14 +18,14 @@ export const createEnrollmentToken = async (parent: string) => {
   if (!user) {
     throw new Error("User not found");
   }
-  const androidmanagement = createAndroidManagementClient();
+  const androidmanagement = await createAndroidManagementClient();
   const { data } = await androidmanagement.enterprises.enrollmentTokens
     .create({
       parent, // parent: "enterprises/my-enterprise",
       requestBody: {
         // request body parameters
         // {
-        //   "additionalData": "my_additionalData",
+        additionalData: "登録トークンに関連付けられた任意のデータ",
         allowPersonalUsage: "ALLOW_PERSONAL_USAGE_UNSPECIFIED",
         //   "duration": "my_duration",
         //   "expirationTimestamp": "my_expirationTimestamp",

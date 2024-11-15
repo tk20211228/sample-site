@@ -1,10 +1,10 @@
 "use server";
 
-import { createAndroidManagementClient } from "@/actions/emm/androidmanagement";
 import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
 import { cameraOffPolicyRequestBody } from "../data/CameraOffPolicyRequestBody";
 import { cameraOnPolicyRequestBody } from "../data/CameraOnPolicyRequestBody";
+import { createAndroidManagementClient } from "@/actions/emm/client";
 
 export const cameraOnOffPolicy = async (name: string, mode: boolean) => {
   const supabase = await createClient();
@@ -21,7 +21,7 @@ export const cameraOnOffPolicy = async (name: string, mode: boolean) => {
   } else {
     requestBody = cameraOffPolicyRequestBody;
   }
-  const androidmanagement = createAndroidManagementClient();
+  const androidmanagement = await createAndroidManagementClient();
   const { data } = await androidmanagement.enterprises.policies
     .patch({
       name,

@@ -1,6 +1,6 @@
 "use client";
 
-import { createPolicy } from "@/actions/emm/create-policy";
+import { createPolicy } from "@/actions/emm/data/old/create-policy";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,7 +19,14 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const policyNameSchema = z.object({
-  policyName: z.string().min(1),
+  policyName: z
+    .string()
+    .min(1, "ポリシー名を入力してください")
+    .max(50, "ポリシー名は50文字以内で入力してください")
+    .regex(
+      /^[a-zA-Z0-9\-_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+$/,
+      "使用できない文字が含まれています（英数字、-、_、日本語のみ使用可能）"
+    ),
 });
 
 type FormData = z.infer<typeof policyNameSchema>;

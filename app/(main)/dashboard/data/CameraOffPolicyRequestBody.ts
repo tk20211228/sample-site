@@ -78,7 +78,21 @@ export const cameraOffPolicyRequestBody: androidmanagement_v1.Schema$Policy = {
   //   "skipFirstUseHintsEnabled": false,
   //   "smsDisabled": false,
   //   "statusBarDisabled": false,
-  //   "statusReportingSettings": {},
+  statusReportingSettings: {
+    applicationReportsEnabled: true, // アプリケーションのレポートを有効化
+    deviceSettingsEnabled: true, // デバイス設定のレポートを有効化
+    softwareInfoEnabled: true, // ソフトウェア情報のレポートを有効化
+    memoryInfoEnabled: true, // メモリ情報のレポートを有効化
+    networkInfoEnabled: true, // ネットワーク情報のレポートを有効化
+    displayInfoEnabled: true, // ディスプレイ情報のレポートを有効化
+    powerManagementEventsEnabled: true, // 電源管理イベントのレポートを有効化
+    hardwareStatusEnabled: true, // ハードウェアステータスのレポートを有効化
+    systemPropertiesEnabled: true, // システムプロパティのレポートを有効化
+    applicationReportingSettings: {
+      includeRemovedApps: true, // 削除されたアプリケーションを含める
+    },
+    commonCriteriaModeEnabled: true, // 一般基準モードを有効化
+  },
   //   "stayOnPluggedModes": [],
   //   "systemUpdate": {},
   //   "tetheringConfigDisabled": false,

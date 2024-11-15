@@ -34,7 +34,7 @@ export default function CreateQrButton({ parent }: { parent: string }) {
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground size-10 transition-all duration-300 hover: hover:text-foreground z-30 "
+            className="text-primary size-10 transition-all duration-300 hover: hover:text-foreground z-30 "
             onClick={onClick}
           >
             <QrCodeIcon />
@@ -48,7 +48,7 @@ export default function CreateQrButton({ parent }: { parent: string }) {
                 <QRCodeSVG
                   className="max-h-full max-w-full size-full"
                   bgColor="transparent"
-                  fgColor="hsl(var(--foreground)/ 0.6)"
+                  fgColor=" hsl(var(--primary))"
                   value={qrCode}
                   size={300}
                 />

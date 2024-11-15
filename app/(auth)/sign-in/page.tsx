@@ -41,11 +41,6 @@ export default async function Page() {
           <GitHubLoginButton className="w-full" />
           <GoogleSingInButton className="w-full" />
           <DiscordSingInButton className="w-full" />
-          {/* <ClerkSingInButton className="w-full" /> */}
-          <Button variant="ghost" className="flex border gap-2 w-full" asChild>
-            <Link href="/client-side-login">匿名 ログイン</Link>
-          </Button>
-
           <div className="w-full flex items-center gap-4 my-4">
             <div className="flex-grow border-t text-muted-foreground"></div>
             <span className="text-muted-foreground">or</span>
