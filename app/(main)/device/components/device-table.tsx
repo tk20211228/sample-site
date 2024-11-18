@@ -52,17 +52,16 @@ export default function DeviceTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-
     columnResizeMode: "onChange", // リアルタイムで列のリサイズを行う
     enableColumnResizing: true, // カラムのリサイズを有効化
     onStateChange: () => {
-      const info = table.getState().columnSizing;
-      // リサイズ時に差分を再計算
-      if (tableRef.current) {
-        const currentWidth = tableRef.current.clientWidth;
-        const totalColumnWidth = table.getCenterTotalSize();
-        setDiffWidth(currentWidth - totalColumnWidth);
-      }
+      // const info = table.getState().columnSizing;
+      // // リサイズ時に差分を再計算
+      // if (tableRef.current) {
+      //   const currentWidth = tableRef.current.clientWidth;
+      //   const totalColumnWidth = table.getCenterTotalSize();
+      //   setDiffWidth(currentWidth - totalColumnWidth);
+      // }
       // console.log("stateChange", info);
       // TODO: DBに保存する処理を追加予定
     }, // 状態変更時の処理
@@ -101,18 +100,18 @@ export default function DeviceTable<TData, TValue>({
     });
   };
 
-  const width = tableRef.current?.style.width;
+  // const width = tableRef.current?.style.width;
 
-  const [diffWidth, setDiffWidth] = useState(0);
-  useEffect(() => {
-    if (tableRef.current) {
-      const width = tableRef.current.clientWidth;
-      const totalColumnWidth = table.getCenterTotalSize();
-      const diffWidth = width - totalColumnWidth;
-      setDiffWidth(diffWidth);
-    }
-  }, [table, width]);
-  console.log("diffWidth", diffWidth);
+  // const [diffWidth, setDiffWidth] = useState(0);
+  // useEffect(() => {
+  //   if (tableRef.current) {
+  //     const width = tableRef.current.clientWidth;
+  //     const totalColumnWidth = table.getCenterTotalSize();
+  //     const diffWidth = width - totalColumnWidth;
+  //     setDiffWidth(diffWidth);
+  //   }
+  // }, [table, width]);
+  // console.log("diffWidth", diffWidth);
 
   return (
     <div>
@@ -174,12 +173,12 @@ export default function DeviceTable<TData, TValue>({
                       {array.length - 1 === index && (
                         <div
                           className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b"
-                          style={{
-                            width: `${
-                              (tableRef.current?.clientWidth || 0) -
-                              table.getCenterTotalSize()
-                            }px`,
-                          }}
+                          // style={{
+                          //   width: `${
+                          //     (tableRef.current?.clientWidth || 0) -
+                          //     table.getCenterTotalSize()
+                          //   }px`,
+                          // }}
                         />
                       )}
                     </TableHead>
@@ -208,9 +207,9 @@ export default function DeviceTable<TData, TValue>({
                         row.index !== table.getRowModel().rows.length - 1 && (
                           <div
                             className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b"
-                            style={{
-                              width: `${diffWidth}px`,
-                            }}
+                            //   style={{
+                            //     width: `${diffWidth}px`,
+                            //   }}
                           />
                         )}
                     </TableCell>

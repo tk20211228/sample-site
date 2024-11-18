@@ -33,43 +33,51 @@ import {
 export const deviceStates = [
   {
     value: "UNSPECIFIED",
-    label: "Unspecified",
+    label: "未指定",
     icon: HelpCircle,
+    color: "text-gray-400",
   },
   {
     value: "ACTIVE",
-    label: "Active",
+    label: "アクティブ",
     icon: CheckCircle,
+    color: "text-green-500",
   },
   {
     value: "DISABLED",
-    label: "Disabled",
+    label: "無効",
     icon: CircleOff,
+    color: "text-orange-500",
   },
   {
     value: "DELETED",
-    label: "Deleted",
+    label: "削除済み",
     icon: XCircle,
+    color: "text-red-500",
   },
   {
     value: "PROVISIONING",
-    label: "Provisioning",
+    label: "プロビジョニング中",
     icon: Timer,
+    color: "text-blue-500",
   },
   {
     value: "LOST",
-    label: "Lost",
+    label: "紛失",
     icon: HelpCircle,
+    color: "text-yellow-500",
   },
   {
     value: "PREPARING_FOR_MIGRATION",
-    label: "Preparing for Migration",
+    label: "移行準備中",
     icon: Clock,
+    color: "text-purple-500",
   },
   {
     value: "DEACTIVATED_BY_DEVICE_FINANCE",
-    label: "Deactivated (Finance)",
+    label: "デバイスファイナンスにより無効化",
     icon: CircleOff,
+    color: "text-orange-500",
   },
 ];
 

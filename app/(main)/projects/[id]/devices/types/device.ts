@@ -1,19 +1,12 @@
 import { Tables } from "@/types/database";
 import { androidmanagement_v1 } from "googleapis";
 
-export type Device = Tables<"devices">;
-
 export type AndroidManagementDeviceSchema = androidmanagement_v1.Schema$Device;
 
-// デバイスの表示用データ 作成中
-export type DisplayData = {
-  created_at: string;
-  device_name: string;
-  display_name: string;
-  enterprise_table_id: string;
-  id: string;
-  policy_name: string;
-  policy_table_id: string | null;
-  updated_at: string;
+// データベースの型定義をそのまま使用
+export type DeviceTable = Tables<"devices">;
+
+// アプリケーション内で使用する拡張された型定義
+export type Device = Omit<DeviceTable, "device_config_data"> & {
   device_config_data: AndroidManagementDeviceSchema;
 };

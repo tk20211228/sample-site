@@ -18,15 +18,15 @@ export default function DataTableColumnState<TData, TValue>({
     return state.value === row.getValue("state");
   });
 
-  return state && state.icon ? (
-    <div className="flex items-center gap-2">
-      <state.icon className="h-4 w-4 text-muted-foreground" />
-      <span>{row.getValue("state")}</span>
+  return state ? (
+    <div className="flex items-center justify-center gap-2">
+      <state.icon className={`size-5 ${state.color} `} />
+      <span className={state.color}>{state.label}</span>
     </div>
   ) : (
     <div className="flex items-center gap-2">
-      <HelpCircle className="h-4 w-4 text-muted-foreground" />
-      <span>{state?.label}</span>
+      <HelpCircle className="text-muted-foreground justify-center size-5" />
+      <span className="text-muted-foreground">{row.getValue("state")}</span>
     </div>
   );
 }

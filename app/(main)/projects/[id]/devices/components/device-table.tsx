@@ -9,8 +9,8 @@ import {
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getFilteredRowModel, // フィルタリング
-  getPaginationRowModel, // ページネーション
+  getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel, // ソート
   useReactTable,
 } from "@tanstack/react-table";
@@ -24,74 +24,38 @@ import {
   TableRow,
 } from "@/components/ui/table-resizing";
 
+import { useMemo, useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-
-import { Loader2 } from "lucide-react";
-import { useEffect, useRef, useState, useTransition } from "react";
-import { getDevices } from "../data/device";
-import { AndroidManagementDeviceSchema, Device } from "../types/device";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  enterpriseId: string;
 }
 
 export default function DeviceTable<TData, TValue>({
   columns,
   data,
-  enterpriseId,
 }: DataTableProps<TData, TValue>) {
-  const tableRef = useRef<HTMLTableElement>(null);
   const [sorting, setSorting] = useState<SortingState>([]); // ソート状態を管理
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // カラムフィルタリングの状態を管理
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({}); // カラムの可視性を管理
   const [rowSelection, setRowSelection] = useState({}); // 行の選択状態を管理
 
-  const [deviceData, setDeviceData] = useState<AndroidManagementDeviceSchema[]>(
-    []
-  );
-  const enterpriseName = `enterprises/${enterpriseId}`;
-  const handleClick = async () => {
-    startTransition(async () => {
-      if (enterpriseName) {
-        await getDevices(enterpriseName).then((data) => {
-          // 全てのデバイスを処理する場合
-          // 端末のデータをパースして、端末リストを作成してsetDeviceDataにセット
-          const deviceList: AndroidManagementDeviceSchema[] = [];
-          data.devices.forEach((device) => {
-            const jsonData = device.device_config_data;
-            if (!jsonData) return;
-            // JSON文字列をパースしてオブジェクトに変換
-            const deviceData =
-              typeof jsonData === "string"
-                ? (JSON.parse(jsonData) as AndroidManagementDeviceSchema)
-                : (jsonData as AndroidManagementDeviceSchema);
-            deviceList.push(deviceData);
-          });
-          setDeviceData(deviceList);
-        });
-      }
-    });
-  };
-  console.log(deviceData);
-
   const table = useReactTable({
     data,
     columns,
-
     columnResizeMode: "onChange", // リアルタイムで列のリサイズを行う
     enableColumnResizing: true, // カラムのリサイズを有効化
     onStateChange: () => {
-      const info = table.getState().columnSizing;
+      // const info = table.getState().columnSizing;
       // リサイズ時に差分を再計算
-      if (tableRef.current) {
-        const currentWidth = tableRef.current.clientWidth;
-        const totalColumnWidth = table.getCenterTotalSize();
-        setDiffWidth(currentWidth - totalColumnWidth);
-      }
+      // if (tableRef.current) {
+      //   const currentWidth = tableRef.current.clientWidth;
+      //   const totalColumnWidth = table.getCenterTotalSize();
+      //   setDiffWidth(currentWidth - totalColumnWidth);
+      // }
       // console.log("stateChange", info);
       // TODO: DBに保存する処理を追加予定
     }, // 状態変更時の処理
@@ -114,157 +78,196 @@ export default function DeviceTable<TData, TValue>({
       rowSelection, // 行の選択状態
     },
   });
+  // カラムごとの最大文字数を計算する関数をメモ化
+  const calculateMaxColumnWidth = useMemo(
+    () => (columnId: string) => {
+      console.log("columnId", columnId);
+      // columnsの定義からデフォルトサイズを取得
+      const columnDef = table.getColumn(columnId)?.columnDef;
+      const defaultSize = columnDef?.size ?? 200;
+      console.log("defaultSize", defaultSize);
 
-  const [isPending, startTransition] = useTransition();
+      // 文字種別ごとの幅を計算
+      const getCharWidth = (char: string): number => {
+        if (
+          /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf\u3400-\u4dbf]/.test(
+            char
+          )
+        ) {
+          return 20; // 日本語文字（漢字、ひらがな、カタカナ）
+        } else if (/[A-Z]/.test(char)) {
+          return 12; // 英大文字
+        } else if (/[a-z0-9]/.test(char)) {
+          return 8; // 英小文字と数字
+        }
+        return 8; // その他の文字
+      };
 
-  const width = tableRef.current?.style.width;
+      // セルの内容の最大幅を計算
+      const maxContentWidth = table.getRowModel().rows.reduce((max, row) => {
+        const cell = row
+          .getAllCells()
+          .find((cell) => cell.column.id === columnId);
+        const content = cell?.getValue()?.toString() ?? "";
+        const width = Array.from(content).reduce(
+          (sum, char) => sum + getCharWidth(char),
+          0
+        );
+        return Math.max(max, width);
+      }, 0);
+      console.log("maxContentWidth", maxContentWidth);
 
-  const [diffWidth, setDiffWidth] = useState(0);
-  useEffect(() => {
-    if (tableRef.current) {
-      const width = tableRef.current.clientWidth;
-      const totalColumnWidth = table.getCenterTotalSize();
-      const diffWidth = width - totalColumnWidth;
-      setDiffWidth(diffWidth);
-    }
-  }, [table, width]);
+      const padding = 0;
+      const contentBasedWidth = maxContentWidth + padding;
+      console.log("contentBasedWidth", contentBasedWidth);
+      // デフォルトサイズとコンテンツベースのサイズを比較して大きい方を採用
+      const maxWidth = Math.max(defaultSize, contentBasedWidth);
+      console.log("maxWidth", maxWidth);
+      return maxWidth;
+    },
+    [table]
+  ); // tableインスタンスが変更されたときのみ再計算
+
+  // カラムの自動リサイズ処理をメモ化
+  const autoResizeColumn = useMemo(
+    () => (columnId: string) => {
+      const newWidth = calculateMaxColumnWidth(columnId);
+      const column = table.getColumn(columnId);
+      if (column) {
+        table.setColumnSizing((prev) => ({
+          ...prev,
+          [columnId]: newWidth,
+        }));
+      }
+    },
+    [calculateMaxColumnWidth, table]
+  );
+
+  // autoResizeAllColumns 関数を追加
+  const autoResizeAllColumns = useMemo(
+    () => () => {
+      table.getAllColumns().forEach((column) => {
+        if (column.id) {
+          autoResizeColumn(column.id);
+        }
+      });
+    },
+    [autoResizeColumn, table]
+  );
 
   return (
-    <div>
-      <div className="pb-2">
-        <Button
-          variant="outline"
-          className="w-40"
-          onClick={handleClick}
-          disabled={isPending}
-        >
-          {isPending ? (
-            <>
-              <Loader2 className=" animate-spin" />
-              取得中...
-            </>
-          ) : (
-            "デバイス一覧を取得"
-          )}
-        </Button>
-      </div>
+    <div className="flex flex-col h-full">
       <div className="pb-4">
         <DataTableToolbar table={table} />
       </div>
-      <div
-        ref={tableRef}
-        className="rounded-md border w-full max-w-full overflow-auto"
+      <div className="flex justify-end p-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => autoResizeAllColumns()}
+        >
+          全カラムを自動リサイズ
+        </Button>
+      </div>
+      {/* <div className="rounded-md border bg-background"> */}
+      {/* テーブルコンポーネント内のdivダグ内にrelativeがある */}
+      <Table
+        style={{ width: table.getCenterTotalSize() }}
+        className="border-b bg-background w-full h-full max-h-full"
       >
-        <Table style={{ width: table.getCenterTotalSize() }}>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="group" key={headerGroup.id}>
-                {headerGroup.headers.map((header, index, array) => {
-                  return (
-                    <TableHead
-                      className="relative border-r last:border-r-0"
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      style={{ width: `${header.getSize()}px` }}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                      {header.column.columnDef.enableResizing !== false && (
-                        <div
-                          className="absolute inset-y-0 -right-2 w-4 cursor-col-resize z-10"
-                          onMouseDown={header.getResizeHandler()}
-                          onTouchStart={header.getResizeHandler()}
-                          style={{
-                            userSelect: "none",
-                            touchAction: "none",
-                          }}
-                        >
-                          <span className="sr-only">リサイズハンドラー</span>
-                        </div>
-                      )}
-                      {array.length - 1 === index && (
-                        <div
-                          className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b"
-                          style={{
-                            width: `${
-                              (tableRef.current?.clientWidth || 0) -
-                              table.getCenterTotalSize()
-                            }px`,
-                          }}
-                        />
-                      )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
+        <TableHeader className="sticky top-0 z-20 bg-background">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow className="group" key={headerGroup.id}>
+              {headerGroup.headers.map((header, index, array) => {
+                return (
+                  <TableHead
+                    // className="relative border-r bg-background border-b border-red-200"
+                    className="relative bg-background border-r last:border-r-0 last:sticky last:right-0 last:z-20 last:bg-background first:sticky first:left-0 first:top-0 first:z-20 first:bg-background"
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    style={{ width: `${header.getSize()}px` }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    {header.column.columnDef.enableResizing !== false && (
+                      <div
+                        className="absolute inset-y-0 -right-2 w-4 cursor-col-resize z-10"
+                        onMouseDown={header.getResizeHandler()}
+                        onTouchStart={header.getResizeHandler()}
+                        onDoubleClick={() => autoResizeColumn(header.id)} // ダブルクリックで自動リサイズ
+                        style={{
+                          userSelect: "none",
+                          touchAction: "none",
+                        }}
+                      >
+                        <span className="sr-only">リサイズハンドラー</span>
+                      </div>
+                    )}
+                    {array.length - 1 === index && (
+                      <div
+                        className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b"
+                        // style={{
+                        //   width: `${
+                        //     (tableRef.current?.clientWidth || 0) -
+                        //     table.getCenterTotalSize()
+                        //   }px`,
+                        // }}
+                      />
+                    )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
 
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  className="group"
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell, index, array) => (
-                    <TableCell key={cell.id} className="relative">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                      {/* 最後のセルの場合は、ボーダーを表示. 一番下の行の場合は、ボーダーを表示しない */}
-                      {array.length - 1 === index &&
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                className="group"
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell, index, array) => (
+                  // <TableCell key={cell.id} className="relative">
+                  <TableCell
+                    key={cell.id}
+                    // className="relative whitespace-nowrap overflow-hidden"
+                    className="relative whitespace-nowrap overflow-hidden last:sticky last:right-0 last:z-20 last:bg-background first:sticky first:left-0 first:z-20 first:bg-background"
+                    style={{ maxWidth: `${cell.column.getSize()}px` }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {/* 最後のセルの場合は、ボーダーを表示. 一番下の行の場合は、ボーダーを表示しない */}
+                    {/* {array.length - 1 === index &&
                         row.index !== table.getRowModel().rows.length - 1 && (
                           <div
-                            className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b"
-                            style={{
-                              width: `${diffWidth}px`,
-                            }}
+                            className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b w-5 bg-red-300"
+                            // style={{
+                            //   width: `${diffWidth}px`,
+                            // }}
                           />
-                        )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
+                        )} */}
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                データがありません。
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      {/* </div> */}
       <div className="mt-2">
         <DataTablePagination table={table} />
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          前へ
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          次へ
-        </Button>
       </div>
     </div>
   );

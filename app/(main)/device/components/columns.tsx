@@ -19,54 +19,54 @@ import { DataTableColumnHeader } from "./data-table-column-header";
 import { priorities, statuses } from "../data/data";
 
 export type Payment = {
-  id: string;
+  // id: string;
   amount: number;
   status: "pending" | "processing" | "success" | "failed";
   priority: "low" | "medium" | "high";
   email: string;
 };
 
-type Device = {
-  name: string;
-  managementMode: string;
-  state: string;
-  appliedState: string;
-  policyCompliant: boolean;
-  enrollmentTime: string;
-  lastStatusReportTime: string;
-  lastPolicySyncTime: string;
-  appliedPolicyVersion: string;
-  apiLevel: number;
-  hardwareInfo: Record<string, any>;
-  policyName: string;
-  appliedPolicyName: string;
-  memoryInfo: Record<string, any>;
-  userName: string;
-  enrollmentTokenName: string;
-  previousDeviceNames: string[];
-  securityPosture: Record<string, any>;
-  ownership: string;
-};
-export const deviceColumns: ColumnDef<Device>[] = [
-  {
-    accessorKey: "name",
-    minSize: 150,
-    size: 200,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "state",
-    minSize: 100,
-    size: 150,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="State" />
-    ),
-    cell: ({ row }) => <div>{row.getValue("state")}</div>,
-  },
-];
+// type Device = {
+//   name: string;
+//   managementMode: string;
+//   state: string;
+//   appliedState: string;
+//   policyCompliant: boolean;
+//   enrollmentTime: string;
+//   lastStatusReportTime: string;
+//   lastPolicySyncTime: string;
+//   appliedPolicyVersion: string;
+//   apiLevel: number;
+//   hardwareInfo: Record<string, any>;
+//   policyName: string;
+//   appliedPolicyName: string;
+//   memoryInfo: Record<string, any>;
+//   userName: string;
+//   enrollmentTokenName: string;
+//   previousDeviceNames: string[];
+//   securityPosture: Record<string, any>;
+//   ownership: string;
+// };
+// export const deviceColumns: ColumnDef<Device>[] = [
+//   {
+//     accessorKey: "name",
+//     minSize: 150,
+//     size: 200,
+//     header: ({ column }) => (
+//       <DataTableColumnHeader column={column} title="Name" />
+//     ),
+//     cell: ({ row }) => <div>{row.getValue("name")}</div>,
+//   },
+//   {
+//     accessorKey: "state",
+//     minSize: 100,
+//     size: 150,
+//     header: ({ column }) => (
+//       <DataTableColumnHeader column={column} title="State" />
+//     ),
+//     cell: ({ row }) => <div>{row.getValue("state")}</div>,
+//   },
+// ];
 
 export const columns: ColumnDef<Payment>[] = [
   {
@@ -190,35 +190,35 @@ export const columns: ColumnDef<Payment>[] = [
       return <div className="text-right font-medium">{formatted}</div>;
     },
   },
-  {
-    id: "actions",
-    enableResizing: false, // リサイズを無効化
-    minSize: 50,
-    size: 100,
-    cell: ({ row }) => {
-      const payment = row.original;
+  // {
+  //   id: "actions",
+  //   enableResizing: false, // リサイズを無効化
+  //   minSize: 50,
+  //   size: 100,
+  //   cell: ({ row }) => {
+  //     const payment = row.original;
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" className="h-8 w-8 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <MoreHorizontal className="h-4 w-4" />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuItem
+  //             onClick={() => navigator.clipboard.writeText(payment.id)}
+  //           >
+  //             Copy payment ID
+  //           </DropdownMenuItem>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuItem>View customer</DropdownMenuItem>
+  //           <DropdownMenuItem>View payment details</DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];

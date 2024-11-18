@@ -56,8 +56,8 @@ export const getDevices = async (parent: string) => {
   }));
 
   const { data: deviceData } = await supabase.from("devices").insert({
-    enterprise_id: enterpriseId,
-    device_name: data.name,
+    enterprise_table_id: enterpriseId,
+    device_name: data.devices[0].name,
   });
 
   if (!data) {

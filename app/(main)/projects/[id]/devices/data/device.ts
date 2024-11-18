@@ -3,6 +3,8 @@
 import { createAndroidManagementClient } from "@/actions/emm/client";
 import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { getEnterprisesTableId } from "../actions/devices";
 
 type NextPageToken = string | null | undefined;
 type Device = androidmanagement_v1.Schema$Device | undefined;
@@ -24,7 +26,7 @@ export const getDevices = async (enterpriseName: string) => {
   const BATCH_SIZE = 1000; // DBへの一括保存サイズ
   let allDevices: Device[] = [];
   let nextPageToken: NextPageToken = undefined;
-  const enterpriseId = await getEnterpriseId(enterpriseName);
+  const enterprisesTableId = await getEnterprisesTableId(enterpriseName);
 
   try {
     // ページネーションを使用してすべてのデバイスを取得
@@ -50,19 +52,19 @@ export const getDevices = async (enterpriseName: string) => {
 
       // BATCH_SIZEに達したらDBに保存
       if (allDevices.length >= BATCH_SIZE) {
-        await saveDevicesToDB(allDevices, enterpriseId, supabase);
+        await saveDevicesToDB(allDevices, enterprisesTableId, supabase);
         allDevices = []; // メモリをクリア
       }
     } while (nextPageToken);
     // 残りのデバイスをDBに保存
     if (allDevices.length > 0) {
-      await saveDevicesToDB(allDevices, enterpriseId, supabase);
+      await saveDevicesToDB(allDevices, enterprisesTableId, supabase);
     }
     // 同期完了後、DBから最新の1000件を取得
     const { data: latestDevices, count } = await supabase
       .from("devices")
       .select("*", { count: "exact" })
-      .eq("enterprise_table_id", enterpriseId)
+      .eq("enterprise_table_id", enterprisesTableId)
       .order("device_name", { ascending: true })
       .limit(BATCH_SIZE);
 
@@ -80,8 +82,6 @@ export const getDevices = async (enterpriseName: string) => {
     throw error;
   }
 };
-import { SupabaseClient } from "@supabase/supabase-js";
-import { getEnterpriseId } from "../actions/devices";
 
 // デバイスデータをDBに保存する関数を分離
 const saveDevicesToDB = async (
@@ -96,7 +96,7 @@ const saveDevicesToDB = async (
       device_name: device.name,
       display_name: device.name,
       policy_name: device.policyName,
-      device_config_data: JSON.stringify(device),
+      device_config_data: device,
     };
   });
 

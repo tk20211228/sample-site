@@ -4,22 +4,20 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import {
   ArrowUpDown,
-  CheckCircle,
-  MoreHorizontal,
-  XCircle,
+  CheckCircle2Icon,
+  LucideXCircle,
+  PlusIcon,
 } from "lucide-react"; // 行アクション
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { formatToJapaneseDateTime } from "@/lib/date-fns/get-date";
+import { devicesTableColumnList } from "../data/columnList";
+import { Device } from "../types/device";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import DataTableColumnState from "./data-table-column-state";
+import DataTableMenu from "./data-table-menu";
+import { selectColumn } from "./select-column";
+import generateSortFilterColumns from "./sort-filter-columns";
 
 export type Payment = {
   id: string;
@@ -29,56 +27,82 @@ export type Payment = {
   email: string;
 };
 
-type Device = {
-  name?: string | null | undefined;
-  state?: string | null | undefined;
-  policyName?: string | null | undefined;
-  appliedPolicyVersion?: string | null | undefined;
-  policyCompliant?: boolean | null | undefined;
-  lastStatusReportTime?: string | null | undefined;
-  lastPolicySyncTime?: string | null | undefined;
-
-  softwareInfo?: {
-    systemUpdateInfo?: {
-      updateStatus?: string | null | undefined;
-    };
-  };
-};
+const regEnrollmentTokensPath = /enterprises\/.*?\/enrollmentTokens\//;
 
 export const deviceColumns: ColumnDef<Device>[] = [
+  selectColumn,
+  ...generateSortFilterColumns<Device>(devicesTableColumnList),
+  // {
+  //   id: "updateStatus",
+  //   accessorFn: (device) =>
+  //     device.device_config_data?.softwareInfo?.systemUpdateInfo?.updateStatus,
+  //   minSize: 400,
+  //   size: 400,
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="システム更新 ステータス" />
+  //   ),
+  //   cell: ({ row }) => <div>{row.getValue("updateStatus")}</div>,
+  // },
+  // {
+  //   id: "apiLevel",
+  //   accessorFn: (device) => device.device_config_data.apiLevel,
+  //   minSize: 100,
+  //   size: 150,
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="API Level" />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="text-center">{row.getValue("apiLevel")}</div>
+  //   ),
+  // },
   {
-    accessorKey: "name",
-    minSize: 100,
-    size: 100,
+    id: "state",
+    accessorFn: (device) => device.device_config_data.state,
+    minSize: 160,
+    size: 180,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="端末名" />
-    ),
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "state",
-    minSize: 100,
-    size: 150,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="State" />
+      <DataTableColumnHeader column={column} title="ステータス" />
     ),
     cell: ({ row }) => {
       return <DataTableColumnState row={row} />;
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
-    accessorKey: "policyName",
-    minSize: 100,
-    size: 100,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ポリシー名" />
+    id: "enrollmentTokenName",
+    accessorFn: (device) => device.device_config_data.enrollmentTokenName,
+    // accessorFn: (device) => {
+    //   const fullPath = device.device_config_data.enrollmentTokenName;
+    //   if (!fullPath) return null;
+    //   return fullPath.replace(regEnrollmentTokensPath, "");
+    // },
+    minSize: 250,
+    size: 300,
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center justify-center">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            識別 ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="truncate" title={row.getValue("enrollmentTokenName")}>
+        {row.getValue("enrollmentTokenName")}
+      </div>
     ),
-    cell: ({ row }) => <div>{row.getValue("policyName")}</div>,
   },
   {
     accessorKey: "appliedPolicyVersion",
-    minSize: 100,
-    size: 150,
+    minSize: 225,
+    size: 250,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ポリシー バージョン" />
     ),
@@ -86,8 +110,8 @@ export const deviceColumns: ColumnDef<Device>[] = [
   },
   {
     accessorKey: "policyCompliant",
-    minSize: 100,
-    size: 100,
+    minSize: 180,
+    size: 200,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ポリシー 準拠" />
     ),
@@ -96,30 +120,73 @@ export const deviceColumns: ColumnDef<Device>[] = [
       return (
         <div className="flex items-center justify-center">
           {isCompliant === true ? (
-            <CheckCircle className="h-5 w-5 text-green-500" />
+            <CheckCircle2Icon className="h-5 w-5 text-green-500" />
           ) : isCompliant === false ? (
-            <XCircle className="h-5 w-5 text-red-500" />
+            <LucideXCircle className="h-5 w-5 text-red-500" />
           ) : null}
         </div>
       );
     },
   },
   {
-    accessorKey: "lastStatusReportTime",
-    minSize: 100,
-    size: 150,
+    id: "lastStatusReportTime",
+    accessorFn: (device) => device.device_config_data.lastStatusReportTime,
+    minSize: 150,
+    size: 160,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last Status Report Time" />
+      <DataTableColumnHeader column={column} title="同期時刻" />
     ),
-    cell: ({ row }) => <div>{row.getValue("lastStatusReportTime")}</div>,
+    cell: ({ row }) => {
+      return (
+        <div>
+          {row.getValue("lastStatusReportTime")
+            ? formatToJapaneseDateTime(row.getValue("lastStatusReportTime"))
+            : "不明"}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "lastPolicySyncTime",
-    minSize: 100,
-    size: 150,
+    id: "lastPolicySyncTime",
+    accessorFn: (device) => device.device_config_data.lastPolicySyncTime,
+    minSize: 210,
+    size: 220,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last Policy Sync Time" />
+      <DataTableColumnHeader column={column} title="ポリシー同期時刻" />
     ),
+    cell: ({ row }) => {
+      return (
+        <div>
+          {row.getValue("lastPolicySyncTime")
+            ? formatToJapaneseDateTime(row.getValue("lastPolicySyncTime"))
+            : "不明"}
+        </div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    enableResizing: false, // リサイズを無効化
+    minSize: 50,
+    size: 80,
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center justify-center">
+          <Button variant="ghost" size="icon">
+            <PlusIcon className="h-4 w-4" />
+            <span className="sr-only">メニューを開く</span>
+          </Button>
+          <div title="メニュー" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center justify-center">
+          <DataTableMenu row={row} />
+        </div>
+      );
+    },
   },
   // {
   //   // accessorKey: "UpdateStatue",
@@ -167,159 +234,4 @@ export const deviceColumns: ColumnDef<Device>[] = [
   //     return <div>{updateStatus.toString()}</div>;
   //   },
   // },
-];
-
-export const columns: ColumnDef<Payment>[] = [
-  // {
-  //   id: "select",
-  //   enableResizing: false, // リサイズを無効化
-  //   minSize: 50,
-  //   size: 50,
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-  // {
-  //   accessorKey: "status",
-  //   minSize: 100,
-  //   size: 100,
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Status" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const status = statuses.find(
-  //       (status) => status.value === row.getValue("status")
-  //     );
-
-  //     if (!status) {
-  //       return null;
-  //     }
-
-  //     return (
-  //       <div className="flex items-center">
-  //         {status.icon && (
-  //           <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-  //         )}
-  //         <span>{status.label}</span>
-  //       </div>
-  //     );
-  //   },
-  //   filterFn: (row, id, value) => {
-  //     return value.includes(row.getValue(id));
-  //   },
-  // },
-
-  // {
-  //   accessorKey: "priority",
-  //   minSize: 100,
-  //   size: 300,
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Priority" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const priority = priorities.find(
-  //       (priority) => priority.value === row.getValue("priority")
-  //     );
-
-  //     if (!priority) {
-  //       return null;
-  //     }
-
-  //     return (
-  //       <div className="flex items-center">
-  //         {priority.icon && (
-  //           <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-  //         )}
-  //         <span>{priority.label}</span>
-  //       </div>
-  //     );
-  //   },
-  //   filterFn: (row, id, value) => {
-  //     return value.includes(row.getValue(id));
-  //   },
-  //   enableColumnFilter: true,
-  //   enableHiding: false, //非表示にする機能が無効
-  // },
-  {
-    accessorKey: "email",
-    minSize: 200,
-    size: 300,
-    header: ({ column }) => {
-      return (
-        <div className="flex items-center justify-center">
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Email
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "amount",
-    minSize: 100,
-    size: 300,
-    header: () => (
-      <div className="flex items-center justify-center">Amount</div>
-    ),
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
-    id: "actions",
-    enableResizing: false, // リサイズを無効化
-    minSize: 50,
-    size: 100,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
 ];

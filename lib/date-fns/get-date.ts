@@ -8,3 +8,11 @@ export const getSeverDate = () => {
   });
   return now;
 };
+
+// APIから取得したタイムスタンプを日本時間に変換
+export const formatToJapaneseDateTime = (timestamp: number) => {
+  const formattedDate = format(timestamp, "yyyy/MM/dd HH:mm:ss（E）", {
+    locale: ja,
+  });
+  return formattedDate;
+};

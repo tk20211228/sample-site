@@ -42,7 +42,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <Button variant="outline" size="sm" className="h-8 border-dashed ">
           <PlusCircle className="size-5 mr-2" />
           {title}
           {selectedValues?.size > 0 && (
@@ -80,14 +80,15 @@ export function DataTableFacetedFilter<TData, TValue>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" align="start">
+      <PopoverContent className="w-[350px] p-0" align="start">
         <Command>
           <CommandInput placeholder={title} />
-          <CommandList>
+          <CommandList className="max-h-[305px]">
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
+
                 return (
                   <CommandItem
                     key={option.value}
@@ -134,7 +135,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     onSelect={() => column?.setFilterValue(undefined)}
                     className="justify-center text-center"
                   >
-                    Clear filters
+                    クリア
                   </CommandItem>
                 </CommandGroup>
               </>

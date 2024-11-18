@@ -41,17 +41,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { androidmanagement_v1 } from "googleapis";
+import { Row } from "@tanstack/react-table";
+import { Device } from "../types/device";
 
-export default function MenuButton({
-  parent,
-  device,
-}: {
-  parent: string;
-  device: androidmanagement_v1.Schema$Device;
-}) {
+interface DataTableMenuProps<TData, TValue> {
+  row: Row<Device>;
+}
+
+export default function DataTableMenu<TData, TValue>({
+  row,
+}: DataTableMenuProps<TData, TValue>) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [initializationOption, setInitializationOption] = useState("");
+  // デバイス情報を正しく取得
+  const device = row.original.device_config_data;
 
   const onClick = async () => {
     console.log(parent);
@@ -241,3 +245,39 @@ export default function MenuButton({
     </div>
   );
 }
+
+/**
+ * // デバイスアクションの実装
+  const handleDeviceAction = async (action: string) => {
+    try {
+      const deviceName = device.name;
+      
+      switch (action) {
+        case "lock":
+          // リモートロックの実装
+          console.log("Locking device:", deviceName);
+          break;
+        case "reset":
+          // パスワードリセットの実装
+          console.log("Resetting password for device:", deviceName);
+          break;
+        case "reboot":
+          // 再起動の実装
+          console.log("Rebooting device:", deviceName);
+          break;
+        // ... 他のアクション
+      }
+    } catch (error) {
+      console.error("Device action failed:", error);
+      // エラー処理を追加
+    }
+  };
+
+  // ... 既存のJSXコード ...
+
+  // メニュー項目のクリックハンドラーを更新
+  <DropdownMenuItem onClick={() => handleDeviceAction("lock")}>
+    <Lock className="mr-4 h-4 w-4" />
+    <span>リモートロック</span>
+  </DropdownMenuItem>
+ */
