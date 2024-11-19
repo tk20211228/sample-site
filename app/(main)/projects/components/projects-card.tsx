@@ -13,6 +13,7 @@ import {
   ChevronRight,
   LayoutDashboardIcon,
   Plus,
+  SquareChartGanttIcon,
   Trash2Icon,
 } from "lucide-react";
 import Link from "next/link";
@@ -67,27 +68,42 @@ export default function ProjectsCard({ projectsData }: ProjectCardProps) {
           >
             <Trash2Icon />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute left-3 bottom-6 text-muted-foreground hover:text-foreground z-30 "
-          >
-            <Link
-              href={`/dashboard?enterprises_name=${project.enterprise_name}`}
-            >
-              <LayoutDashboardIcon />
-            </Link>
-          </Button>
+          {project.enterprise_name && (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute left-3 bottom-6 text-muted-foreground hover:text-foreground z-30 "
+              >
+                <Link
+                  href={`/dashboard?enterprises_name=${project.enterprise_name}`}
+                >
+                  <LayoutDashboardIcon />
+                </Link>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute left-16 bottom-6 text-muted-foreground hover:text-foreground z-30 "
+              >
+                <Link
+                  href={`/projects/${removeEnterprisesKeyword(
+                    project.enterprise_name
+                  )}/policies`}
+                >
+                  <SquareChartGanttIcon />
+                </Link>
+              </Button>
+            </>
+          )}
+
           <ChevronRight className="absolute right-6 top-7 text-muted-foreground transition-all duration-200 group-hover:right-5 group-hover:text-foreground" />
           {!project.enterprise_name ? (
             <button onClick={() => getSignUpUrl(project.id)}>
               <span className="absolute inset-0 z-20"></span>
             </button>
           ) : (
-            // <Link
-            //   href={`/dashboard?enterprises_name=${project.enterprise_name}`}
-            //   className="absolute inset-0 z-20"
-            // />
             <Link
               href={`/projects/${removeEnterprisesKeyword(
                 project.enterprise_name

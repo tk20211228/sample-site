@@ -14,12 +14,16 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { useState } from "react";
 
-export default function CreateQrButton({ parent }: { parent: string }) {
+export default function CreateQrButton({
+  enterpriseName,
+}: {
+  enterpriseName: string;
+}) {
   const [qrCode, setQrCode] = useState<string | null>(null);
 
   const onClick = async () => {
     setQrCode(null);
-    const qrData = await createEnrollmentToken(parent);
+    const qrData = await createEnrollmentToken(enterpriseName);
     console.log("qrData", qrData);
     if (qrData) {
       setQrCode(qrData);

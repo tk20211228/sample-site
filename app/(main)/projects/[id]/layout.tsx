@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-
-import TopSidebar from "./components/navigation-ber";
+import NavigationBar from "../../components/navigation-ber";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,8 +12,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="bg-gradient-to-t from-primary/10 to-background ">
-      {children}
-    </main>
+    <div className="h-full">
+      <div className="flex">
+        <NavigationBar />
+        <div className="flex-1">{children}</div>
+      </div>
+    </div>
   );
 }

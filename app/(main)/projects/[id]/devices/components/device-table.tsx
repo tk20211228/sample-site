@@ -48,17 +48,7 @@ export default function DeviceTable<TData, TValue>({
     columns,
     columnResizeMode: "onChange", // リアルタイムで列のリサイズを行う
     enableColumnResizing: true, // カラムのリサイズを有効化
-    onStateChange: () => {
-      // const info = table.getState().columnSizing;
-      // リサイズ時に差分を再計算
-      // if (tableRef.current) {
-      //   const currentWidth = tableRef.current.clientWidth;
-      //   const totalColumnWidth = table.getCenterTotalSize();
-      //   setDiffWidth(currentWidth - totalColumnWidth);
-      // }
-      // console.log("stateChange", info);
-      // TODO: DBに保存する処理を追加予定
-    }, // 状態変更時の処理
+    onStateChange: () => {}, // 状態変更時の処理
 
     getCoreRowModel: getCoreRowModel(), // コア行モデルを取得
     getPaginationRowModel: getPaginationRowModel(), // ページネーション行モデルを取得
@@ -77,15 +67,20 @@ export default function DeviceTable<TData, TValue>({
       columnVisibility, // カラムの可視性
       rowSelection, // 行の選択状態
     },
+    initialState: {
+      pagination: {
+        pageSize: 50, // デフォルトのページサイズ
+      },
+    },
   });
   // カラムごとの最大文字数を計算する関数をメモ化
   const calculateMaxColumnWidth = useMemo(
     () => (columnId: string) => {
-      console.log("columnId", columnId);
+      // console.log("columnId", columnId);
       // columnsの定義からデフォルトサイズを取得
       const columnDef = table.getColumn(columnId)?.columnDef;
       const defaultSize = columnDef?.size ?? 200;
-      console.log("defaultSize", defaultSize);
+      // console.log("defaultSize", defaultSize);
 
       // 文字種別ごとの幅を計算
       const getCharWidth = (char: string): number => {
@@ -156,8 +151,8 @@ export default function DeviceTable<TData, TValue>({
   );
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="pb-4">
+    <div className="flex flex-col">
+      {/* <div className="pb-4">
         <DataTableToolbar table={table} />
       </div>
       <div className="flex justify-end p-2">
@@ -168,25 +163,27 @@ export default function DeviceTable<TData, TValue>({
         >
           全カラムを自動リサイズ
         </Button>
-      </div>
-      {/* <div className="rounded-md border bg-background"> */}
-      {/* テーブルコンポーネント内のdivダグ内にrelativeがある */}
+      </div> */}
+      {/* <div className="rounded-md border bg-background max-w-[700px] max-h-[500px] w-fit overflow-auto bg-red-300"> */}
+      {/* <div className="rounded-md border bg-background w-full max-h-[calc(100vh-300px)] m bg-red-300"> */}
       <Table
         style={{ width: table.getCenterTotalSize() }}
-        className="border-b bg-background w-full h-full max-h-full"
+        className="border-b bg-background h-full w-full"
       >
-        <TableHeader className="sticky top-0 z-20 bg-background">
+        <TableHeader className=" bg-background z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow className="group" key={headerGroup.id}>
               {headerGroup.headers.map((header, index, array) => {
                 return (
                   <TableHead
-                    // className="relative border-r bg-background border-b border-red-200"
-                    className="relative bg-background border-r last:border-r-0 last:sticky last:right-0 last:z-20 last:bg-background first:sticky first:left-0 first:top-0 first:z-20 first:bg-background"
+                    className="sticky top-0 border-red-200 border-b z-20 bg-background border-r last:border-r-0 last:sticky last:right-0 last:z-20 last:bg-blue-300 first:sticky first:left-0 first:top-0 first:z-30 first:bg-red-300"
                     key={header.id}
                     colSpan={header.colSpan}
                     style={{ width: `${header.getSize()}px` }}
                   >
+                    {/* {index === 0 && (
+                        <div className="absolute bottom-0 inset-x-0 h-px bg-border z-10"></div>
+                      )} */}
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -208,15 +205,7 @@ export default function DeviceTable<TData, TValue>({
                       </div>
                     )}
                     {array.length - 1 === index && (
-                      <div
-                        className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b"
-                        // style={{
-                        //   width: `${
-                        //     (tableRef.current?.clientWidth || 0) -
-                        //     table.getCenterTotalSize()
-                        //   }px`,
-                        // }}
-                      />
+                      <div className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b" />
                     )}
                   </TableHead>
                 );
@@ -224,7 +213,6 @@ export default function DeviceTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
@@ -234,24 +222,12 @@ export default function DeviceTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell, index, array) => (
-                  // <TableCell key={cell.id} className="relative">
                   <TableCell
                     key={cell.id}
-                    // className="relative whitespace-nowrap overflow-hidden"
                     className="relative whitespace-nowrap overflow-hidden last:sticky last:right-0 last:z-20 last:bg-background first:sticky first:left-0 first:z-20 first:bg-background"
                     style={{ maxWidth: `${cell.column.getSize()}px` }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    {/* 最後のセルの場合は、ボーダーを表示. 一番下の行の場合は、ボーダーを表示しない */}
-                    {/* {array.length - 1 === index &&
-                        row.index !== table.getRowModel().rows.length - 1 && (
-                          <div
-                            className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b w-5 bg-red-300"
-                            // style={{
-                            //   width: `${diffWidth}px`,
-                            // }}
-                          />
-                        )} */}
                   </TableCell>
                 ))}
               </TableRow>
@@ -266,9 +242,9 @@ export default function DeviceTable<TData, TValue>({
         </TableBody>
       </Table>
       {/* </div> */}
-      <div className="mt-2">
+      {/* <div className="mt-2">
         <DataTablePagination table={table} />
-      </div>
+      </div> */}
     </div>
   );
 }

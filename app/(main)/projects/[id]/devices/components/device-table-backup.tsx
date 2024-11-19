@@ -9,8 +9,8 @@ import {
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getFilteredRowModel, // フィルタリング
-  getPaginationRowModel, // ページネーション
+  getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel, // ソート
   useReactTable,
 } from "@tanstack/react-table";
@@ -24,13 +24,8 @@ import {
   TableRow,
 } from "@/components/ui/table-resizing";
 
+import { useMemo, useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-
-import { getDevices } from "@/app/(main)/device/data/device";
-import { androidmanagement_v1 } from "googleapis";
-import { Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 
@@ -43,7 +38,6 @@ export default function DeviceTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const tableRef = useRef<HTMLTableElement>(null);
   const [sorting, setSorting] = useState<SortingState>([]); // ソート状態を管理
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // カラムフィルタリングの状態を管理
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({}); // カラムの可視性を管理
@@ -54,17 +48,7 @@ export default function DeviceTable<TData, TValue>({
     columns,
     columnResizeMode: "onChange", // リアルタイムで列のリサイズを行う
     enableColumnResizing: true, // カラムのリサイズを有効化
-    onStateChange: () => {
-      // const info = table.getState().columnSizing;
-      // // リサイズ時に差分を再計算
-      // if (tableRef.current) {
-      //   const currentWidth = tableRef.current.clientWidth;
-      //   const totalColumnWidth = table.getCenterTotalSize();
-      //   setDiffWidth(currentWidth - totalColumnWidth);
-      // }
-      // console.log("stateChange", info);
-      // TODO: DBに保存する処理を追加予定
-    }, // 状態変更時の処理
+    onStateChange: () => {}, // 状態変更時の処理
 
     getCoreRowModel: getCoreRowModel(), // コア行モデルを取得
     getPaginationRowModel: getPaginationRowModel(), // ページネーション行モデルを取得
@@ -84,73 +68,118 @@ export default function DeviceTable<TData, TValue>({
       rowSelection, // 行の選択状態
     },
   });
+  // カラムごとの最大文字数を計算する関数をメモ化
+  const calculateMaxColumnWidth = useMemo(
+    () => (columnId: string) => {
+      console.log("columnId", columnId);
+      // columnsの定義からデフォルトサイズを取得
+      const columnDef = table.getColumn(columnId)?.columnDef;
+      const defaultSize = columnDef?.size ?? 200;
+      console.log("defaultSize", defaultSize);
 
-  type Device = androidmanagement_v1.Schema$Device;
-  const [isPending, startTransition] = useTransition();
-  const [devices, setDevices] = useState<Device[]>([]);
-  const searchParams = useSearchParams();
-  const enterprises_name = searchParams.get("enterprises_name");
-  const handleClick = async () => {
-    startTransition(async () => {
-      if (enterprises_name) {
-        const data = await getDevices(enterprises_name);
-        console.log(devices);
-        setDevices(data.devices || []);
+      // 文字種別ごとの幅を計算
+      const getCharWidth = (char: string): number => {
+        if (
+          /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf\u3400-\u4dbf]/.test(
+            char
+          )
+        ) {
+          return 20; // 日本語文字（漢字、ひらがな、カタカナ）
+        } else if (/[A-Z]/.test(char)) {
+          return 12; // 英大文字
+        } else if (/[a-z0-9]/.test(char)) {
+          return 8; // 英小文字と数字
+        }
+        return 8; // その他の文字
+      };
+
+      // セルの内容の最大幅を計算
+      const maxContentWidth = table.getRowModel().rows.reduce((max, row) => {
+        const cell = row
+          .getAllCells()
+          .find((cell) => cell.column.id === columnId);
+        const content = cell?.getValue()?.toString() ?? "";
+        const width = Array.from(content).reduce(
+          (sum, char) => sum + getCharWidth(char),
+          0
+        );
+        return Math.max(max, width);
+      }, 0);
+      console.log("maxContentWidth", maxContentWidth);
+
+      const padding = 0;
+      const contentBasedWidth = maxContentWidth + padding;
+      console.log("contentBasedWidth", contentBasedWidth);
+      // デフォルトサイズとコンテンツベースのサイズを比較して大きい方を採用
+      const maxWidth = Math.max(defaultSize, contentBasedWidth);
+      console.log("maxWidth", maxWidth);
+      return maxWidth;
+    },
+    [table]
+  ); // tableインスタンスが変更されたときのみ再計算
+
+  // カラムの自動リサイズ処理をメモ化
+  const autoResizeColumn = useMemo(
+    () => (columnId: string) => {
+      const newWidth = calculateMaxColumnWidth(columnId);
+      const column = table.getColumn(columnId);
+      if (column) {
+        table.setColumnSizing((prev) => ({
+          ...prev,
+          [columnId]: newWidth,
+        }));
       }
-    });
-  };
+    },
+    [calculateMaxColumnWidth, table]
+  );
 
-  // const width = tableRef.current?.style.width;
-
-  // const [diffWidth, setDiffWidth] = useState(0);
-  // useEffect(() => {
-  //   if (tableRef.current) {
-  //     const width = tableRef.current.clientWidth;
-  //     const totalColumnWidth = table.getCenterTotalSize();
-  //     const diffWidth = width - totalColumnWidth;
-  //     setDiffWidth(diffWidth);
-  //   }
-  // }, [table, width]);
-  // console.log("diffWidth", diffWidth);
+  // autoResizeAllColumns 関数を追加
+  const autoResizeAllColumns = useMemo(
+    () => () => {
+      table.getAllColumns().forEach((column) => {
+        if (column.id) {
+          autoResizeColumn(column.id);
+        }
+      });
+    },
+    [autoResizeColumn, table]
+  );
 
   return (
-    <div>
-      <div className="pb-2">
-        <Button
-          variant="outline"
-          className="w-40"
-          onClick={handleClick}
-          disabled={isPending}
-        >
-          {isPending ? (
-            <>
-              <Loader2 className=" animate-spin" />
-              取得中...
-            </>
-          ) : (
-            "デバイス一覧を取得"
-          )}
-        </Button>
-      </div>
+    <div className="flex flex-col">
       <div className="pb-4">
         <DataTableToolbar table={table} />
       </div>
-      <div
-        ref={tableRef}
-        className="rounded-md border w-full max-w-full overflow-auto"
-      >
-        <Table style={{ width: table.getCenterTotalSize() }}>
-          <TableHeader>
+      <div className="flex justify-end p-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => autoResizeAllColumns()}
+        >
+          全カラムを自動リサイズ
+        </Button>
+      </div>
+      <div className="rounded-md border bg-background w-full max-w-full overflow-auto">
+        {/* テーブルコンポーネント内のdivダグ内にrelativeがある */}
+        <Table
+          style={{ width: table.getCenterTotalSize() }}
+          className="border-b bg-background h-full max-h-full"
+        >
+          <TableHeader className="sticky top-0 bg-background z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="group" key={headerGroup.id}>
                 {headerGroup.headers.map((header, index, array) => {
                   return (
                     <TableHead
-                      className="relative border-r last:border-r-0"
+                      // className="relative border-r bg-background border-b border-red-200"
+                      className=" border-red-200 border-b z-20 bg-background border-r last:border-r-0 last:sticky last:right-0 last:z-20 last:bg-background  first:left-0 first:top-0 first:z-20 first:bg-background"
                       key={header.id}
                       colSpan={header.colSpan}
                       style={{ width: `${header.getSize()}px` }}
                     >
+                      {index === 0 && (
+                        <div className=" absolute bottom-0 inset-x-0 h-px bg-border z-10"></div>
+                      )}
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -162,6 +191,7 @@ export default function DeviceTable<TData, TValue>({
                           className="absolute inset-y-0 -right-2 w-4 cursor-col-resize z-10"
                           onMouseDown={header.getResizeHandler()}
                           onTouchStart={header.getResizeHandler()}
+                          onDoubleClick={() => autoResizeColumn(header.id)} // ダブルクリックで自動リサイズ
                           style={{
                             userSelect: "none",
                             touchAction: "none",
@@ -197,21 +227,27 @@ export default function DeviceTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell, index, array) => (
-                    <TableCell key={cell.id} className="relative">
+                    // <TableCell key={cell.id} className="relative">
+                    <TableCell
+                      key={cell.id}
+                      // className="relative whitespace-nowrap overflow-hidden"
+                      className="relative whitespace-nowrap overflow-hidden last:sticky last:right-0 last:z-20 last:bg-background first:sticky first:left-0 first:z-20 first:bg-background"
+                      style={{ maxWidth: `${cell.column.getSize()}px` }}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
                       {/* 最後のセルの場合は、ボーダーを表示. 一番下の行の場合は、ボーダーを表示しない */}
-                      {array.length - 1 === index &&
+                      {/* {array.length - 1 === index &&
                         row.index !== table.getRowModel().rows.length - 1 && (
                           <div
-                            className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b"
-                            //   style={{
-                            //     width: `${diffWidth}px`,
-                            //   }}
+                            className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b w-5 bg-red-300"
+                            // style={{
+                            //   width: `${diffWidth}px`,
+                            // }}
                           />
-                        )}
+                        )} */}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -222,7 +258,7 @@ export default function DeviceTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  データがありません。
                 </TableCell>
               </TableRow>
             )}
@@ -231,24 +267,6 @@ export default function DeviceTable<TData, TValue>({
       </div>
       <div className="mt-2">
         <DataTablePagination table={table} />
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          前へ
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          次へ
-        </Button>
       </div>
     </div>
   );

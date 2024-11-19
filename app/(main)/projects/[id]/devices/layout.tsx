@@ -1,6 +1,5 @@
+import DevicesMenuBar from "@/app/(main)/components/devices-menu-bar";
 import type { Metadata } from "next";
-
-import TopSidebar from "./components/navigation-ber";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,8 +12,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="bg-gradient-to-t from-primary/10 to-background ">
-      {children}
-    </main>
+    <div className="flex">
+      <DevicesMenuBar />
+      <div className="flex-1 min-w-0 overflow-hidden">{children}</div>
+    </div>
   );
 }

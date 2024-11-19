@@ -1,6 +1,9 @@
 "use client";
 
 import { getPolicies } from "@/actions/emm/get-policy";
+import CameraAccessButton from "@/app/(main)/dashboard/components/policy/camera-access-button";
+import CreatePolicyDialog from "@/app/(main)/dashboard/components/policy/create-policy-dialog";
+import PolicyMenuButton from "@/app/(main)/dashboard/components/policy/policy-menu-button";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,9 +18,6 @@ import { androidmanagement_v1 } from "googleapis";
 import { Loader2Icon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
-import CameraAccessButton from "./camera-access-button";
-import CreatePolicyDialog from "./create-policy-dialog";
-import PolicyMenuButton from "./policy-menu-button";
 
 type Policy = androidmanagement_v1.Schema$Policy;
 
