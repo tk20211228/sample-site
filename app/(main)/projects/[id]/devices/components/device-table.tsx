@@ -151,7 +151,7 @@ export default function DeviceTable<TData, TValue>({
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       {/* <div className="pb-4">
         <DataTableToolbar table={table} />
       </div>

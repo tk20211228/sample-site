@@ -1,4 +1,5 @@
 import DevicesMenuBar from "@/app/(main)/components/devices-menu-bar";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,8 +14,17 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex">
-      <DevicesMenuBar />
-      <div className="flex-1 min-w-0 overflow-hidden">{children}</div>
+      <DevicesMenuBar
+        className={cn(
+          "w-80 hidden lg:block",
+          "w-80 hidden lg:block",
+          "w-80 hidden lg:block",
+          "w-80 hidden lg:block",
+          "w-80 hidden lg:block"
+        )}
+      />
+      {/* <MobileDevicesMenuBar /> */}
+      <div className="flex-1 min-w-0">{children}</div>
     </div>
   );
 }

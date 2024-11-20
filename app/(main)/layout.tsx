@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="bg-gradient-to-t from-primary/10 to-background ">
+    <main className="bg-gradient-to-t from-primary/10 to-background">
       {children}
     </main>
   );

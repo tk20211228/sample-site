@@ -14,17 +14,18 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   // console.log("getDevices data", data);
 
   return (
-    <div className="flex flex-col h-full p-2">
-      <div className="flex">
-        <div className="flex flex-row gap-2">
-          <GetDevicesListButton enterpriseId={id} />
-          <CreateQrButton enterpriseName={enterpriseName} />
-        </div>
+    <div className="flex flex-col h-dvh p-2">
+      <div className="flex gap-2">
+        <GetDevicesListButton enterpriseId={id} />
+        <CreateQrButton enterpriseName={enterpriseName} />
       </div>
+
       <div>テーブルヘッダー</div>
-      <div className="flex-1 border border-red-500 overflow-auto">
+
+      <div className="flex-1 overflow-hidden border">
         <DeviceTable columns={deviceColumns} data={data} />
       </div>
+
       <div>テーブルフッター</div>
     </div>
 

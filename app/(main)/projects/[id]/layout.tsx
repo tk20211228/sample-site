@@ -12,11 +12,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-full">
-      <div className="flex">
+    <div className="flex">
+      <NavigationBar />
+      {/* <div className="hidden lg:block">
         <NavigationBar />
-        <div className="flex-1">{children}</div>
       </div>
+      <div className="lg:hidden">
+        <MobileNavigationBar />
+      </div> */}
+      <div className="flex-1 min-w-0">{children}</div>
     </div>
   );
 }
