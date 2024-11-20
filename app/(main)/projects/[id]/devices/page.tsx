@@ -3,7 +3,6 @@ import { deviceColumns } from "./components/columns";
 import CreateQrButton from "./components/create-qr-button";
 import DeviceTable from "./components/device-table";
 import GetDevicesListButton from "./components/get-devices-list-button";
-import PoliciesTable from "../policies/components/table/policies-table";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -11,7 +10,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
   const enterpriseName = `enterprises/${id}`;
   const data = await getDevices(enterpriseName);
-  // console.log("getDevices data", data);
+  console.log("getDevices data", data);
 
   return (
     <div className="flex flex-col h-dvh p-2">

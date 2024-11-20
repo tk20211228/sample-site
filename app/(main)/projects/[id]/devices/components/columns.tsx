@@ -16,21 +16,13 @@ import { Device } from "../types/device";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import DataTableColumnState from "./data-table-column-state";
 import DataTableMenu from "./data-table-menu";
-import { selectColumn } from "./select-column";
-import generateSortFilterColumns from "./sort-filter-columns";
-
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  priority: "low" | "medium" | "high";
-  email: string;
-};
+import generateSortFilterColumns from "../../../components/table/generate-sort-filter-columns";
+import { selectColumn } from "../../../components/table/select-column";
 
 const regEnrollmentTokensPath = /enterprises\/.*?\/enrollmentTokens\//;
 
 export const deviceColumns: ColumnDef<Device>[] = [
-  selectColumn,
+  selectColumn<Device>(),
   ...generateSortFilterColumns<Device>(devicesTableColumnList),
   // {
   //   id: "updateStatus",

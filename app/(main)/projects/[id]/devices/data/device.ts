@@ -4,7 +4,7 @@ import { createAndroidManagementClient } from "@/actions/emm/client";
 import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { getEnterprisesTableId } from "../actions/devices";
+import { getEnterprisesTableId } from "@/app/(main)/lib/get-enterprises-table-id";
 
 type NextPageToken = string | null | undefined;
 type Device = androidmanagement_v1.Schema$Device | undefined;

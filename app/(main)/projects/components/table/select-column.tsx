@@ -1,9 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-import { Device } from "../types/device";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export const selectColumn: ColumnDef<Device> = {
+export const selectColumn = <T extends object>(): ColumnDef<T> => ({
   id: "select",
   minSize: 50,
   size: 50,
@@ -27,4 +25,4 @@ export const selectColumn: ColumnDef<Device> = {
   enableSorting: false,
   enableHiding: false,
   enableResizing: false,
-};
+});

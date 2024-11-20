@@ -56,12 +56,7 @@ export default function NavigationBar({ className }: { className?: string }) {
             </Link>
           </Button>
 
-          <Button
-            variant="ghost"
-            className="relative gap-2"
-            disabled={!enterpriseId}
-            asChild
-          >
+          <Button variant="ghost" className="relative gap-2" asChild>
             <Link href={`/projects/${enterpriseId}/devices`}>
               <SmartphoneIcon size={20} className="absolute left-2" />
               <span className="opacity-0 group-hover:opacity-100">
@@ -70,12 +65,7 @@ export default function NavigationBar({ className }: { className?: string }) {
             </Link>
           </Button>
 
-          <Button
-            variant="ghost"
-            className="relative gap-2"
-            disabled={!enterpriseId}
-            asChild
-          >
+          <Button variant="ghost" className="relative gap-2" asChild>
             <Link href={`/projects/${enterpriseId}/policies`}>
               <ShieldCheckIcon size={20} className="absolute left-2" />
               <span className="opacity-0 group-hover:opacity-100">

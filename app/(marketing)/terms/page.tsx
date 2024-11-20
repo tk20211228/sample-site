@@ -1,6 +1,6 @@
 import { AppConfig } from "@/app.config";
 
-export default function Page() {
+export default async function Page() {
   return (
     <div className="container prose pt-8 pb-10 px-6 sm:px-0">
       <h1 className="dark:text-accent-foreground text-center">利用規約</h1>

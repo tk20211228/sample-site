@@ -70,7 +70,7 @@ export type Database = {
           display_name: string
           enterprise_table_id: string
           id: string
-          policy_name: string
+          policy_name: string | null
           policy_table_id: string | null
           updated_at: string
         }
@@ -81,7 +81,7 @@ export type Database = {
           display_name: string
           enterprise_table_id: string
           id?: string
-          policy_name: string
+          policy_name?: string | null
           policy_table_id?: string | null
           updated_at?: string
         }
@@ -92,7 +92,7 @@ export type Database = {
           display_name?: string
           enterprise_table_id?: string
           id?: string
-          policy_name?: string
+          policy_name?: string | null
           policy_table_id?: string | null
           updated_at?: string
         }
