@@ -15,9 +15,14 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import SignOutButton from "../projects/components/sign-out-button";
 
 export default function NavigationBar({ className }: { className?: string }) {
+  const pathname = usePathname();
+  // 正規表現を使ってURLからenterpriseIdを抽出
+  const match = pathname.match(/\/projects\/([^/]+)(?:\/|$)/);
+  const enterpriseId = match ? match[1] : null;
   return (
     <div className={cn("relative w-14 h-dvh", className)}>
       <nav
@@ -38,27 +43,47 @@ export default function NavigationBar({ className }: { className?: string }) {
               {AppConfig.title}
             </span>
           </Button>
-          <Button variant="ghost" className="relative gap-2">
+          <Button variant="ghost" className="relative gap-2" disabled={true}>
             <HomeIcon size={20} className="absolute left-2" />
             <span className="opacity-0 group-hover:opacity-100">ホーム</span>
           </Button>
-          <Button variant="ghost" className="relative gap-2">
-            <LayoutDashboardIcon size={20} className="absolute left-2" />
-            <span className="opacity-0 group-hover:opacity-100">
-              プロジェクト
-            </span>
+          <Button variant="ghost" className="relative gap-2" asChild>
+            <Link href="/projects">
+              <LayoutDashboardIcon size={20} className="absolute left-2" />
+              <span className="opacity-0 group-hover:opacity-100">
+                プロジェクト
+              </span>
+            </Link>
           </Button>
 
-          <Button variant="ghost" className="relative gap-2">
-            <SmartphoneIcon size={20} className="absolute left-2" />
-            <span className="opacity-0 group-hover:opacity-100">デバイス</span>
+          <Button
+            variant="ghost"
+            className="relative gap-2"
+            disabled={!enterpriseId}
+            asChild
+          >
+            <Link href={`/projects/${enterpriseId}/devices`}>
+              <SmartphoneIcon size={20} className="absolute left-2" />
+              <span className="opacity-0 group-hover:opacity-100">
+                デバイス
+              </span>
+            </Link>
           </Button>
 
-          <Button variant="ghost" className="relative gap-2">
-            <ShieldCheckIcon size={20} className="absolute left-2" />
-            <span className="opacity-0 group-hover:opacity-100">ポリシー</span>
+          <Button
+            variant="ghost"
+            className="relative gap-2"
+            disabled={!enterpriseId}
+            asChild
+          >
+            <Link href={`/projects/${enterpriseId}/policies`}>
+              <ShieldCheckIcon size={20} className="absolute left-2" />
+              <span className="opacity-0 group-hover:opacity-100">
+                ポリシー
+              </span>
+            </Link>
           </Button>
-          <Button variant="ghost" className="relative gap-2">
+          <Button variant="ghost" className="relative gap-2" disabled={true}>
             <AppWindowIcon size={20} className="absolute left-2" />
             <span className="opacity-0 group-hover:opacity-100">
               アプリ管理

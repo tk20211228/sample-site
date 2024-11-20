@@ -28,6 +28,7 @@ import { useMemo, useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -164,35 +165,36 @@ export default function DeviceTable<TData, TValue>({
           全カラムを自動リサイズ
         </Button>
       </div> */}
-      {/* <div className="rounded-md border bg-background max-w-[700px] max-h-[500px] w-fit overflow-auto bg-red-300"> */}
-      {/* <div className="rounded-md border bg-background w-full max-h-[calc(100vh-300px)] m bg-red-300"> */}
       <Table
         style={{ width: table.getCenterTotalSize() }}
-        className="border-b bg-background h-full w-full"
+        className={cn(
+          "bg-background w-full",
+          "border-separate border-spacing-0" // セルの境界を分離し、あとでボーダーを重ねる
+        )}
       >
-        <TableHeader className=" bg-background z-10">
+        <TableHeader className="z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow className="group" key={headerGroup.id}>
-              {headerGroup.headers.map((header, index, array) => {
+              {headerGroup.headers.map((header) => {
                 return (
                   <TableHead
-                    className="sticky top-0 border-red-200 border-b z-20 bg-background border-r last:border-r-0 last:sticky last:right-0 last:z-20 last:bg-blue-300 first:sticky first:left-0 first:top-0 first:z-30 first:bg-red-300"
+                    className={cn(
+                      "sticky top-0",
+                      "border-b z-10 bg-background border-l",
+                      "[&:nth-child(2)]:border-l-0", // 2番目のセルの左ボーダーを削除
+                      "first:sticky first:left-0 first:z-30 first:border-l-0 first:border-r",
+                      "last:sticky  last:right-0 last:z-30 last:border-r-0"
+                    )}
                     key={header.id}
                     colSpan={header.colSpan}
                     style={{ width: `${header.getSize()}px` }}
                   >
-                    {/* {index === 0 && (
-                        <div className="absolute bottom-0 inset-x-0 h-px bg-border z-10"></div>
-                      )} */}
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
                     {header.column.columnDef.enableResizing !== false && (
                       <div
-                        className="absolute inset-y-0 -right-2 w-4 cursor-col-resize z-10"
+                        className={cn(
+                          "absolute inset-y-0 -right-2",
+                          "w-4 cursor-col-resize z-30" // 幅を狭く
+                        )}
                         onMouseDown={header.getResizeHandler()}
                         onTouchStart={header.getResizeHandler()}
                         onDoubleClick={() => autoResizeColumn(header.id)} // ダブルクリックで自動リサイズ
@@ -204,9 +206,12 @@ export default function DeviceTable<TData, TValue>({
                         <span className="sr-only">リサイズハンドラー</span>
                       </div>
                     )}
-                    {array.length - 1 === index && (
-                      <div className="absolute transition-colors left-full top-0 -bottom-px group-hover:bg-muted/50 border-b" />
-                    )}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 );
               })}
@@ -224,7 +229,13 @@ export default function DeviceTable<TData, TValue>({
                 {row.getVisibleCells().map((cell, index, array) => (
                   <TableCell
                     key={cell.id}
-                    className="relative whitespace-nowrap overflow-hidden last:sticky last:right-0 last:z-20 last:bg-background first:sticky first:left-0 first:z-20 first:bg-background"
+                    className={cn(
+                      "relative",
+                      "whitespace-nowrap overflow-hidden",
+                      "border-b",
+                      "first:sticky first:left-0 first:z-10 first:bg-background first:border-r",
+                      "last:sticky last:right-0 last:z-10 last:bg-background last:border-r last:border-l"
+                    )}
                     style={{ maxWidth: `${cell.column.getSize()}px` }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

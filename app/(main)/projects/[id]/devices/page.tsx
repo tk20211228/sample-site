@@ -21,17 +21,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       </div>
 
       <div>テーブルヘッダー</div>
-
-      <div className="flex-1 overflow-hidden border">
+      <div className="flex-1 overflow-hidden border rounded-lg">
         <DeviceTable columns={deviceColumns} data={data} />
       </div>
 
       <div>テーブルフッター</div>
     </div>
-
-    //   <div className="flex flex-col h-full p-2">
-    //   <div className="flex w-full max-w-full bg-blue-200">test</div>
-    //   <div className="flex-1 h-dvh w-full bg-red-300">tese2</div>
-    // </div>
   );
 }

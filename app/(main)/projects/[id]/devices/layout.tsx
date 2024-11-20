@@ -14,15 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex">
-      <DevicesMenuBar
+      <DevicesMenuBar />
+      {/* <DevicesMenuBar
         className={cn(
           "w-80 hidden lg:block",
-          "w-80 hidden lg:block",
-          "w-80 hidden lg:block",
-          "w-80 hidden lg:block",
-          "w-80 hidden lg:block"
         )}
-      />
+      /> */}
       {/* <MobileDevicesMenuBar /> */}
       <div className="flex-1 min-w-0">{children}</div>
     </div>
