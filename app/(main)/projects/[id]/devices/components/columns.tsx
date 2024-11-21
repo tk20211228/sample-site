@@ -16,7 +16,7 @@ import { Device } from "../types/device";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import DataTableColumnState from "./data-table-column-state";
 import DataTableMenu from "./data-table-menu";
-import generateSortFilterColumns from "../../../components/table/generate-sort-filter-columns";
+import { generateSortFilterColumns } from "../../../components/table/generate-sort-filter-columns";
 import { selectColumn } from "../../../components/table/select-column";
 
 const regEnrollmentTokensPath = /enterprises\/.*?\/enrollmentTokens\//;

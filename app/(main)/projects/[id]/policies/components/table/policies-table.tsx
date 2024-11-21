@@ -24,26 +24,36 @@ import {
   TableRow,
 } from "@/components/ui/table-resizing";
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { usePolicy } from "../../../providers/policy";
+import { PoliciesDbTableSchema } from "../../types/policy";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  initialData: TData[];
 }
 
 export default function PoliciesTable<TData, TValue>({
   columns,
-  data,
+  initialData,
 }: DataTableProps<TData, TValue>) {
+  const { policyTableData, setPolicyTableData } = usePolicy();
   const [sorting, setSorting] = useState<SortingState>([]); // ソート状態を管理
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // カラムフィルタリングの状態を管理
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({}); // カラムの可視性を管理
   const [rowSelection, setRowSelection] = useState({}); // 行の選択状態を管理
 
+  // 初回レンダリング時にinitialDataをセット
+  useEffect(() => {
+    if (initialData && policyTableData.length === 0) {
+      setPolicyTableData(initialData as PoliciesDbTableSchema[]);
+    }
+  }, [initialData, setPolicyTableData]);
+
   const table = useReactTable({
-    data,
+    data: policyTableData as TData[],
     columns,
     columnResizeMode: "onChange", // リアルタイムで列のリサイズを行う
     enableColumnResizing: true, // カラムのリサイズを有効化
@@ -180,7 +190,7 @@ export default function PoliciesTable<TData, TValue>({
                       "border-b z-10 bg-background border-l",
                       "[&:nth-child(2)]:border-l-0", // 2番目のセルの左ボーダーを削除
                       "first:sticky first:left-0 first:z-30 first:border-l-0 first:border-r",
-                      "last:sticky  last:right-0 last:z-30 last:border-r-0"
+                      "last:sticky  last:right-0 last:z-30 last:border-r"
                     )}
                     key={header.id}
                     colSpan={header.colSpan}

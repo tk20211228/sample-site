@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { TableColumnDefinition } from "../../types/column";
 import { DataTableColumnHeader } from "../../[id]/devices/components/data-table-column-header";
 
-export default function generateSortFilterColumns<T>(
+export function generateSortFilterColumns<T>(
   devicesTableColumnList: TableColumnDefinition[]
 ): ColumnDef<T>[] {
   return devicesTableColumnList.map((def) => ({

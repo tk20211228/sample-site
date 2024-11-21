@@ -32,6 +32,7 @@ export const getDevices = async (enterpriseName: string) => {
     // ページネーションを使用してすべてのデバイスを取得
     const androidmanagement = await createAndroidManagementClient();
     do {
+      // const data= await androidmanagement.enterprises.devices
       const {
         data: { devices, nextPageToken: token },
       }: { data: DeviceListData } = await androidmanagement.enterprises.devices
@@ -44,6 +45,7 @@ export const getDevices = async (enterpriseName: string) => {
           console.error("Error Get device list:", error.message);
           throw new Error(error.message);
         });
+      // console.log("devices", devices);
 
       if (!devices || devices.length === 0) break;
 
@@ -89,7 +91,7 @@ const saveDevicesToDB = async (
   enterpriseId: string,
   supabase: SupabaseClient
 ) => {
-  const devicesToUpsert = allDevices.map((device) => {
+  const devicesList = allDevices.map((device) => {
     if (!device) return;
     return {
       enterprise_table_id: enterpriseId,
@@ -100,7 +102,7 @@ const saveDevicesToDB = async (
     };
   });
 
-  const { error } = await supabase.from("devices").upsert(devicesToUpsert, {
+  const { error } = await supabase.from("devices").upsert(devicesList, {
     onConflict: "device_name",
   });
 

@@ -212,13 +212,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          created_at?: string
+          created_at: string
           display_name?: string | null
           enterprise_table_id?: string
           id?: string
           policy_config_data: Json
           policy_name: string
-          updated_at?: string
+          updated_at: string
         }
         Update: {
           created_at?: string
@@ -308,7 +308,7 @@ export type Database = {
           organization_name: string
           owner_id: string
           project_name: string
-          updatee_at: string
+          updated_at: string
         }
         Insert: {
           created_at?: string
@@ -317,7 +317,7 @@ export type Database = {
           organization_name: string
           owner_id?: string
           project_name: string
-          updatee_at?: string
+          updated_at?: string
         }
         Update: {
           created_at?: string
@@ -326,7 +326,7 @@ export type Database = {
           organization_name?: string
           owner_id?: string
           project_name?: string
-          updatee_at?: string
+          updated_at?: string
         }
         Relationships: [
           {
