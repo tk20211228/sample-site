@@ -3,8 +3,9 @@ import { passwordSchema } from "./password-email-schema";
 
 export const signInFormSchema = z
   .object({
-    emailOrUsername: z
+    emailOrUserName: z
       .string()
+      .trim()
       .min(1, "メールアドレスまたはユーザー名を入力してください"),
     password: passwordSchema,
   })

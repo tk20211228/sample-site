@@ -10,7 +10,9 @@ import { Json } from "@/types/database";
  * @returns
  */
 export const deletePolicy = async (policyName: string) => {
-  if (policyName === "デフォルトポリシー") {
+  // デフォルトポリシーのパターンを定義
+  const defaultPolicyPattern = /^enterprise\/[^/]+\/policies\/default$/;
+  if (defaultPolicyPattern.test(policyName)) {
     throw new Error("デフォルトポリシーは削除できません。");
   }
   //認証

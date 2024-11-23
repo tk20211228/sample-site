@@ -6,17 +6,25 @@ import { Button } from "@/components/ui/button";
 import { formatToJapaneseDateTime } from "@/lib/date-fns/get-date";
 import { ArrowUpDown, PlusIcon } from "lucide-react";
 import { selectColumn } from "../../../../components/table/select-column";
-import { PoliciesDbTableSchema } from "../../types/policy";
+import { PolicyTableType } from "../../types/policy";
 import { DataTableColumnSortHeader } from "./data-table-column-sort-header";
 import PoliciesTableMenu from "./policies-table-menu";
 
-export const policyColumns: ColumnDef<PoliciesDbTableSchema>[] = [
-  selectColumn<PoliciesDbTableSchema>(),
+type ColumnMeta = {
+  title: string;
+};
+
+export type PolicyColumnDef = ColumnDef<PolicyTableType> & {
+  meta: ColumnMeta;
+};
+
+export const policyColumns: PolicyColumnDef[] = [
+  selectColumn<PolicyTableType>(),
   {
     accessorKey: "number",
     accessorFn: (_, index) => index + 1,
     minSize: 105,
-    size: 150,
+    size: 300,
     header: ({ column }) => (
       <DataTableColumnSortHeader column={column} title="No." />
     ),
@@ -28,27 +36,31 @@ export const policyColumns: ColumnDef<PoliciesDbTableSchema>[] = [
         {row.index + 1}
       </div>
     ),
+    meta: {
+      title: "No.",
+    },
   },
   {
     accessorKey: "display_name",
     minSize: 170,
-    size: 170,
+    size: 300,
     header: ({ column }) => (
       <DataTableColumnSortHeader column={column} title="ポリシー名" />
     ),
     cell: ({ row }) => (
-      <div
-        className="truncate flex items-center justify-center"
-        title={row.getValue("display_name")}
-      >
+      <div className="truncate" title={row.getValue("display_name")}>
         {row.getValue("display_name")}
       </div>
     ),
+    filterFn: "includesString", //大文字と小文字を区別しない
+    meta: {
+      title: "ポリシー名",
+    },
   },
   {
     accessorKey: "version",
     minSize: 125,
-    size: 125,
+    size: 200,
     header: ({ column }) => (
       <DataTableColumnSortHeader column={column} title="Ver." />
     ),
@@ -60,6 +72,9 @@ export const policyColumns: ColumnDef<PoliciesDbTableSchema>[] = [
         {row.getValue("version")}
       </div>
     ),
+    meta: {
+      title: "Ver.",
+    },
   },
   {
     accessorKey: "created_at",
@@ -76,6 +91,9 @@ export const policyColumns: ColumnDef<PoliciesDbTableSchema>[] = [
         {formatToJapaneseDateTime(row.getValue("created_at"))}
       </div>
     ),
+    meta: {
+      title: "作成日時",
+    },
   },
   {
     accessorKey: "updated_at",
@@ -92,6 +110,9 @@ export const policyColumns: ColumnDef<PoliciesDbTableSchema>[] = [
         {formatToJapaneseDateTime(row.getValue("updated_at"))}
       </div>
     ),
+    meta: {
+      title: "更新日時",
+    },
   },
   {
     id: "actions",
@@ -115,6 +136,9 @@ export const policyColumns: ColumnDef<PoliciesDbTableSchema>[] = [
           <PoliciesTableMenu row={row} />
         </div>
       );
+    },
+    meta: {
+      title: "操作",
     },
   },
 ];

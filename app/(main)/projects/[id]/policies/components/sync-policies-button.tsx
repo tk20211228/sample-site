@@ -6,16 +6,12 @@ import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
 import { usePolicy } from "../../providers/policy";
 import { getSyncedPolicies } from "../data/policy";
-import { PoliciesDbTableSchema } from "../types/policy";
+import { PolicyTableType } from "../types/policy";
+import { useEnterprise } from "../../providers/enterprise";
 
-export default function GetPolicesListButton({
-  enterpriseId,
-  data,
-}: {
-  enterpriseId: string;
-  data: PoliciesDbTableSchema[];
-}) {
+export default function SyncPoliciesButton() {
   const [isPending, startTransition] = useTransition();
+  const { enterpriseId } = useEnterprise();
   const { setPolicyTableData } = usePolicy();
   const enterpriseName = `enterprises/${enterpriseId}`;
   const handleClick = async () => {
@@ -24,29 +20,26 @@ export default function GetPolicesListButton({
         const data = await getSyncedPolicies(enterpriseName);
         setPolicyTableData(data);
         console.log("Policies data", data);
-        // setPoliciesData(data);
       }
     });
   };
 
   // console.log("policiesData", policiesData);
   return (
-    <div className="pb-2">
-      <Button
-        variant="outline"
-        className=""
-        onClick={handleClick}
-        disabled={isPending}
-      >
-        {isPending ? (
-          <>
-            <Loader2 className="mr-2 animate-spin" />
-            同期中...
-          </>
-        ) : (
-          "Googleサーバーとポリシー情報を同期"
-        )}
-      </Button>
-    </div>
+    <Button
+      variant="outline"
+      className=" h-8 hidden lg:flex"
+      onClick={handleClick}
+      disabled={isPending}
+    >
+      {isPending ? (
+        <>
+          <Loader2 className="mr-2 animate-spin" />
+          同期中...
+        </>
+      ) : (
+        "Googleサーバーと同期 (リリースする時は削除するボタン)"
+      )}
+    </Button>
   );
 }

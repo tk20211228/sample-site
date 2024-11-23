@@ -24,11 +24,11 @@ import {
   TableRow,
 } from "@/components/ui/table-resizing";
 
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useEffect, useMemo, useState } from "react";
 import { usePolicy } from "../../../providers/policy";
-import { PoliciesDbTableSchema } from "../../types/policy";
+import { PolicyTableType } from "../../types/policy";
+import { PoliciesTableToolbar } from "./policies-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,7 +48,7 @@ export default function PoliciesTable<TData, TValue>({
   // 初回レンダリング時にinitialDataをセット
   useEffect(() => {
     if (initialData && policyTableData.length === 0) {
-      setPolicyTableData(initialData as PoliciesDbTableSchema[]);
+      setPolicyTableData(initialData as PolicyTableType[]);
     }
   }, [initialData, setPolicyTableData]);
 
@@ -101,7 +101,7 @@ export default function PoliciesTable<TData, TValue>({
         } else if (/[A-Z]/.test(char)) {
           return 12; // 英大文字
         } else if (/[a-z0-9]/.test(char)) {
-          return 8; // 英小文字と数字
+          return 9; // 英小文字と数字
         }
         return 8; // その他の文字
       };
@@ -159,23 +159,13 @@ export default function PoliciesTable<TData, TValue>({
   );
 
   return (
-    <div className="flex flex-col h-full">
-      {/* <div className="pb-4">
-        <DataTableToolbar table={table} />
-      </div>
-      <div className="flex justify-end p-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => autoResizeAllColumns()}
-        >
-          全カラムを自動リサイズ
-        </Button>
-      </div> */}
+    <div className="flex flex-col h-full p-1">
+      <PoliciesTableToolbar table={table} className="pb-1" />
       <Table
         style={{ width: table.getCenterTotalSize() }}
         className={cn(
           "bg-background w-full",
+          // "p-1",
           "border-separate border-spacing-0" // セルの境界を分離し、あとでボーダーを重ねる
         )}
       >
@@ -259,6 +249,8 @@ export default function PoliciesTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+
+      <div>テーブルフッター</div>
       {/* </div> */}
       {/* <div className="mt-2">
         <DataTablePagination table={table} />

@@ -17,12 +17,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SignOutButton from "../projects/components/sign-out-button";
+import { useEnterprise } from "../projects/[id]/providers/enterprise";
 
 export default function NavigationBar({ className }: { className?: string }) {
-  const pathname = usePathname();
-  // 正規表現を使ってURLからenterpriseIdを抽出
-  const match = pathname.match(/\/projects\/([^/]+)(?:\/|$)/);
-  const enterpriseId = match ? match[1] : null;
+  const { enterpriseId } = useEnterprise();
   return (
     <div className={cn("relative w-14 h-dvh", className)}>
       <nav

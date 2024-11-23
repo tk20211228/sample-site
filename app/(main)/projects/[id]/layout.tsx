@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import NavigationBar from "../../components/navigation-ber";
 import { PolicyProvider } from "./providers/policy";
+import { EnterpriseProvider } from "./providers/enterprise";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,17 +14,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <PolicyProvider>
-      <div className="flex">
-        <NavigationBar />
-        {/* <div className="hidden lg:block">
+    <EnterpriseProvider>
+      <PolicyProvider>
+        <div className="flex">
+          <NavigationBar />
+          {/* <div className="hidden lg:block">
         <NavigationBar />
       </div>
       <div className="lg:hidden">
         <MobileNavigationBar />
       </div> */}
-        <div className="flex-1 min-w-0">{children}</div>
-      </div>
-    </PolicyProvider>
+          <div className="flex-1 min-w-0">{children}</div>
+        </div>
+      </PolicyProvider>
+    </EnterpriseProvider>
   );
 }

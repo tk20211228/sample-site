@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
 import { createAndroidManagementClient } from "../../client";
+import { defaultPolicyRequestBody } from "@/data/default-policy-request-body";
 
 export const createPolicy = async (
   enterpriseName: string,
@@ -15,9 +16,8 @@ export const createPolicy = async (
   if (!user) {
     throw new Error("User not found");
   }
-  const requestBody: androidmanagement_v1.Schema$Policy =
-    firstPolicyRequestBody;
-  const androidmanagement = createAndroidManagementClient();
+  const requestBody = defaultPolicyRequestBody;
+  const androidmanagement = await createAndroidManagementClient();
   const { data } = await androidmanagement.enterprises.policies
     .patch({
       name: `${enterpriseName}/policies/${policyName}`,

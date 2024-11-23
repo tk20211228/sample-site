@@ -14,10 +14,10 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
   return (
     <div className="flex flex-col h-dvh p-2">
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         <GetDevicesListButton enterpriseId={id} />
         <CreateQrButton enterpriseName={enterpriseName} />
-      </div>
+      </div> */}
 
       <div>テーブルヘッダー</div>
       <div className="flex-1 overflow-hidden border rounded-lg">

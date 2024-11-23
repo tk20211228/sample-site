@@ -10,5 +10,6 @@ export const passwordSchema = z
     "大文字、小文字、数字、記号を含む8文字以上で設定してください"
   );
 export const emailOrUsernameSchema = z.object({
-  emailOrUsername: z.string().min(1, "メールアドレスを入力してください"),
+  emailOrUserName: z.string().trim().min(1, "メールアドレスを入力してください"),
+  password: passwordSchema,
 });

@@ -5,9 +5,10 @@ import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { getEnterprisesTableId } from "@/app/(main)/lib/get-enterprises-table-id";
+import { Json } from "@/types/database";
 
 type NextPageToken = string | null | undefined;
-type Policy = androidmanagement_v1.Schema$Policy | undefined;
+type Policy = androidmanagement_v1.Schema$Policy;
 type PolicyListData = {
   policies?: Policy[];
   nextPageToken?: NextPageToken;
@@ -53,8 +54,8 @@ export const getSyncedPolicies = async (enterpriseName: string) => {
       allPolicies = [...allPolicies, ...policies];
       nextPageToken = token;
 
-      // １ペーkごとにDBに保存
-      await savePoliciesToDB(policies, enterprisesTableId, supabase)
+      // １ページ毎にDBに保存
+      await savePoliciesToDB(policies, enterprisesTableId)
         .then(() => {
           allPolicies = []; // メモリをクリア
         })
@@ -65,7 +66,7 @@ export const getSyncedPolicies = async (enterpriseName: string) => {
     } while (nextPageToken);
     // 残りのポリシーをDBに保存
     if (allPolicies.length > 0) {
-      await savePoliciesToDB(allPolicies, enterprisesTableId, supabase);
+      await savePoliciesToDB(allPolicies, enterprisesTableId);
     }
 
     // 同期完了後、DBからポリシーを取得する
@@ -104,19 +105,21 @@ export const getSyncedPolicies = async (enterpriseName: string) => {
  */
 const savePoliciesToDB = async (
   allPolicies: Policy[],
-  enterprisesTableId: string,
-  supabase: SupabaseClient
+  enterprisesTableId: string
 ) => {
-  const policiesList = allPolicies.map((policy) => {
-    if (!policy) return;
-    return {
-      enterprise_table_id: enterprisesTableId,
-      policy_name: policy.name,
-      policy_config_data: policy,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-  });
+  const supabase = await createClient();
+  const policiesList = allPolicies
+    .map((policy) => {
+      if (!policy.name) return;
+      return {
+        enterprise_table_id: enterprisesTableId,
+        policy_name: policy.name,
+        policy_config_data: policy as Json,
+        // created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== undefined);
 
   const { error } = await supabase.from("policies").upsert(policiesList, {
     onConflict: "policy_name",

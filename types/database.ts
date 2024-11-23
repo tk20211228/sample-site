@@ -212,7 +212,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          created_at: string
+          created_at?: string
           display_name?: string | null
           enterprise_table_id?: string
           id?: string

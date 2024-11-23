@@ -1,25 +1,28 @@
 "use client";
 
+import { Form } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ReactNode, createContext, useContext, useState } from "react";
-
-type ContextType = {
-  emailOrUsername: string;
-  setEmailOrUsername: (emailOrUsername: string) => void;
-};
-
-const Context = createContext<ContextType>({
-  emailOrUsername: "",
-  setEmailOrUsername: () => {},
-} as ContextType);
+import { useForm, useFormContext } from "react-hook-form";
+import { emailOrUsernameSchema } from "../schemas/password-email-schema";
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const [emailOrUsername, setEmailOrUsername] = useState<string>("kubokidev");
+  const form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(emailOrUsernameSchema),
+    defaultValues: {
+      emailOrUserName: "t3kuboki@gmail.com",
+      password: "testTEST123!!",
+    },
+  });
 
-  return (
-    <Context.Provider value={{ emailOrUsername, setEmailOrUsername }}>
-      {children}
-    </Context.Provider>
-  );
+  return <Form {...form}>{children}</Form>;
 }
 
-export const useEmailOrUsername = () => useContext(Context);
+/**
+ * 入力中のユーザー名orパスワードをリセット画面などで引き継ぐ際に使用
+ */
+// export const useEmailOrUsername = () => {
+//   const form = useFormContext();
+//   return form.getValues("emailOrUserName");
+// };

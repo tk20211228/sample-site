@@ -10,41 +10,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 import DiscordSingInButton from "../../components/discord-sing-in_button";
 import { GitHubLoginButton } from "../../components/github-login-button";
 import GoogleSingInButton from "../../components/google-sing-in-button";
-import { useEmailOrUsername } from "../../providers/user";
 
 type FormData = z.infer<typeof emailOrUsernameSchema>;
 
 export default function PasswordResetForm() {
-  const { emailOrUsername, setEmailOrUsername } = useEmailOrUsername();
-  const form = useForm({
-    mode: "onChange",
-    resolver: zodResolver(emailOrUsernameSchema),
-    defaultValues: {
-      emailOrUsername: emailOrUsername,
-    },
-  });
-
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === "emailOrUsername" && value.emailOrUsername) {
-        setEmailOrUsername(value.emailOrUsername);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form, setEmailOrUsername]);
-
+  const form = useFormContext<FormData>();
   const onSubmit = async (data: FormData) => {
-    await resetPassword(data.emailOrUsername).catch((error) => {
+    await resetPassword(data.emailOrUserName).catch((error) => {
       if (error.message !== "NEXT_REDIRECT") {
         alert(error.message);
       }
@@ -59,48 +39,43 @@ export default function PasswordResetForm() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-5 pb-2"
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 pb-2">
+          <FormField
+            control={form.control}
+            name="emailOrUserName"
+            render={({ field }) => (
+              <FormItem className="pb-2">
+                <FormControl>
+                  <Input
+                    className={`text-center text-xl text-primary ${
+                      field.value ? "border-0" : "border-zinc-700"
+                    }`}
+                    autoComplete="off"
+                    placeholder="メールアドレスを入力"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Button
+            className="w-full"
+            disabled={
+              !form.formState.isValid ||
+              form.formState.isSubmitting ||
+              form.formState.isValidating
+            }
           >
-            <FormField
-              control={form.control}
-              name="emailOrUsername"
-              render={({ field }) => (
-                <FormItem className="pb-2">
-                  <FormControl>
-                    <Input
-                      className={`text-center text-xl text-primary ${
-                        field.value ? "border-0" : "border-zinc-700"
-                      }`}
-                      autoComplete="off"
-                      placeholder="メールアドレスを入力"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button
-              className="w-full"
-              disabled={
-                !form.formState.isValid ||
-                form.formState.isSubmitting ||
-                form.formState.isValidating
-              }
-            >
-              {form.formState.isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  問い合わせ中...
-                </>
-              ) : (
-                <>パスワードをリセットする</>
-              )}
-            </Button>
-          </form>
-        </Form>
+            {form.formState.isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 size-4 animate-spin" />
+                問い合わせ中...
+              </>
+            ) : (
+              <>パスワードをリセットする</>
+            )}
+          </Button>
+        </form>
 
         <CardDescription className="mb-8 text-center text-xs sm:text-sm pt-5">
           または、別の方法でサインインしてください。

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 
 // import { toast } from "@/components/hooks/use-toast";
 import { signInWithEmailOrUsername } from "@/actions/auth-supabase";
@@ -18,91 +18,73 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import PasswordWithResetForm from "../../components/password-with-reset-form";
 import { signInFormSchema } from "../../schemas/auth-validation";
-import { useEmailOrUsername } from "../../providers/user";
 import { useEffect } from "react";
+import { z } from "zod";
+import { emailOrUsernameSchema } from "../../schemas/password-email-schema";
 
 const schema = signInFormSchema;
 
+type emailOrUsernameType = z.infer<typeof emailOrUsernameSchema>;
+
 type FormData = {
-  emailOrUsername: string;
+  emailOrUserName: string;
   password: string;
 };
 
 export function SignInForm() {
-  const { emailOrUsername, setEmailOrUsername } = useEmailOrUsername();
-  const form = useForm({
-    mode: "onChange",
-    resolver: zodResolver(schema),
-    defaultValues: {
-      emailOrUsername: emailOrUsername,
-      password: "testTEST123!!",
-    },
-  });
-
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === "emailOrUsername" && value.emailOrUsername) {
-        setEmailOrUsername(value.emailOrUsername);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form, setEmailOrUsername]);
-
+  const form = useFormContext<FormData>();
   const onSubmit = async (formData: FormData) => {
     const parsedFormData = schema.parse(formData); //型にbrandメソッドを使って"SignIn"という名前があるため、zodのスキーマを使ってデータをパースする
     await signInWithEmailOrUsername(parsedFormData).catch(async (error) => {
-      if (error.message === "NEXT_REDIRECT") {
-        return;
+      if (error.message !== "NEXT_REDIRECT") {
+        alert(error.message);
       }
-      alert(error.message);
     });
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="emailOrUsername"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                メールアドレス {"  "}or {"  "}ユーザー名
-              </FormLabel>
-              <FormControl>
-                <Input autoComplete="off" placeholder="" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <PasswordWithResetForm
-          form={form}
-          name="password"
-          autoComplete={"new-password"}
-        />
-        <Button
-          disabled={
-            !form.formState.isValid ||
-            form.formState.isSubmitting ||
-            form.formState.isValidating
-          }
-        >
-          {form.formState.isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ログイン中...
-            </>
-          ) : (
-            <>ログイン</>
-          )}
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-muted-foreground text-xs ml-4"
-          asChild
-        ></Button>
-      </form>
-    </Form>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <FormField
+        control={form.control}
+        name="emailOrUserName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              メールアドレス {"  "}or {"  "}ユーザー名
+            </FormLabel>
+            <FormControl>
+              <Input autoComplete="off" placeholder="" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <PasswordWithResetForm
+        form={form}
+        name="password"
+        autoComplete={"new-password"}
+      />
+      <Button
+        disabled={
+          !form.formState.isValid ||
+          form.formState.isSubmitting ||
+          form.formState.isValidating
+        }
+      >
+        {form.formState.isSubmitting ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ログイン中...
+          </>
+        ) : (
+          <>ログイン</>
+        )}
+      </Button>
+      <Button
+        variant="ghost"
+        className="text-muted-foreground text-xs ml-4"
+        asChild
+      ></Button>
+    </form>
   );
 }

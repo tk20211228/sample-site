@@ -17,11 +17,11 @@ export default async function Page() {
             <br />
             しっかり管理する
           </h1>
-          <ol className="text-lg sm:text-2xl pt-10 leading-normal md:leading-relaxed tracking-wide">
+          <ol className="text-lg list-disc sm:text-2xl pt-10 leading-normal md:leading-relaxed tracking-wide">
             Android端末をしっかり管理することで、以下のような課題を解決できます。
-            <li>・情報漏洩対策</li>
-            <li>・端末設定</li>
-            <li>・アプリ管理</li>
+            <li>情報漏洩対策</li>
+            <li>端末設定</li>
+            <li>アプリ管理</li>
           </ol>
         </div>
       </div>

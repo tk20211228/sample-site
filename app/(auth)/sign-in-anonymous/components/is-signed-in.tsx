@@ -21,5 +21,5 @@ export default function IsSignedIn({
     return null;
   }
 
-  return <>{children}</>;
+  return children;
 }

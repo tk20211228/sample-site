@@ -1,11 +1,11 @@
 "use client";
 
 import { ReactNode, createContext, useContext, useState } from "react";
-import { PoliciesDbTableSchema } from "../policies/types/policy";
+import { PolicyTableType } from "../policies/types/policy";
 
 type ContextType = {
-  policyTableData: PoliciesDbTableSchema[];
-  setPolicyTableData: (data: PoliciesDbTableSchema[]) => void;
+  policyTableData: PolicyTableType[];
+  setPolicyTableData: (data: PolicyTableType[]) => void;
 };
 
 const Context = createContext<ContextType>({
@@ -14,9 +14,7 @@ const Context = createContext<ContextType>({
 } as ContextType);
 
 export function PolicyProvider({ children }: { children: ReactNode }) {
-  const [policyTableData, setPolicyTableData] = useState<
-    PoliciesDbTableSchema[]
-  >([]);
+  const [policyTableData, setPolicyTableData] = useState<PolicyTableType[]>([]);
 
   return (
     <Context.Provider value={{ policyTableData, setPolicyTableData }}>

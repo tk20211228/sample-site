@@ -8,12 +8,12 @@ import {
 } from "@/app/(auth)/schemas/auth-validation";
 import { getUserContextData } from "@/lib/context/user-context";
 
-import { getSeverDate } from "@/lib/date-fns/get-date";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { passwordUpdateSchema } from "@/app/(auth)/schemas/password-update-schema";
+import { formatToJapaneseDateTime } from "@/lib/date-fns/get-date";
 
 const host =
   process.env.NODE_ENV === "production" //本番環境にデプロイされていれば
@@ -33,7 +33,7 @@ export const signUpNewUser = async (formData: SignUp) => {
   // フォームデータの検証に成功した場合, Supabase にユーザー登録を行う
   const supabase = await createClient();
   const { username, email, password } = formData;
-  const now = getSeverDate();
+  const now = formatToJapaneseDateTime();
 
   const userContextData = await getUserContextData();
 
@@ -82,7 +82,7 @@ export const signUpNewUser = async (formData: SignUp) => {
 };
 
 async function signInWithEmail(formData: SignIn) {
-  const { emailOrUsername: email, password } = formData;
+  const { emailOrUserName: email, password } = formData;
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -100,7 +100,7 @@ async function signInWithEmail(formData: SignIn) {
 
 async function signInWithUsername(formData: SignIn) {
   const supabaseAdmin = createAdminClient();
-  const { emailOrUsername: username, password } = formData;
+  const { emailOrUserName: username, password } = formData;
   const { data: user, error: dbError } = await supabaseAdmin
     .from("users")
     .select("id, email")
@@ -127,7 +127,7 @@ export const signInWithEmailOrUsername = async (formData: SignIn) => {
     throw new Error("フォームデータの検証に失敗しました");
   }
   // メールアドレスかユーザー名かを判断
-  const isEmail = formData.emailOrUsername.includes("@");
+  const isEmail = formData.emailOrUserName.includes("@");
   isEmail
     ? await signInWithEmail(safeParsedFormData.data)
     : await signInWithUsername(safeParsedFormData.data);

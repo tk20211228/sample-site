@@ -29,29 +29,41 @@ import {
 import { useState } from "react";
 
 import { Row } from "@tanstack/react-table";
-import { PoliciesDbTableSchema } from "../../types/policy";
+import { PolicyTableType } from "../../types/policy";
 import { deletePolicy } from "../../actions/delete-policy";
+import { usePolicy } from "../../../providers/policy";
+import { useEnterprise } from "../../../providers/enterprise";
 
 interface DataTableMenuProps<TData, TValue> {
-  row: Row<PoliciesDbTableSchema>;
+  row: Row<PolicyTableType>;
 }
 
 export default function PoliciesTableMenu<TData, TValue>({
   row,
 }: DataTableMenuProps<TData, TValue>) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { policyTableData, setPolicyTableData } = usePolicy();
+  const { enterpriseName } = useEnterprise();
 
   const onClick = async () => {
     console.log(parent);
   };
-  const onClickDelete = async () => {
-    console.log(row.original.policy_name);
-    if (row.original.policy_name === "デフォルトポリシー") {
+  const handleDelete = async () => {
+    if (row.original.policy_name === enterpriseName + "/policies/default") {
       alert("デフォルトポリシーは削除できません。");
       return;
     }
-    const res = await deletePolicy(row.original.policy_name);
-    alert("削除しました。");
+    // Googleでポリシーを削除,削除後tableを更新
+    await deletePolicy(row.original.policy_name).then(() => {
+      alert("削除しました。");
+      const newData = policyTableData.filter(
+        (p) => p.policy_name !== row.original.policy_name
+      );
+      setPolicyTableData(newData);
+      // setPolicyTableData((prev) =>
+      //   prev.filter((p) => p.policy_name !== row.original.policy_name)
+      // );
+    });
   };
 
   return (
@@ -99,7 +111,7 @@ export default function PoliciesTableMenu<TData, TValue>({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>キャンセル</AlertDialogCancel>
-            <AlertDialogAction onClick={onClickDelete}>OK</AlertDialogAction>
+            <AlertDialogAction onClick={handleDelete}>OK</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

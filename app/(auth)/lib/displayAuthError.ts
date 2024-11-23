@@ -1,4 +1,4 @@
-import { getSeverDate } from "@/lib/date-fns/get-date";
+import { formatToJapaneseDateTime } from "@/lib/date-fns/get-date";
 import {
   getSupabaseAuthErrorMessage,
   SupabaseAuthErrorCode,
@@ -7,7 +7,6 @@ import {
 export const authErrorMessage = async (
   errorCode: SupabaseAuthErrorCode
 ): Promise<string> => {
-  const now = getSeverDate();
   const errorMessage = await getSupabaseAuthErrorMessage(errorCode);
   if (errorMessage) {
     return errorMessage;
@@ -16,6 +15,6 @@ export const authErrorMessage = async (
       未知のエラーが発生しました。
       システム管理者に連絡してください。
       code: ${errorCode}
-      日時: ${now}`;
+      日時: ${formatToJapaneseDateTime()}`;
   }
 };

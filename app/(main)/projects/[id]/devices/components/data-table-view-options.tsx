@@ -32,9 +32,9 @@ export function DataTableViewOptions<TData>({
           カラム一覧
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="end" className="w-fit">
+        {/* <DropdownMenuLabel className="text-center">一覧</DropdownMenuLabel> */}
+        {/* <DropdownMenuSeparator /> */}
         {table
           .getAllColumns()
           .filter(
@@ -45,11 +45,13 @@ export function DataTableViewOptions<TData>({
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
-                className="capitalize"
+                className=""
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {/* {column.id} */}
+                {(column.columnDef.meta as { title: string })?.title ||
+                  column.id}
               </DropdownMenuCheckboxItem>
             );
           })}
