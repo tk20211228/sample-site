@@ -6,4 +6,5 @@ export const publicAppsTableSchema = z.object({
   iconUrl: z.string(),
   updateTime: z.string(),
   minAndroidSdkVersion: z.string(),
+  playStoreUrl: z.string(),
 });

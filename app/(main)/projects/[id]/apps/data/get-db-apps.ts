@@ -15,7 +15,8 @@ export const getDbApps = async (enterpriseName: string) => {
       app_details->>title,
       app_details->>iconUrl,
       app_details->>updateTime,
-      app_details->>minAndroidSdkVersion
+      app_details->>minAndroidSdkVersion,
+      app_details->>playStoreUrl
     `
     )
     .eq("enterprise_table_id", enterpriseTableId);

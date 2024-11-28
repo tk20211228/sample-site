@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { getAppData } from "../../data/get-playstore-app";
 import { IFRAME_CONFIG } from "../../data/public-app-iframe-config";
 import AppSonner from "./table/app-sonner";
+import { cn } from "@/lib/utils";
 
 type SelectEvent = {
   action: "selected";
@@ -40,9 +41,11 @@ declare const gapi: {
 export default function PublicAppsIframe({
   webToken,
   enterpriseName,
+  className,
 }: {
   webToken: WebTokenType;
   enterpriseName: string;
+  className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
@@ -109,7 +112,7 @@ export default function PublicAppsIframe({
       />
       <div
         ref={containerRef}
-        className="w-full h-full relative"
+        className={cn("w-full h-full relative", className)}
         aria-label="Google Play 公開アプリ検索"
         role="region"
       />

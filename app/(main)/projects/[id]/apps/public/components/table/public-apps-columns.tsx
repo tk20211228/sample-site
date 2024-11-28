@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, PlusIcon } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import { PublicAppsTableType } from "@/app/(main)/types/apps";
 import Image from "next/image";
@@ -45,12 +45,12 @@ export const publicAppsColumns: PublicAppsColumnDef[] = [
     minSize: 40,
     size: 40,
     header: () => (
-      <div className="flex items-center justify-center size-10">Icon</div>
+      <div className="flex items-center justify-center size-10 pt-1">Icon</div>
     ),
     cell: ({ row }) => (
       <div className="p-1 size-12">
         <div
-          className="overflow-hidden border-default rounded-md size-10 relative"
+          className="overflow-hidden border-default rounded-md size-10 relative border"
           title={row.getValue("iconUrl")}
         >
           <Image
@@ -84,20 +84,12 @@ export const publicAppsColumns: PublicAppsColumnDef[] = [
     minSize: 40,
     size: 40,
     header: () => {
-      return (
-        <div className="flex items-center justify-center">
-          <Button variant="ghost" size="icon" className="h-8">
-            <PlusIcon className="h-4 w-4" />
-            <span className="sr-only">カラムを追加</span>
-          </Button>
-          <div title="カラムを追加" />
-        </div>
-      );
+      return <div className="flex items-center justify-center"></div>;
     },
     cell: ({ row }) => {
       return (
         <div className="flex items-center justify-center">
-          <PublicAppsTableMenu row={row} />
+          <PublicAppsTableMenu row={row} className="size-6" />
         </div>
       );
     },

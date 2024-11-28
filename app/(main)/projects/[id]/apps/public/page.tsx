@@ -21,22 +21,27 @@ export default async function Page({
   const token = await getAndroidEnterpriseWebToken(enterpriseName); // Android Enterprise API
 
   return (
-    <div className="flex flex-row h-dvh p-1 border  space-x-1">
-      <div className="w-1/4 overflow-hidden border rounded-lg  hidden lg:block">
-        <PublicAppsTable columns={publicAppsColumns} initialData={data} />
+    <div className="flex flex-row h-dvh space-x-1">
+      <div className="overflow-hidden rounded-lg hidden lg:block py-1 pl-1">
+        <PublicAppsTable
+          columns={publicAppsColumns}
+          initialData={data}
+          className=""
+        />
       </div>
-
-      {/* 回答　　*/}
-      <div className="relative flex-1 border rounded-lg overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <Loader2Icon className="animate-spin  size-10 text-muted-foreground/30" />
+      <div className="flex-1 py-1 pr-1">
+        <div className="relative w-full h-full rounded-lg overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Loader2Icon className="animate-spin size-10 text-muted-foreground/30" />
+          </div>
+          {token && (
+            <PublicAppsIframe
+              webToken={token}
+              enterpriseName={enterpriseName ?? ""}
+              className=""
+            />
+          )}
         </div>
-        {token && (
-          <PublicAppsIframe
-            webToken={token}
-            enterpriseName={enterpriseName ?? ""}
-          />
-        )}
       </div>
     </div>
   );

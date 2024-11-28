@@ -11,7 +11,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Download, EllipsisIcon, PenBoxIcon, Trash2 } from "lucide-react";
+import {
+  Download,
+  EllipsisIcon,
+  ExternalLinkIcon,
+  FileTextIcon,
+  Trash2,
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -47,9 +53,17 @@ export default function PublicAppsTableMenu({
   // const { enterpriseName, enterpriseId } = useEnterprise();
   // const router = useRouter();
 
-  const onClick = async () => {
-    console.log(parent);
+  // const onClick = async () => {
+  //   console.log(parent);
+  // };
+  const handleExternalLink = () => {
+    const url = row.original.playStoreUrl;
+    window.open(url, "_blank");
   };
+  const handleDownload = async () => {
+    window.location.href = `/api/download?name=${row.original.name}`;
+  };
+
   const handleDelete = async () => {
     await deleteApp(row.original.name)
       .then(() => {
@@ -64,17 +78,6 @@ export default function PublicAppsTableMenu({
       });
   };
 
-  // const handleEditPolicy = async () => {
-  //   const data = await editPolicy(row.original.policy_name);
-  //   if (!data) return;
-  //   const displayName = row.original.display_name ?? "";
-  //   const policyConfigData = data.policy_config_data;
-  //   const parsed = editPolicyFormSchema.parse(policyConfigData);
-  //   parsed.displayName = displayName;
-  //   setCurrentCreatePolicy(parsed);
-  //   router.push(`/projects/${enterpriseId}/policies/general`);
-  // };
-
   return (
     <div>
       <DropdownMenu>
@@ -86,19 +89,19 @@ export default function PublicAppsTableMenu({
         </DropdownMenuTrigger>
         <DropdownMenuContent className=" space-y-1 px-2" align="end">
           <DropdownMenuItem onSelect={() => {}}>
-            <PenBoxIcon className="mr-4 h-4 w-4" />
+            <FileTextIcon className="mr-4 h-4 w-4" />
             <span>アプリ詳細を確認</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => {}}>
-            <PenBoxIcon className="mr-4 h-4 w-4" />
+          <DropdownMenuItem onClick={handleExternalLink}>
+            <ExternalLinkIcon className="mr-4 h-4 w-4" />
             <span>Play Storeで詳細を確認</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={onClick}>
+          <DropdownMenuItem onClick={handleDownload}>
             <Download className="mr-4 h-4 w-4" />
             <span>アプリ情報をダウンロード</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
-            <Trash2 className="mr-4 h-4 w-4" />
+            <Trash2 className="mr-4 h-4 w-4 text-red-500" />
             <span className="text-red-500">削除</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

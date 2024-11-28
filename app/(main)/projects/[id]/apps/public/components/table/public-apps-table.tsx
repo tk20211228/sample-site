@@ -1,10 +1,11 @@
 "use client";
 
 import {
-  ColumnDef, // フィルタリング
+  ColumnDef,
   SortingState, // 可視性
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel, // ソート
   useReactTable,
@@ -30,15 +31,15 @@ import { usePublicApps } from "../../../../providers/public-apps";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   initialData: TData[];
+  className?: string;
 }
 
 export default function PublicAppsTable<TData, TValue>({
   columns,
   initialData,
+  className,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]); // ソート状態を管理
-  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // カラムフィルタリングの状態を管理
-  // const [rowSelection, setRowSelection] = useState({}); // 行の選択状態を管理
 
   const { publicAppsTableData, setPublicAppsTableData } = usePublicApps();
 
@@ -59,24 +60,20 @@ export default function PublicAppsTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(), // ページネーション行モデルを取得
     onSortingChange: setSorting, // ソート状態が変更されたときの処理
     getSortedRowModel: getSortedRowModel(), // ソートされた行モデルを取得
-    // onColumnFiltersChange: setColumnFilters, // カラムフィルタリング状態が変更されたときの処理
-    // getFilteredRowModel: getFilteredRowModel(), // フィルタリングされた行モデルを取得
-    // onRowSelectionChange: setRowSelection, // 行の選択状態が変更されたときの処理
+    getFilteredRowModel: getFilteredRowModel(), // フィルタリングされた行モデルを取得
     _features: [DensityFeature], // 行の密度を管理する機能を追加
     state: {
       sorting, // ソート状態
-      // columnFilters, // カラムフィルタリング状態
-      // rowSelection, // 行の選択状態
     },
     initialState: {
       pagination: {
-        pageSize: 20, // デフォルトのページサイズ
+        pageSize: 300, // デフォルトのページサイズ
       },
     },
   });
 
   return (
-    <div className="flex flex-col h-full w-full max-w-full p-1">
+    <div className={cn("flex flex-col h-full w-full max-w-full", className)}>
       <PublicAppsTableToolbar table={table} className="pb-1" />
       <Table
         style={{ width: table.getCenterTotalSize() }}
@@ -97,7 +94,7 @@ export default function PublicAppsTable<TData, TValue>({
                       "border-b z-10 bg-background border-l",
                       "[&:nth-child(2)]:border-l-0", // 2番目のセルの左ボーダーを削除
                       "first:sticky first:left-0 first:z-30 first:border-l-0 first:border-r",
-                      "last:sticky  last:right-0 last:z-30 last:border-r",
+                      "last:sticky  last:right-0 last:z-30 last:border-r-0",
                       "p-1"
                     )}
                     key={header.id}
@@ -148,9 +145,10 @@ export default function PublicAppsTable<TData, TValue>({
                       "relative",
                       "whitespace-nowrap overflow-hidden",
                       "border-b",
-                      "first:sticky first:left-0 first:z-10 first:bg-background first:border-r",
-                      "last:sticky last:right-0 last:z-10 last:bg-background last:border-r last:border-l",
-
+                      "border-l",
+                      "first:sticky first:left-0 first:z-10 first:bg-background first:border-r first:border-l-0",
+                      "[&:nth-child(2)]:border-l-0", // 2番目のセルの左ボーダーを追加
+                      "last:sticky last:right-0 last:z-10 last:bg-background last:border-r-0 last:border-l",
                       "p-0"
                     )}
                     style={{ maxWidth: `${cell.column.getSize()}px` }}

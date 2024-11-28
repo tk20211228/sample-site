@@ -26,29 +26,32 @@ export function PublicAppsTableToolbar<TData>({
 
   return (
     <div
-      className={cn("flex items-center justify-between space-x-2", className)}
+      className={cn(
+        "flex items-center justify-between gap-1 w-full w-max-full",
+        className
+      )}
     >
-      <div className="flex flex-1 items-center space-x-2">
+      <div className="flex flex-1 min-w-0 items-center space-x-2">
         <Input
           placeholder="アプリ名を検索"
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 w-full"
         />
         {isFiltered && (
           <Button
             variant="ghost"
             onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
+            className="h-8 px-2 lg:px-3 "
           >
             リセット
             <X className="size-5 ml-2" />
           </Button>
         )}
       </div>
-      <div className="flex justify-end pr-3 text-sm text-muted-foreground">
+      <div className="flex text-sm text-muted-foreground items-center justify-center px-1">
         {table.getFilteredRowModel().rows.length}
       </div>
     </div>

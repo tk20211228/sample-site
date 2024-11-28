@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <PublicAppsProvider>
       <div className="flex">
-        <AppsMenuBar className="hidden lg:block" />
+        <AppsMenuBar className="hidden xl:block" />
         <div className="flex-1 min-w-0">{children}</div>
       </div>
     </PublicAppsProvider>

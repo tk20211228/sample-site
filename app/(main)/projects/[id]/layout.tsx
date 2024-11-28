@@ -17,7 +17,7 @@ export default function RootLayout({
     <EnterpriseProvider>
       <PolicyProvider>
         <div className="flex">
-          <NavigationBar className="hidden lg:block" />
+          <NavigationBar className="hidden xl:block" />
           {/* <div className="hidden lg:block">
         <NavigationBar />
       </div>
