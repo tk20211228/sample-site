@@ -1,9 +1,5 @@
 import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUp,
   CheckCircle,
-  Circle,
   CircleOff,
   Clock,
   HelpCircle,

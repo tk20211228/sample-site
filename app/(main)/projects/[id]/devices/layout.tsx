@@ -1,5 +1,4 @@
-import DevicesMenuBar from "@/app/(main)/components/devices-menu-bar";
-import { cn } from "@/lib/utils";
+import DevicesMenuBar from "@/app/(main)/components/projects/devices-menu-ber";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

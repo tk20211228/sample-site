@@ -28,22 +28,29 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 
+import { editPolicyFormSchema } from "@/app/(main)/schema/policy";
 import { Row } from "@tanstack/react-table";
-import { PolicyTableType } from "../../types/policy";
-import { deletePolicy } from "../../actions/delete-policy";
-import { usePolicy } from "../../../providers/policy";
+import { useRouter } from "next/navigation";
 import { useEnterprise } from "../../../providers/enterprise";
+import { usePolicy } from "../../../providers/policy";
+import { deletePolicy } from "../../actions/delete-policy";
+import { editPolicy } from "../../actions/edit-policy";
+import { PolicyTableType } from "../../types/policy";
 
-interface DataTableMenuProps<TData, TValue> {
+interface DataTableMenuProps {
   row: Row<PolicyTableType>;
 }
 
-export default function PoliciesTableMenu<TData, TValue>({
-  row,
-}: DataTableMenuProps<TData, TValue>) {
+export default function PoliciesTableMenu({ row }: DataTableMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { policyTableData, setPolicyTableData } = usePolicy();
-  const { enterpriseName } = useEnterprise();
+  const {
+    policyTableData,
+    setPolicyTableData,
+    // currentCreatePolicy,
+    setCurrentCreatePolicy,
+  } = usePolicy();
+  const { enterpriseName, enterpriseId } = useEnterprise();
+  const router = useRouter();
 
   const onClick = async () => {
     console.log(parent);
@@ -53,17 +60,23 @@ export default function PoliciesTableMenu<TData, TValue>({
       alert("デフォルトポリシーは削除できません。");
       return;
     }
-    // Googleでポリシーを削除,削除後tableを更新
-    await deletePolicy(row.original.policy_name).then(() => {
-      alert("削除しました。");
+    await deletePolicy(row.original.policy_name).then((policyName) => {
+      alert("削除に成功しました。");
       const newData = policyTableData.filter(
-        (p) => p.policy_name !== row.original.policy_name
+        (p) => p.policy_name !== policyName
       );
       setPolicyTableData(newData);
-      // setPolicyTableData((prev) =>
-      //   prev.filter((p) => p.policy_name !== row.original.policy_name)
-      // );
     });
+  };
+  const handleEditPolicy = async () => {
+    const data = await editPolicy(row.original.policy_name);
+    if (!data) return;
+    const displayName = row.original.display_name ?? "";
+    const policyConfigData = data.policy_config_data;
+    const parsed = editPolicyFormSchema.parse(policyConfigData);
+    parsed.displayName = displayName;
+    setCurrentCreatePolicy(parsed);
+    router.push(`/projects/${enterpriseId}/policies/general`);
   };
 
   return (
@@ -76,7 +89,7 @@ export default function PoliciesTableMenu<TData, TValue>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className=" space-y-1 px-2" align="end">
-          <DropdownMenuItem onSelect={(row) => alert(row)}>
+          <DropdownMenuItem onSelect={handleEditPolicy}>
             <PenBoxIcon className="mr-4 h-4 w-4" />
             <span>ポリシー詳細</span>
           </DropdownMenuItem>

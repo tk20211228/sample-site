@@ -24,11 +24,8 @@ import {
   TableRow,
 } from "@/components/ui/table-resizing";
 
-import { useMemo, useRef, useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
-import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
 import { cn } from "@/lib/utils";
+import { useMemo, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -139,18 +136,6 @@ export default function DeviceTable<TData, TValue>({
     [calculateMaxColumnWidth, table]
   );
 
-  // autoResizeAllColumns 関数を追加
-  const autoResizeAllColumns = useMemo(
-    () => () => {
-      table.getAllColumns().forEach((column) => {
-        if (column.id) {
-          autoResizeColumn(column.id);
-        }
-      });
-    },
-    [autoResizeColumn, table]
-  );
-
   return (
     <div className="flex flex-col h-full">
       {/* <div className="pb-4">
@@ -226,7 +211,7 @@ export default function DeviceTable<TData, TValue>({
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
-                {row.getVisibleCells().map((cell, index, array) => (
+                {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className={cn(

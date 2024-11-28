@@ -40,17 +40,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { androidmanagement_v1 } from "googleapis";
 import { Row } from "@tanstack/react-table";
 import { Device } from "../types/device";
 
-interface DataTableMenuProps<TData, TValue> {
+interface DataTableMenuProps {
   row: Row<Device>;
 }
 
-export default function DataTableMenu<TData, TValue>({
-  row,
-}: DataTableMenuProps<TData, TValue>) {
+export default function DataTableMenu({ row }: DataTableMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [initializationOption, setInitializationOption] = useState("");

@@ -2,7 +2,6 @@
 
 import { createAndroidManagementClient } from "@/actions/emm/client";
 import { getEnterprisesTableId } from "@/app/(main)/lib/get-enterprises-table-id";
-import { defaultPolicyRequestBody } from "@/data/default-policy-request-body";
 import { createClient } from "@/lib/supabase/server";
 import { Json } from "@/types/database";
 import { androidmanagement_v1 } from "googleapis";

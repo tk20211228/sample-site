@@ -1,11 +1,10 @@
 "use server";
 
 import { createAndroidManagementClient } from "@/actions/emm/client";
-import { createClient } from "@/lib/supabase/server";
-import { androidmanagement_v1 } from "googleapis";
-import { SupabaseClient } from "@supabase/supabase-js";
 import { getEnterprisesTableId } from "@/app/(main)/lib/get-enterprises-table-id";
+import { createClient } from "@/lib/supabase/server";
 import { Json } from "@/types/database";
+import { androidmanagement_v1 } from "googleapis";
 
 type NextPageToken = string | null | undefined;
 type Policy = androidmanagement_v1.Schema$Policy;

@@ -9,8 +9,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 interface DataTableViewOptionsProps<TData> {
@@ -28,8 +26,7 @@ export function DataTableViewOptions<TData>({
           size="sm"
           className="ml-auto hidden h-8 lg:flex"
         >
-          <Settings2 className="size-5 mr-2" />
-          カラム一覧
+          <Settings2 className="size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-fit">

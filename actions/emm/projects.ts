@@ -6,6 +6,11 @@ import { z } from "zod";
 
 type FormData = z.infer<typeof onboardingSchema>;
 
+/**
+ * プロジェクトの作成
+ * @param data
+ * @returns project
+ */
 export const createProject = async (data: FormData) => {
   console.log("createProject", data);
   const parsedData = await onboardingSchema.safeParseAsync(data);

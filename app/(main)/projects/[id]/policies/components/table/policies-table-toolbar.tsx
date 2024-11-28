@@ -5,24 +5,26 @@ import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "../../../devices/components/data-table-view-options";
-import DateTableColumnAllResizer from "../../../devices/components/data-table-column-all-resizer";
 import { cn } from "@/lib/utils";
+import DateTableColumnAllResizer from "../../../devices/components/data-table-column-all-resizer";
+import { DataTableViewOptions } from "../../../devices/components/data-table-view-options";
+import { PolicyTableType } from "../../types/policy";
 import SyncPoliciesButton from "../sync-policies-button";
-import Link from "next/link";
-import { useEnterprise } from "../../../providers/enterprise";
+import DataTableRowResizeButton from "./data-table-row-resizer";
+import DeleteSelectedPoliciesButton from "./delete-selected-policies-button";
 
-interface PoliciesTableToolbarProps<TData> {
+interface PoliciesTableToolbarProps<TData extends PolicyTableType> {
   table: Table<TData>;
+  // table: Table<TData & PolicyTableType>;
   className?: string;
 }
 
-export function PoliciesTableToolbar<TData>({
+export function PoliciesTableToolbar<TData extends PolicyTableType>({
   className,
   table,
 }: PoliciesTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const { enterpriseId } = useEnterprise();
+  // const { enterpriseId } = useEnterprise();
 
   return (
     <div
@@ -50,11 +52,9 @@ export function PoliciesTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <Button className="h-8" asChild>
-        <Link href={`/projects/${enterpriseId}/policies/general`}>
-          ポリシー作成
-        </Link>
-      </Button>
+      <DeleteSelectedPoliciesButton table={table} />
+
+      <DataTableRowResizeButton table={table} />
       <SyncPoliciesButton />
       <DateTableColumnAllResizer table={table} />
       <DataTableViewOptions table={table} />

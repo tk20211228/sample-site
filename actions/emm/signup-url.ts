@@ -30,7 +30,7 @@ export const getSignUpUrl = async (id: string) => {
       console.error("Error creating signup URL:", error.message);
       throw new Error(error.message);
     });
-  console.log("data", data);
+  // console.log("data", data);
   if (!data.url) {
     throw new Error("Signup URL not found");
   }
@@ -50,5 +50,7 @@ export const getSignUpUrl = async (id: string) => {
     maxAge: 3600, // 1時間で有効期限切れ
     path: "/",
   });
+  const encryptedData = cookieStore.get("emm_signup_object");
+  console.log("encryptedData", encryptedData);
   redirect(data.url);
 };

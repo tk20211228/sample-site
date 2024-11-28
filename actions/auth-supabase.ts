@@ -17,7 +17,7 @@ import { formatToJapaneseDateTime } from "@/lib/date-fns/get-date";
 
 const host =
   process.env.NODE_ENV === "production" //本番環境にデプロイされていれば
-    ? "https://sample-site-pearl.vercel.app/" // 本番環境の URL
+    ? "https://sample-site-pearl.vercel.app" // 本番環境の URL
     : "http://localhost:3000";
 
 type SignIn = z.infer<typeof signInFormSchema>; // zod のスキーマにbrandメソッドを使って"SignIn"という名前がある
@@ -131,7 +131,7 @@ export const signInWithEmailOrUsername = async (formData: SignIn) => {
   isEmail
     ? await signInWithEmail(safeParsedFormData.data)
     : await signInWithUsername(safeParsedFormData.data);
-  redirect("/dashboard");
+  redirect("/projects");
 };
 
 export const resendSignUpOPT = async ({
@@ -276,5 +276,5 @@ export async function updatePassword(formData: PasswordUpdate) {
     const errorCode = error.code as SupabaseAuthErrorCode;
     throw new Error(await authErrorMessage(errorCode));
   }
-  return redirect("/dashboard");
+  return redirect("/projects");
 }

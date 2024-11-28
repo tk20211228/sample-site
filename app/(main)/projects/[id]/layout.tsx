@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import NavigationBar from "../../components/navigation-ber";
+import NavigationBar from "../../components/projects/navigation-ber";
 import { PolicyProvider } from "./providers/policy";
 import { EnterpriseProvider } from "./providers/enterprise";
 
@@ -17,7 +17,7 @@ export default function RootLayout({
     <EnterpriseProvider>
       <PolicyProvider>
         <div className="flex">
-          <NavigationBar />
+          <NavigationBar className="hidden lg:block" />
           {/* <div className="hidden lg:block">
         <NavigationBar />
       </div>

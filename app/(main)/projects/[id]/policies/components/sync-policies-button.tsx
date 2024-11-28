@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button";
 
 import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
+import { useEnterprise } from "../../providers/enterprise";
 import { usePolicy } from "../../providers/policy";
 import { getSyncedPolicies } from "../data/policy";
-import { PolicyTableType } from "../types/policy";
-import { useEnterprise } from "../../providers/enterprise";
 
 export default function SyncPoliciesButton() {
   const [isPending, startTransition] = useTransition();

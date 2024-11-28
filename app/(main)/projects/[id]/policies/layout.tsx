@@ -1,4 +1,4 @@
-import PoliciesMenuBar from "@/app/(main)/components/policies-menu-bar";
+import PoliciesMenuBar from "@/app/(main)/components/projects/policies-menu-ber";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex">
-      <PoliciesMenuBar />
+      <PoliciesMenuBar className="hidden md:block" />
       <div className="flex-1 min-w-0">{children}</div>
     </div>
   );

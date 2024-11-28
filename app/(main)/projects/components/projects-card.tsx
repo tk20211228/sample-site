@@ -11,40 +11,55 @@ import {
 } from "@/components/ui/card";
 import {
   ChevronRight,
-  LayoutDashboardIcon,
+  Loader2,
   Plus,
-  SquareChartGanttIcon,
+  ShieldCheckIcon,
+  SmartphoneIcon,
   Trash2Icon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
-import { deleteProject } from "../../dashboard/actions/projects";
-import { Project } from "../types/project";
+import { ProjectWithEnterpriseRelation } from "../../types/project";
+import { deleteProject } from "../actions/projects";
+import ProductOptionsButton from "./product-options-button";
+
+// import AndroidStudioLogo from "../../../../data/images/androidstudio.svg";
+import { SiAndroid } from "@icons-pack/react-simple-icons";
 
 interface ProjectCardProps {
-  projectsData: Project[];
+  projectsData: ProjectWithEnterpriseRelation[];
 }
 
 export default function ProjectsCard({ projectsData }: ProjectCardProps) {
-  const [projects, setProjects] = useState<Project[]>(projectsData);
+  const [projects, setProjects] =
+    useState<ProjectWithEnterpriseRelation[]>(projectsData);
   console.log(projects);
+  const [isPending, startTransition] = useTransition();
+  const [pendingProjectId, setPendingProjectId] = useState<string | null>(null);
 
-  const handleProjectDelete = async (projectId: string) => {
-    await deleteProject(projectId);
-    setProjects((prev) => prev.filter((p) => p.id !== projectId));
+  const handleGetSignUpUrl = (projectId: string) => {
+    setPendingProjectId(projectId);
+    startTransition(async () => {
+      await getSignUpUrl(projectId);
+      setPendingProjectId(null);
+    });
   };
 
-  //project.enterprise_nameから”enterprises”を除外する
-  const removeEnterprisesKeyword = (name: string) => {
-    return name.replace("enterprises/", "");
+  const handleProjectDelete = async (projectId: string) => {
+    setPendingProjectId(projectId);
+    startTransition(async () => {
+      await deleteProject(projectId);
+      setProjects((prev) => prev.filter((p) => p.id !== projectId));
+      setPendingProjectId(null);
+    });
   };
 
   return (
     <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
       {projects.map((project) => (
         <Card
-          className="group relative h-60 hover:bg-accent duration-300 dark:bg-zinc-900 dark:border-zinc-700 transition ease-in-out group" //
+          className="group relative h-60 hover:bg-accent duration-300 dark:bg-zinc-900 dark:border-zinc-700 transition ease-in-out group"
           key={project.id}
         >
           <CardHeader>
@@ -68,59 +83,46 @@ export default function ProjectsCard({ projectsData }: ProjectCardProps) {
           >
             <Trash2Icon />
           </Button>
-          {project.enterprise_name && (
-            <>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute left-3 bottom-6 text-muted-foreground hover:text-foreground z-30 "
-              >
-                <Link
-                  href={`/dashboard?enterprises_name=${project.enterprise_name}`}
-                >
-                  <LayoutDashboardIcon />
-                </Link>
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute left-16 bottom-6 text-muted-foreground hover:text-foreground z-30 "
-              >
-                <Link
-                  href={`/projects/${removeEnterprisesKeyword(
-                    project.enterprise_name
-                  )}/policies`}
-                >
-                  <SquareChartGanttIcon />
-                </Link>
-              </Button>
-            </>
-          )}
+          <div className="absolute left-5 bottom-3 flex flex-row space-x-2">
+            <ProductOptionsButton
+              className="z-30"
+              project={project}
+              icon={<SmartphoneIcon />}
+              link="/devices"
+            />
+            <ProductOptionsButton
+              className="z-30"
+              project={project}
+              icon={<ShieldCheckIcon />}
+              link="/policies"
+            />
+            <ProductOptionsButton
+              className="z-30"
+              project={project}
+              icon={<SiAndroid />}
+              link="/apps/public"
+            />
+          </div>
 
           <ChevronRight className="absolute right-6 top-7 text-muted-foreground transition-all duration-200 group-hover:right-5 group-hover:text-foreground" />
-          {!project.enterprise_name ? (
-            <button onClick={() => getSignUpUrl(project.id)}>
+          {!project.enterprise_name && (
+            <button onClick={() => handleGetSignUpUrl(project.id)}>
               <span className="absolute inset-0 z-20"></span>
             </button>
-          ) : (
-            <Link
-              href={`/projects/${removeEnterprisesKeyword(
-                project.enterprise_name
-              )}/devices`}
-              className="absolute inset-0 z-20"
-            />
+          )}
+          {isPending && pendingProjectId === project.id && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center">
+              <Loader2 className="animate-spin text-muted-foreground size-12" />
+            </div>
           )}
         </Card>
       ))}
-
-      <Card className="flex h-60 items-center justify-center  hover:bg-accent duration-300 relative">
-        <button>
-          <Link href="/dashboard/new">
-            <span className="absolute inset-0"></span>
-          </Link>
-          <Plus className="size-10 text-zinc-500" />
-        </button>
+      <Card className="flex h-60 items-center justify-center hover:bg-accent hover:border-accent-foreground duration-300 relative">
+        <Link href="/projects/new">
+          <span className="absolute inset-0" />
+          <span className="sr-only">プロジェクト画面に遷移する</span>
+          <Plus className="text-muted-foreground size-10 " />
+        </Link>
       </Card>
     </div>
   );

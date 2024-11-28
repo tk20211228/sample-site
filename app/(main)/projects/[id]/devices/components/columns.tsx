@@ -19,8 +19,6 @@ import DataTableMenu from "./data-table-menu";
 import { generateSortFilterColumns } from "../../../components/table/generate-sort-filter-columns";
 import { selectColumn } from "../../../components/table/select-column";
 
-const regEnrollmentTokensPath = /enterprises\/.*?\/enrollmentTokens\//;
-
 export const deviceColumns: ColumnDef<Device>[] = [
   selectColumn<Device>(),
   ...generateSortFilterColumns<Device>(devicesTableColumnList),
@@ -161,7 +159,7 @@ export const deviceColumns: ColumnDef<Device>[] = [
     enableResizing: false, // リサイズを無効化
     minSize: 50,
     size: 80,
-    header: ({ column }) => {
+    header: () => {
       return (
         <div className="flex items-center justify-center">
           <Button variant="ghost" size="icon">

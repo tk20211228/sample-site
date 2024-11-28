@@ -38,6 +38,41 @@ export type Database = {
           },
         ]
       }
+      apps: {
+        Row: {
+          app_details: Json
+          created_at: string
+          enterprise_table_id: string
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          app_details: Json
+          created_at?: string
+          enterprise_table_id: string
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          app_details?: Json
+          created_at?: string
+          enterprise_table_id?: string
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apps_enterprise_table_id_fkey"
+            columns: ["enterprise_table_id"]
+            isOneToOne: false
+            referencedRelation: "enterprises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           body: string

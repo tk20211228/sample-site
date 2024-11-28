@@ -9,17 +9,19 @@ export const selectColumn = <T extends object>(): ColumnDef<T> & {
   meta: ColumnMeta;
 } => ({
   id: "select",
-  minSize: 50,
-  size: 50,
+  minSize: 48,
+  size: 48,
   header: ({ table }) => (
-    <Checkbox
-      checked={
-        table.getIsAllPageRowsSelected() ||
-        (table.getIsSomePageRowsSelected() && "indeterminate")
-      }
-      onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-      aria-label="Select all"
-    />
+    <div className="flex items-center justify-center">
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    </div>
   ),
   cell: ({ row }) => (
     <Checkbox

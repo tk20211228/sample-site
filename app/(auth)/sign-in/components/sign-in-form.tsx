@@ -1,13 +1,11 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 // import { toast } from "@/components/hooks/use-toast";
 import { signInWithEmailOrUsername } from "@/actions/auth-supabase";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -18,13 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import PasswordWithResetForm from "../../components/password-with-reset-form";
 import { signInFormSchema } from "../../schemas/auth-validation";
-import { useEffect } from "react";
-import { z } from "zod";
-import { emailOrUsernameSchema } from "../../schemas/password-email-schema";
 
 const schema = signInFormSchema;
 
-type emailOrUsernameType = z.infer<typeof emailOrUsernameSchema>;
+// type emailOrUsernameType = z.infer<typeof emailOrUsernameSchema>;
 
 type FormData = {
   emailOrUserName: string;

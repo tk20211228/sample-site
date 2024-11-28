@@ -1,6 +1,7 @@
 "use client";
 
 import { createProject } from "@/actions/emm/projects";
+import { getSignUpUrl } from "@/actions/emm/signup-url";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,11 +24,11 @@ import { Progress } from "@/components/ui/progress";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Rocket } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { onboardingSchema } from "../../schema/onboarding-schema";
+import { toast } from "sonner";
 
 type FormData = z.infer<typeof onboardingSchema>;
 
@@ -74,9 +75,9 @@ export default function CreateProjectForm({
     };
 
     startTransition(async () => {
-      await createProject(submitData).then(() => {
-        // alert(JSON.stringify(res));
-        redirect("/dashboard");
+      await createProject(submitData).then(async (project) => {
+        toast.success("プロジェクトが作成されました");
+        await getSignUpUrl(project.id);
       });
     });
   };

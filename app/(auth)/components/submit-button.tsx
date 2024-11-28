@@ -1,9 +1,7 @@
 "use client";
 
-import { signIn } from "@/actions/auth-liff";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SiDiscord } from "@icons-pack/react-simple-icons";
 import { Loader2 } from "lucide-react";
 import { useFormStatus } from "react-dom";
 

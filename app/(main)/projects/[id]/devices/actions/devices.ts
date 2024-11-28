@@ -1,8 +1,8 @@
 import "server-only";
 
-import { createClient } from "@/lib/supabase/server";
-import { AndroidManagementDeviceSchema, Device } from "../types/device";
 import { getEnterprisesTableId } from "@/app/(main)/lib/get-enterprises-table-id";
+import { createClient } from "@/lib/supabase/server";
+import { Device } from "../types/device";
 
 /**
  * デバイスを取得

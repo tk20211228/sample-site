@@ -1,10 +1,10 @@
-import { getSeverDate } from "@/lib/date-fns/get-date";
+import { formatToJapaneseDateTime } from "@/lib/date-fns/get-date";
 // import { chromium } from "@playwright/test";
 import { chromium } from "playwright";
 import { expect } from "playwright/test";
 
 export const dynamic = "force-dynamic"; // static by default, unless reading the request
-const date = getSeverDate();
+const date = formatToJapaneseDateTime();
 
 /**
  *

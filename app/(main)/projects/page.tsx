@@ -1,5 +1,5 @@
-import { getProjects } from "../dashboard/data/projects";
 import ProjectCard from "./components/projects-card";
+import { getProjects } from "./data/projects";
 
 export default async function Page() {
   // Server Componentでデータを取得

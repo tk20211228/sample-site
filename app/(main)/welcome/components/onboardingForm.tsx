@@ -28,6 +28,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { onboardingSchema } from "../../schema/onboarding-schema";
+import { toast } from "sonner";
+import { getSignUpUrl } from "@/actions/emm/signup-url";
 
 type FormData = z.infer<typeof onboardingSchema>;
 
@@ -44,9 +46,9 @@ export default function OnboardingForm() {
   });
 
   const onSubmit = async (data: FormData) => {
-    await createProject(data).then((res) => {
-      alert(JSON.stringify(res));
-      redirect("/dashboard");
+    await createProject(data).then(async (project) => {
+      toast.success("プロジェクトが作成されました");
+      await getSignUpUrl(project.id);
     });
   };
 

@@ -1,8 +1,6 @@
 import { getDevices } from "./actions/devices";
 import { deviceColumns } from "./components/columns";
-import CreateQrButton from "./components/create-qr-button";
 import DeviceTable from "./components/device-table";
-import GetDevicesListButton from "./components/get-devices-list-button";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;

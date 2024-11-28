@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { Maximize2Icon, Minimize2Icon } from "lucide-react";
+import { useMemo, useState } from "react";
 
 interface DataTableAllResizerProps<TData> {
   table: Table<TData>;
@@ -9,6 +10,8 @@ interface DataTableAllResizerProps<TData> {
 export default function DateTableColumnAllResizer<TData>({
   table,
 }: DataTableAllResizerProps<TData>) {
+  const [isExpanded, setIsExpanded] = useState(false); // 状態を追加
+
   // カラムごとの最大文字数を計算する関数をメモ化
   const calculateMaxColumnWidth = useMemo(
     () => (columnId: string) => {
@@ -46,14 +49,14 @@ export default function DateTableColumnAllResizer<TData>({
         );
         return Math.max(max, width);
       }, 0);
-      console.log("maxContentWidth", maxContentWidth);
+      // console.log("maxContentWidth", maxContentWidth);
 
       const padding = 0;
       const contentBasedWidth = maxContentWidth + padding;
-      console.log("contentBasedWidth", contentBasedWidth);
+      // console.log("contentBasedWidth", contentBasedWidth);
       // デフォルトサイズとコンテンツベースのサイズを比較して大きい方を採用
       const maxWidth = Math.max(defaultSize, contentBasedWidth);
-      console.log("maxWidth", maxWidth);
+      // console.log("maxWidth", maxWidth);
       return maxWidth;
     },
     [table]
@@ -73,7 +76,7 @@ export default function DateTableColumnAllResizer<TData>({
     [calculateMaxColumnWidth, table]
   );
   // autoResizeAllColumns 関数を追加
-  const autoResizeAllColumns = useMemo(
+  const autoMaximizeResizeAllColumns = useMemo(
     () => () => {
       table.getAllColumns().forEach((column) => {
         if (column.id) {
@@ -83,14 +86,39 @@ export default function DateTableColumnAllResizer<TData>({
     },
     [autoResizeColumn, table]
   );
+  // autoResizeAllColumns 関数を追加
+  const autoMinimizeResizeAllColumns = useMemo(
+    () => () => {
+      table.getAllColumns().forEach((column) => {
+        if (column.id) {
+          table.setColumnSizing((prev) => ({
+            ...prev,
+            [column.id]: table.getColumn(column.id)?.columnDef?.minSize ?? 200,
+          }));
+        }
+      });
+    },
+    [table]
+  );
   return (
     <Button
       variant="outline"
       size="sm"
       className=" h-8 hidden lg:flex"
-      onClick={() => autoResizeAllColumns()}
+      onClick={() => {
+        if (isExpanded) {
+          autoMinimizeResizeAllColumns();
+        } else {
+          autoMaximizeResizeAllColumns();
+        }
+        setIsExpanded(!isExpanded);
+      }}
     >
-      全カラムを自動リサイズ
+      {isExpanded ? (
+        <Minimize2Icon className="size-4 transition rotate-45" />
+      ) : (
+        <Maximize2Icon className="size-4 transition rotate-45" />
+      )}
     </Button>
   );
 }

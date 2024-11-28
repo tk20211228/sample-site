@@ -1,8 +1,7 @@
 import "server-only";
 
-import { createClient } from "@/lib/supabase/server";
 import { getEnterprisesTableId } from "@/app/(main)/lib/get-enterprises-table-id";
-import { createAndroidManagementClient } from "@/actions/emm/client";
+import { createClient } from "@/lib/supabase/server";
 
 /**
  * ポリシーを取得
@@ -35,4 +34,24 @@ export const getPolicies = async (enterpriseName: string) => {
   }
   // 取得したデータをフロントが期待するPolicy型に変換
   return policies;
+};
+
+/**
+ * ポリシー情報をDBから取得
+ * @param policyName
+ * @returns policy
+ */
+export const getPolicyInfoFromSupabase = async (policyName: string) => {
+  const supabase = await createClient();
+  const { data: policy } = await supabase
+    .from("policies")
+    .select(
+      `
+      policy_config_data
+      `
+    )
+    .eq("policy_name", policyName)
+    .single();
+
+  return policy;
 };

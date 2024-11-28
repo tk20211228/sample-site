@@ -2,8 +2,11 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState, // フィルタリング
-  SortingState, // ソート
+  ColumnFiltersState,
+  // ExpandedState,
+  // OnChangeFn, // フィルタリング
+  SortingState,
+  // Updater, // ソート
   VisibilityState, // 可視性
   flexRender,
   getCoreRowModel,
@@ -28,14 +31,19 @@ import { cn } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
 import { usePolicy } from "../../../providers/policy";
 import { PolicyTableType } from "../../types/policy";
+import { PoliciesTablePagination } from "./policies-table-pagination";
 import { PoliciesTableToolbar } from "./policies-table-toolbar";
+import {
+  DensityFeature,
+  DensityState,
+} from "@/app/(main)/projects/types/density";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends PolicyTableType, TValue> {
   columns: ColumnDef<TData, TValue>[];
   initialData: TData[];
 }
 
-export default function PoliciesTable<TData, TValue>({
+export default function PoliciesTable<TData extends PolicyTableType, TValue>({
   columns,
   initialData,
 }: DataTableProps<TData, TValue>) {
@@ -45,12 +53,14 @@ export default function PoliciesTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({}); // カラムの可視性を管理
   const [rowSelection, setRowSelection] = useState({}); // 行の選択状態を管理
 
+  const [density, setDensity] = useState<DensityState>("md");
+
   // 初回レンダリング時にinitialDataをセット
   useEffect(() => {
     if (initialData && policyTableData.length === 0) {
       setPolicyTableData(initialData as PolicyTableType[]);
     }
-  }, [initialData, setPolicyTableData]);
+  }, [initialData, setPolicyTableData, policyTableData.length]);
 
   const table = useReactTable({
     data: policyTableData as TData[],
@@ -69,17 +79,21 @@ export default function PoliciesTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(), // ファセットされた行モデルを取得
     getFacetedUniqueValues: getFacetedUniqueValues(), // ファセットされたユニークな値を取得
 
+    _features: [DensityFeature], // 行の密度を管理する機能を追加
+
     state: {
       sorting, // ソート状態
       columnFilters, // カラムフィルタリング状態
       columnVisibility, // カラムの可視性
       rowSelection, // 行の選択状態
+      density, //行の密度
     },
     initialState: {
       pagination: {
         pageSize: 50, // デフォルトのページサイズ
       },
     },
+    onDensityChange: setDensity, //行の密度が変更されたときの処理
   });
   // カラムごとの最大文字数を計算する関数をメモ化
   const calculateMaxColumnWidth = useMemo(
@@ -146,32 +160,20 @@ export default function PoliciesTable<TData, TValue>({
     [calculateMaxColumnWidth, table]
   );
 
-  // autoResizeAllColumns 関数を追加
-  const autoResizeAllColumns = useMemo(
-    () => () => {
-      table.getAllColumns().forEach((column) => {
-        if (column.id) {
-          autoResizeColumn(column.id);
-        }
-      });
-    },
-    [autoResizeColumn, table]
-  );
-
   return (
-    <div className="flex flex-col h-full p-1">
+    <div className="flex flex-col h-full w-full max-w-full p-1">
       <PoliciesTableToolbar table={table} className="pb-1" />
       <Table
         style={{ width: table.getCenterTotalSize() }}
         className={cn(
-          "bg-background w-full",
+          "bg-background",
           // "p-1",
           "border-separate border-spacing-0" // セルの境界を分離し、あとでボーダーを重ねる
         )}
       >
         <TableHeader className="z-10">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow className="group" key={headerGroup.id}>
+            <TableRow className="" key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead
@@ -180,7 +182,8 @@ export default function PoliciesTable<TData, TValue>({
                       "border-b z-10 bg-background border-l",
                       "[&:nth-child(2)]:border-l-0", // 2番目のセルの左ボーダーを削除
                       "first:sticky first:left-0 first:z-30 first:border-l-0 first:border-r",
-                      "last:sticky  last:right-0 last:z-30 last:border-r"
+                      "last:sticky  last:right-0 last:z-30 last:border-r",
+                      "px-0"
                     )}
                     key={header.id}
                     colSpan={header.colSpan}
@@ -223,7 +226,7 @@ export default function PoliciesTable<TData, TValue>({
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
-                {row.getVisibleCells().map((cell, index, array) => (
+                {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className={cn(
@@ -231,7 +234,15 @@ export default function PoliciesTable<TData, TValue>({
                       "whitespace-nowrap overflow-hidden",
                       "border-b",
                       "first:sticky first:left-0 first:z-10 first:bg-background first:border-r",
-                      "last:sticky last:right-0 last:z-10 last:bg-background last:border-r last:border-l"
+                      "last:sticky last:right-0 last:z-10 last:bg-background last:border-r last:border-l",
+                      density === "sm"
+                        ? "py-0"
+                        : density === "md"
+                        ? "py-2"
+                        : density === "lg"
+                        ? "py-3"
+                        : "py-4",
+                      "transition-all duration-200"
                     )}
                     style={{ maxWidth: `${cell.column.getSize()}px` }}
                   >
@@ -249,12 +260,8 @@ export default function PoliciesTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-
-      <div>テーブルフッター</div>
-      {/* </div> */}
-      {/* <div className="mt-2">
-        <DataTablePagination table={table} />
-      </div> */}
+      <PoliciesTablePagination table={table} className="pt-1" />
+      <div>{JSON.stringify(table.getState().rowSelection)}</div>
     </div>
   );
 }

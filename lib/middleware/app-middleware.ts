@@ -54,7 +54,7 @@ export default async function AppMiddleware(
 
   // ゲスト専用ルートにサインイン済みのユーザーがアクセスしようとした場合、emmページにリダイレクト
   if (isGuestRoute && signedIn) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/projects", request.url));
   }
 
   if (isPrivateRoute) {

@@ -24,19 +24,10 @@ erDiagram
     }
 
     policies {
-        uuid id PK　"DB側で生成するユニークなID"
+        uuid id PK
         uuid enterprise_table_id FK
         text display_name
         text policy_name "APIで使用する値"
-        json policy_settings
-        timestamp created_at
-        timestamp updated_at
-    }
-
-　　policies {
-        uuid enterprise_table_id FK
-        text display_name
-        text policy_name PK　"APIで使用する値"
         json policy_settings
         timestamp created_at
         timestamp updated_at

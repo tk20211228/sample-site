@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -42,6 +43,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          {/* <Toaster richColors closeButton/> */}
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>
