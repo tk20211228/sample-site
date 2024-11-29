@@ -1,16 +1,19 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "./scroll-area";
 
 const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div
+  <ScrollArea
     className={cn(
       "relative flex-1 ",
       "rounded-md border",
-      "overflow-auto "
+      // "border-red-500",
+      "pr-1"
+      // "overflow-auto "
       // "p-1 bg-yellow-500"
     )}
   >
@@ -19,7 +22,7 @@ const Table = React.forwardRef<
       className={cn("w-full caption-bottom text-sm", className)}
       {...props}
     />
-  </div>
+  </ScrollArea>
 ));
 Table.displayName = "Table";
 

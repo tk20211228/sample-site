@@ -23,10 +23,10 @@ import {
 import { DensityFeature } from "@/app/(main)/projects/types/density";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { PublicAppsTableToolbar } from "./public-apps-table-toolbar";
 
 import { PublicAppsTableType } from "@/app/(main)/types/apps";
-import { usePublicApps } from "../../../../providers/public-apps";
+import { usePublicApps } from "../../../providers/public-apps";
+import { ManagementAppsTableToolbar } from "./management-apps-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,7 +34,7 @@ interface DataTableProps<TData, TValue> {
   className?: string;
 }
 
-export default function PublicAppsTable<TData, TValue>({
+export default function ManagementAppsTable<TData, TValue>({
   columns,
   initialData,
   className,
@@ -74,7 +74,7 @@ export default function PublicAppsTable<TData, TValue>({
 
   return (
     <div className={cn("flex flex-col h-full w-full max-w-full", className)}>
-      <PublicAppsTableToolbar table={table} className="pb-1" />
+      <ManagementAppsTableToolbar table={table} className="pb-1" />
       <Table
         style={{ width: table.getCenterTotalSize() }}
         className={cn(

@@ -37,17 +37,17 @@ import { Row } from "@tanstack/react-table";
 import { PublicAppsTableType } from "@/app/(main)/types/apps";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { usePublicApps } from "../../../../providers/public-apps";
-import { deleteApp } from "../../../actions/delete-app";
-import { useAppsInfoSheet } from "../../../../providers/apps-info-sheet";
-import { getAppInfo } from "../../../actions/get-app-info";
+import { usePublicApps } from "../../../providers/public-apps";
+import { useAppsInfoSheet } from "../../../providers/apps-info-sheet";
+import { getAppInfo } from "../../actions/get-app-info";
+import { deleteApp } from "../../actions/delete-app";
 
 interface DataTableMenuProps {
   row: Row<PublicAppsTableType>;
   className?: string;
 }
 
-export default function PublicAppsTableMenu({
+export default function ManagementAppsTableMenu({
   row,
   className,
 }: DataTableMenuProps) {

@@ -11,6 +11,11 @@ export async function GET(request: NextRequest) {
 
   try {
     const supabase = await createClient();
+    // const { data: user, error: userError } = await supabase.auth.getUser();
+    // if (userError) {
+    //   return new NextResponse("User not found", { status: 404 });
+    // }
+
     const { data, error } = await supabase
       .from("apps")
       .select("app_details")

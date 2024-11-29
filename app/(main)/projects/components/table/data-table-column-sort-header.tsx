@@ -21,16 +21,14 @@ export function DataTableColumnSortHeader<TData, TValue>({
   }
 
   return (
-    <div
-      className={cn("flex items-center justify-center space-x-2", className)}
-    >
+    <div className={cn("flex items-center justify-center", className)}>
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="group w-full mx-6 h-8"
+        className="group w-[100px] p-0 m-0 h-8"
       >
         <span className="group-hover:hidden">{title}</span>
-        <ArrowUpDown className="size-4 w-full hidden group-hover:block" />
+        <ArrowUpDown className="size-4 w-[100px] hidden group-hover:block" />
       </Button>
     </div>
   );

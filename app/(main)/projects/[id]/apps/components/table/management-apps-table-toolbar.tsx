@@ -13,15 +13,15 @@ import { cn } from "@/lib/utils";
 // import DataTableRowResizeButton from "./data-table-row-resizer";
 // import DeleteSelectedPoliciesButton from "./delete-selected-policies-button";
 
-interface PublicAppsTableToolbarProps<TData> {
+interface ManagementAppsTableToolbarProps<TData> {
   table: Table<TData>;
   className?: string;
 }
 
-export function PublicAppsTableToolbar<TData>({
+export function ManagementAppsTableToolbar<TData>({
   className,
   table,
-}: PublicAppsTableToolbarProps<TData>) {
+}: ManagementAppsTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (

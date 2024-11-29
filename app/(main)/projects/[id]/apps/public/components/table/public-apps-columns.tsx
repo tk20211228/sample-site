@@ -2,9 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-
 import { PublicAppsTableType } from "@/app/(main)/types/apps";
 import Image from "next/image";
 import { DataTableColumnSortHeader } from "../../../../../components/table/data-table-column-sort-header";
@@ -13,33 +10,33 @@ import PublicAppsTableMenu from "./public-apps-table-menu";
 export type PublicAppsColumnDef = ColumnDef<PublicAppsTableType>;
 
 export const publicAppsColumns: PublicAppsColumnDef[] = [
-  {
-    accessorKey: "number",
-    accessorFn: (_, index) => index + 1,
-    minSize: 48, //
-    size: 48, //
-    enableResizing: false, // リサイズを無効化
-    header: ({ column }) => (
-      <div className={"flex items-center justify-center space-x-2 "}>
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="px-2 flex group h-8"
-        >
-          <span className="group-hover:hidden size-4">No.</span>
-          <ArrowUpDown className="size-4 hidden group-hover:block" />
-        </Button>
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div
-        className="truncate flex items-center justify-center"
-        title={String(row.index + 1)}
-      >
-        {row.index + 1}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "number",
+  //   accessorFn: (_, index) => index + 1,
+  //   minSize: 48, //
+  //   size: 48, //
+  //   enableResizing: false, // リサイズを無効化
+  //   header: ({ column }) => (
+  //     <div className={"flex items-center justify-center space-x-2 "}>
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //         className="px-2 flex group h-8"
+  //       >
+  //         <span className="group-hover:hidden size-4">No.</span>
+  //         <ArrowUpDown className="size-4 hidden group-hover:block" />
+  //       </Button>
+  //     </div>
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div
+  //       className="truncate flex items-center justify-center"
+  //       title={String(row.index + 1)}
+  //     >
+  //       {row.index + 1}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "iconUrl",
     minSize: 40,
@@ -66,7 +63,7 @@ export const publicAppsColumns: PublicAppsColumnDef[] = [
   },
   {
     accessorKey: "title",
-    minSize: 170,
+    minSize: 100,
     size: 250,
     header: ({ column }) => (
       <DataTableColumnSortHeader column={column} title="アプリ名" />
@@ -78,6 +75,27 @@ export const publicAppsColumns: PublicAppsColumnDef[] = [
     ),
     filterFn: "includesString", //大文字と小文字を区別しない
   },
+  // {
+  //   accessorKey: "updateTime",
+  //   minSize: 155,
+  //   size: 155,
+  //   header: ({ column }) => (
+  //     <DataTableColumnSortHeader
+  //       column={column}
+  //       title="アプリ更新日"
+  //       className=""
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div
+  //       className="truncate flex items-center justify-center"
+  //       title={row.getValue("updateTime")}
+  //     >
+  //       {formatToJapaneseDate(row.getValue("updateTime"))}
+  //     </div>
+  //   ),
+  //   // enableResizing: false, // リサイズを無効化
+  // },
   {
     id: "actions",
     enableResizing: false, // リサイズを無効化

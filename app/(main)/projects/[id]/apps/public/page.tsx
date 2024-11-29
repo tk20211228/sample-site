@@ -1,12 +1,9 @@
-import {
-  getAndroidEnterpriseWebToken,
-  // getAndroidManagementWebToken,
-} from "@/actions/emm/get-web-token";
+import { getAndroidEnterpriseWebToken } from "@/actions/emm/get-web-token";
 import { Loader2Icon } from "lucide-react";
 import { getDbApps } from "../data/get-db-apps";
-import PublicAppsIframe from "./components/public-apps-iframe";
-import PublicAppsTable from "./components/table/public-apps-table";
 import { publicAppsColumns } from "./components/table/public-apps-columns";
+import PublicAppsTable from "./components/table/public-apps-table";
+import PublicAppsIframe from "./components/public-apps-iframe";
 
 export default async function Page({
   params,
@@ -22,7 +19,7 @@ export default async function Page({
 
   return (
     <div className="flex flex-row h-dvh space-x-1">
-      <div className="overflow-hidden rounded-lg hidden lg:block py-1 pl-1">
+      <div className=" rounded-lg hidden lg:block py-1 pl-1">
         <PublicAppsTable
           columns={publicAppsColumns}
           initialData={data}
