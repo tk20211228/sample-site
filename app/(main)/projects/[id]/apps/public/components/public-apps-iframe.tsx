@@ -2,20 +2,21 @@
 
 import Script from "next/script";
 import { useCallback, useEffect, useRef } from "react";
+import useSWR from "swr";
 
+import { getAndroidEnterpriseWebToken } from "@/actions/emm/get-web-token";
 import { AppData } from "@/app/(main)/types/apps";
+import { cn } from "@/lib/utils";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { getAppData } from "../../data/get-playstore-app";
 import { IFRAME_CONFIG } from "../../data/public-app-iframe-config";
 import AppSonner from "./table/app-sonner";
-import { cn } from "@/lib/utils";
 
 type SelectEvent = {
   action: "selected";
   packageName: string;
 };
-
-type WebTokenType = { token?: string | null; value?: string | null };
 
 // declare const gapi: any;
 declare const gapi: {
@@ -39,64 +40,75 @@ declare const gapi: {
 };
 
 export default function PublicAppsIframe({
-  webToken,
-  enterpriseName,
   className,
 }: {
-  webToken: WebTokenType;
-  enterpriseName: string;
   className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
+  const params = useParams();
+  const enterpriseId = params.id;
+  const enterpriseName = "enterprises/" + enterpriseId;
 
-  const token = webToken.token ?? webToken.value;
+  const { data, error } = useSWR(enterpriseName, getAndroidEnterpriseWebToken);
 
-  const initializeIframe = useCallback(() => {
-    if (!token || !window.gapi) return;
-    const iframeUrl = `${IFRAME_CONFIG.BASE_URL}?token=${token}&locale=${IFRAME_CONFIG.LOCALE}&mode=${IFRAME_CONFIG.MODE}&showsearchbox=true`;
-    if (!containerRef.current || !iframeUrl) return;
+  console.log(data?.token);
 
-    try {
-      const options = {
-        url: iframeUrl,
-        where: containerRef.current,
-        attributes: IFRAME_CONFIG.IFRAME_STYLE,
-      };
-      const iframe = gapi.iframes.getContext().openChild(options);
-      isInitializedRef.current = true;
+  const initializeIframe = useCallback(
+    (token: string) => {
+      console.log("初期化を開始");
+      if (!window.gapi) return console.log("gapiが読み込まれていません");
+      const iframeUrl = `${IFRAME_CONFIG.BASE_URL}?token=${token}&locale=${IFRAME_CONFIG.LOCALE}&mode=${IFRAME_CONFIG.MODE}&showsearchbox=true`;
+      if (!containerRef.current || !iframeUrl)
+        return console.log("iframeのコンテナが読み込まれていません");
+      console.log("iframeのコンテナが読み込まれています");
 
-      const handleProductSelect = async (event: SelectEvent) => {
-        if (event.action === "selected") {
-          const appData = await getAppData(event.packageName, enterpriseName);
-          toast.success(<AppSonner appData={appData.app_details as AppData} />);
-        }
-      };
+      try {
+        const options = {
+          url: iframeUrl,
+          where: containerRef.current,
+          attributes: IFRAME_CONFIG.IFRAME_STYLE,
+        };
+        const iframe = gapi.iframes.getContext().openChild(options);
+        isInitializedRef.current = true;
 
-      iframe.register(
-        "onproductselect",
-        handleProductSelect,
-        gapi.iframes.CROSS_ORIGIN_IFRAMES_FILTER
-      );
-    } catch (error) {
-      console.error("Failed to initialize iframe:", error);
-      toast.error("iFrameの初期化に失敗しました");
-    }
-  }, [token, enterpriseName]);
+        const handleProductSelect = async (event: SelectEvent) => {
+          if (event.action === "selected") {
+            const appData = await getAppData(event.packageName, enterpriseName);
+            toast.success(
+              <AppSonner appData={appData.app_details as AppData} />
+            );
+          }
+        };
+
+        iframe.register(
+          "onproductselect",
+          handleProductSelect,
+          gapi.iframes.CROSS_ORIGIN_IFRAMES_FILTER
+        );
+        console.log("iframeの初期化に成功");
+      } catch (error) {
+        console.error("Failed to initialize iframe:", error);
+        toast.error("iFrameの初期化に失敗しました");
+      }
+    },
+    [enterpriseName]
+  );
 
   useEffect(() => {
-    if (isInitializedRef.current) return;
-    initializeIframe();
+    if (isInitializedRef.current || !data?.token)
+      return console.log("初期化済みか、アクセストークンが取得できていません");
+    initializeIframe(data.token);
+    console.log("iframeを初期化");
 
     return () => {
       isInitializedRef.current = false; // 初期化フラグをリセット
+      console.log("リセット");
     };
-  }, [initializeIframe]);
+  }, [initializeIframe, data?.token]);
 
-  if (!token) {
-    console.error("Token is missing");
-    toast.error("アクセストークンがありません。");
-    return;
+  if (error) {
+    toast.error("アクセストークンの取得に失敗しました。" + error);
   }
 
   return (
@@ -106,7 +118,10 @@ export default function PublicAppsIframe({
         strategy="afterInteractive"
         onLoad={() => {
           gapi.load("gapi.iframes", () => {
-            initializeIframe();
+            if (!data?.token)
+              return console.log("アクセストークンが取得できていません");
+            console.log("アクセストークンが取得できています");
+            initializeIframe(data.token);
           });
         }}
       />

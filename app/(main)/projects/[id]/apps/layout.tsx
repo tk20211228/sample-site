@@ -1,8 +1,7 @@
 import AppsMenuBar from "@/app/(main)/components/projects/app-menu-ber";
 import type { Metadata } from "next";
-import { PublicAppsProvider } from "../providers/public-apps";
 import { AppsInfoSheetProvider } from "../providers/apps-info-sheet";
-import AppInfoSheet from "./public/components/app-info-sheet";
+import { PublicAppsProvider } from "../providers/public-apps";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,7 +20,7 @@ export default function RootLayout({
           <AppsMenuBar className="hidden xl:block" />
           <div className="flex-1 min-w-0">{children}</div>
         </div>
-        <AppInfoSheet />
+        {/* <AppInfoSheet /> */}
       </AppsInfoSheetProvider>
     </PublicAppsProvider>
   );

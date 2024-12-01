@@ -129,5 +129,6 @@ export const getAndroidEnterpriseWebToken = async (enterprisesName: string) => {
   if (!token) {
     throw new Error("Get createWebToken failed");
   }
+  console.log("Get createWebToken:", token);
   return token;
 };

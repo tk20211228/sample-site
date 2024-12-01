@@ -8,25 +8,65 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { androidmanagement_v1 } from "googleapis";
 import { ExternalLinkIcon, FileIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useAppsInfoSheet } from "../../../providers/apps-info-sheet";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { getAppInfo } from "../../actions/get-app-info";
+
+type AppInfo = androidmanagement_v1.Schema$Application;
 
 export default function AppInfoSheet() {
-  const { isOpen, setIsOpen, appInfo } = useAppsInfoSheet();
+  const [isOpen, setIsOpen] = useState(false);
+  const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!id) return null;
+      const appInfo = await getAppInfo(id);
+      setAppInfo(appInfo);
+      if (appInfo) {
+        setIsOpen(true);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   const handleDownloadJson = () => {
-    window.location.href = `/api/download?name=${appInfo?.name}`;
-    console.log(`/api/download?name=${appInfo?.name}`);
-    setIsOpen(false);
+    try {
+      if (!appInfo?.name) {
+        toast.error("アプリケーション情報が取得できていません");
+        return;
+      }
+      window.location.href = `/api/download?name=${appInfo?.name}`;
+      setIsOpen(false);
+    } catch (error) {
+      toast.error("アプリケーション情報の取得に失敗しました");
+      console.error(error);
+    }
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet
+      open={isOpen}
+      onOpenChange={(isOpen) => {
+        setIsOpen(isOpen);
+        if (!isOpen) {
+          router.push(pathname);
+        }
+      }}
+    >
       <SheetContent
         side="left"
         className="w-[90vw] sm:w-[600px] sm:max-w-full p-0"
+        aria-label="アプリケーション詳細"
       >
         <ScrollArea className="h-full p-6">
           <SheetHeader>
@@ -71,13 +111,21 @@ export default function AppInfoSheet() {
               </ScrollArea>
             </div>
             <div className="flex justify-between">
-              <Button variant="outline" asChild>
+              <Button
+                variant="outline"
+                asChild
+                disabled={!appInfo?.playStoreUrl}
+              >
                 <Link href={appInfo?.playStoreUrl || ""}>
                   <ExternalLinkIcon className="w-4 h-4 mr-2" />
                   Play Store を開く
                 </Link>
               </Button>
-              <Button variant="outline" onClick={handleDownloadJson}>
+              <Button
+                variant="outline"
+                onClick={handleDownloadJson}
+                disabled={!appInfo?.name}
+              >
                 <FileIcon className="w-4 h-4 mr-2" />
                 JSONで出力する
               </Button>

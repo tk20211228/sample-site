@@ -26,21 +26,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 
 import { Row } from "@tanstack/react-table";
-// import { PolicyTableType } from "../../types/policy";
-// import { deletePolicy } from "../../actions/delete-policy";
-// import { usePolicy } from "../../../providers/policy";
-
-// import { editPolicy } from "../../actions/edit-policy";
 import { PublicAppsTableType } from "@/app/(main)/types/apps";
 import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useAppsInfoSheet } from "../../../../providers/apps-info-sheet";
 import { usePublicApps } from "../../../../providers/public-apps";
 import { deleteApp } from "../../../actions/delete-app";
-import { useAppsInfoSheet } from "../../../../providers/apps-info-sheet";
-import { getAppInfo } from "../../../actions/get-app-info";
 
 interface DataTableMenuProps {
   row: Row<PublicAppsTableType>;
@@ -53,17 +48,12 @@ export default function PublicAppsTableMenu({
 }: DataTableMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { publicAppsTableData, setPublicAppsTableData } = usePublicApps();
-  const { setIsOpen, setAppInfo } = useAppsInfoSheet();
-  const [isPending, startTransition] = useTransition();
+  const { isPending } = useAppsInfoSheet();
+  const router = useRouter();
+  const pathName = usePathname();
 
   const handleViewInfo = () => {
-    startTransition(async () => {
-      const appInfo = await getAppInfo(row.original.name);
-      //テストのため5秒待つ
-      // await new Promise((resolve) => setTimeout(resolve, 5000));
-      setAppInfo(appInfo);
-      setIsOpen(true);
-    });
+    router.push(`${pathName}?id=${row.original.name}`);
   };
 
   const handleExternalLink = () => {
