@@ -1,4 +1,4 @@
-import ManagementAppsTable from "./components/table/management-apps-apps-table";
+import ManagementAppsTable from "./components/table/management-apps-table";
 import { ManagementAppsColumns } from "./components/table/management-apps-columns";
 import { getDbApps } from "./data/get-db-apps";
 

@@ -24,7 +24,7 @@ export default function NavigationBar({ className }: { className?: string }) {
     <div className={cn("relative w-14 h-dvh", className)}>
       <nav
         aria-label="ナビゲーションバー"
-        className="absolute group p-2 h-full z-30 w-14 hover:w-52 shadow-none hover:shadow-xl border-r border-default transition-width duration-200 overflow-hidden flex flex-col justify-between bg-background"
+        className="absolute group p-2 h-full z-40 w-14 hover:w-52 shadow-none hover:shadow-xl border-r border-default transition-width duration-200 overflow-hidden flex flex-col justify-between bg-background"
       >
         <ul className="flex flex-col gap-2">
           <Button variant="ghost" className="relative gap-2">

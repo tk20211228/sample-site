@@ -34,7 +34,7 @@ import { Row } from "@tanstack/react-table";
 // import { usePolicy } from "../../../providers/policy";
 
 // import { editPolicy } from "../../actions/edit-policy";
-import { PublicAppsTableType } from "@/app/(main)/types/apps";
+import { AppsTableType } from "@/app/(main)/types/apps";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -43,18 +43,13 @@ import { usePublicApps } from "../../../providers/public-apps";
 import { deleteApp } from "../../actions/delete-app";
 
 interface DataTableMenuProps {
-  row: Row<PublicAppsTableType>;
+  row: Row<AppsTableType>;
   className?: string;
 }
 
-export default function ManagementAppsTableMenu({
-  row,
-  className,
-}: DataTableMenuProps) {
+export default function AppsTableMenu({ row, className }: DataTableMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { publicAppsTableData, setPublicAppsTableData } = usePublicApps();
-  // const { setIsOpen, setAppInfo } = useAppsInfoSheet();
-  // const [isPending, startTransition] = useTransition();
   const { isPending } = useAppsInfoSheet();
   const router = useRouter();
   const pathName = usePathname();
@@ -84,6 +79,14 @@ export default function ManagementAppsTableMenu({
         toast.error(error.message);
       });
   };
+  // appDate.author に”Private”が含まれている場合は、アプリの種別を”PRIVATE”とする
+  // appDate.author に”Web”が含まれている場合は、アプリの種別を”WEB”とする
+  // 上記以外は、アプリの種別を”PUBLIC”とする
+  // const appType = appData.author?.includes("Private")
+  //   ? "PRIVATE"
+  //   : appData.author?.includes("Web")
+  //   ? "WEB"
+  //   : "PUBLIC";
 
   return (
     <div>

@@ -2,10 +2,11 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ExternalLinkIcon } from "lucide-react";
 import { androidmanagement_v1 } from "googleapis";
+import { AppsTableType } from "@/app/(main)/types/apps";
 
-type AppData = androidmanagement_v1.Schema$Application;
+// type AppData = androidmanagement_v1.Schema$Application;
 
-export default function AppSonner({ appData }: { appData: AppData }) {
+export default function AppSonner({ appData }: { appData: AppsTableType }) {
   return (
     <div className="flex flex-row">
       <div className="flex items-center justify-center">
@@ -23,16 +24,18 @@ export default function AppSonner({ appData }: { appData: AppData }) {
         <div className="text-sm text-muted-foreground">
           アプリ名：{appData.title ?? ""}
         </div>
-        <div className="flex justify-end">
-          <Button
-            variant="outline"
-            className="text-xs px-3 h-8"
-            onClick={() => window.open(`${appData.playStoreUrl}`, "_blank")}
-          >
-            Play Storeで確認する
-            <ExternalLinkIcon className="size-4 ml-2" />
-          </Button>
-        </div>
+        {appData.appType === "PUBLIC" && (
+          <div className="flex justify-end">
+            <Button
+              variant="outline"
+              className="text-xs px-3 h-8"
+              onClick={() => window.open(`${appData.playStoreUrl}`, "_blank")}
+            >
+              Play Storeで確認する
+              <ExternalLinkIcon className="size-4 ml-2" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -44,14 +44,20 @@ export default function AppsMenuBar({ className }: { className?: string }) {
               <Button
                 variant="ghost"
                 className="w-full px-3 font-semibold justify-start gap-2"
+                asChild
               >
-                限定公開アプリ
+                <Link href={`/projects/${enterpriseId}/apps/private`}>
+                  限定公開アプリ
+                </Link>
               </Button>
               <Button
                 variant="ghost"
                 className="w-full px-3 font-semibold justify-start gap-2"
+                asChild
               >
-                WEB アプリ
+                <Link href={`/projects/${enterpriseId}/apps/web`}>
+                  WEB アプリ
+                </Link>
               </Button>
               <Button
                 variant="ghost"

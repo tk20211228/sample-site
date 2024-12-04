@@ -20,6 +20,7 @@ import Image from "next/image";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -36,7 +37,7 @@ const Context = createContext<ContextType>({
 
 export function AppsInfoSheetProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
+  const [appInfo, setAppInfo] = useState<AppInfo>();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
@@ -93,11 +94,15 @@ export function AppsInfoSheetProvider({ children }: { children: ReactNode }) {
         <SheetContent
           side="left"
           className="w-[90vw] sm:w-[600px] sm:max-w-full p-0"
-          aria-label="アプリケーション詳細"
         >
           <ScrollArea className="h-full p-6">
             <SheetHeader>
               <SheetTitle>アプリケーション情報</SheetTitle>
+              <SheetDescription>
+                <span className="sr-only">
+                  アプリケーションの詳細情報を表示
+                </span>
+              </SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-6">
               <div className="flex items-center space-x-4">
@@ -137,7 +142,15 @@ export function AppsInfoSheetProvider({ children }: { children: ReactNode }) {
                   <p className="text-sm">{appInfo?.fullDescription}</p>
                 </ScrollArea>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between p-1">
+                <Button
+                  variant="outline"
+                  onClick={handleDownloadJson}
+                  disabled={!appInfo?.name}
+                >
+                  <FileIcon className="w-4 h-4 mr-2" />
+                  JSONで出力する
+                </Button>
                 <Button
                   variant="outline"
                   asChild
@@ -147,14 +160,6 @@ export function AppsInfoSheetProvider({ children }: { children: ReactNode }) {
                     <ExternalLinkIcon className="w-4 h-4 mr-2" />
                     Play Store を開く
                   </Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleDownloadJson}
-                  disabled={!appInfo?.name}
-                >
-                  <FileIcon className="w-4 h-4 mr-2" />
-                  JSONで出力する
                 </Button>
               </div>
             </div>

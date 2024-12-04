@@ -2,14 +2,14 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { PublicAppsTableType } from "@/app/(main)/types/apps";
+import { AppsTableType } from "@/app/(main)/types/apps";
 import Image from "next/image";
-import { DataTableColumnSortHeader } from "../../../../../components/table/data-table-column-sort-header";
-import PublicAppsTableMenu from "./public-apps-table-menu";
+import { DataTableColumnSortHeader } from "../../../../components/table/data-table-column-sort-header";
+import AppsTableMenu from "./apps-table-menu";
 
-export type PublicAppsColumnDef = ColumnDef<PublicAppsTableType>;
+export type AppsColumnDef = ColumnDef<AppsTableType>;
 
-export const publicAppsColumns: PublicAppsColumnDef[] = [
+export const appsColumns: AppsColumnDef[] = [
   // {
   //   accessorKey: "number",
   //   accessorFn: (_, index) => index + 1,
@@ -107,7 +107,7 @@ export const publicAppsColumns: PublicAppsColumnDef[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center justify-center">
-          <PublicAppsTableMenu row={row} className="size-6" />
+          <AppsTableMenu row={row} className="size-6" />
         </div>
       );
     },

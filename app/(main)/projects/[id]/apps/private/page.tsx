@@ -1,7 +1,9 @@
 import { Loader2Icon } from "lucide-react";
+import { getDbApps } from "../data/get-db-apps";
+import PublicAppsTable from "../components/table/apps-table";
+import PrivateAppIframe from "./components/private-app-iframe";
 import { Suspense } from "react";
-import PublicAppsContent from "./components/public-apps-content";
-import PublicAppsIframe from "./components/public-apps-iframe";
+import PrivateAppsContent from "./components/private-apps-content";
 
 export default async function Page() {
   // const enterpriseId = (await params).id;
@@ -11,9 +13,8 @@ export default async function Page() {
   return (
     <div className="flex flex-row h-dvh space-x-1">
       <div className=" rounded-lg hidden lg:block py-1 pl-1">
-        {/* <AppsTable columns={appsColumns} initialData={data} /> */}
         <Suspense fallback={<div>Loading...</div>}>
-          <PublicAppsContent />
+          <PrivateAppsContent />
         </Suspense>
       </div>
       <div className="flex-1 py-1 pr-1">
@@ -21,7 +22,7 @@ export default async function Page() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <Loader2Icon className="animate-spin size-10 text-muted-foreground/30" />
           </div>
-          <PublicAppsIframe />
+          <PrivateAppIframe />
         </div>
       </div>
     </div>

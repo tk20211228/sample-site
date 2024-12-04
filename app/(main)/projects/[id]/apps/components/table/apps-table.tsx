@@ -22,36 +22,24 @@ import {
 
 import { DensityFeature } from "@/app/(main)/projects/types/density";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import { PublicAppsTableToolbar } from "./public-apps-table-toolbar";
-
-import { PublicAppsTableType } from "@/app/(main)/types/apps";
-import { usePublicApps } from "../../../../providers/public-apps";
+import { useState } from "react";
+import { PublicAppsTableToolbar } from "../../public/components/table/public-apps-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  initialData: TData[];
+  data: TData[];
   className?: string;
 }
 
-export default function PublicAppsTable<TData, TValue>({
+export default function AppsTable<TData, TValue>({
   columns,
-  initialData,
+  data,
   className,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]); // ソート状態を管理
 
-  const { publicAppsTableData, setPublicAppsTableData } = usePublicApps();
-
-  // 初回レンダリング時にinitialDataをセット
-  useEffect(() => {
-    if (initialData && publicAppsTableData.length === 0) {
-      setPublicAppsTableData(initialData as PublicAppsTableType[]);
-    }
-  }, [initialData, setPublicAppsTableData, publicAppsTableData.length]);
-
   const table = useReactTable({
-    data: publicAppsTableData as TData[],
+    data,
     columns,
     columnResizeMode: "onChange", // リアルタイムで列のリサイズを行う
     enableColumnResizing: true, // カラムのリサイズを有効化

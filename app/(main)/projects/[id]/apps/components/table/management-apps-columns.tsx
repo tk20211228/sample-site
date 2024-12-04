@@ -2,19 +2,19 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { PublicAppsTableType } from "@/app/(main)/types/apps";
+import { AppsTableType } from "@/app/(main)/types/apps";
 import Image from "next/image";
-import PublicAppsTableMenu from "./management-apps-table-menu";
+import PublicAppsTableMenu from "./apps-table-menu";
 import { DataTableColumnSortHeader } from "@/app/(main)/projects/components/table/data-table-column-sort-header";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { selectColumn } from "@/app/(main)/projects/components/table/select-column";
 import { formatToJapaneseDate } from "@/lib/date-fns/get-date";
 
-export type ManagementAppsColumnDef = ColumnDef<PublicAppsTableType>;
+export type ManagementAppsColumnDef = ColumnDef<AppsTableType>;
 
 export const ManagementAppsColumns: ManagementAppsColumnDef[] = [
-  selectColumn<PublicAppsTableType>(),
+  selectColumn<AppsTableType>(),
   {
     accessorKey: "number",
     accessorFn: (_, index) => index + 1,

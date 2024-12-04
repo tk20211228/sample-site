@@ -41,6 +41,7 @@ export type Database = {
       apps: {
         Row: {
           app_details: Json
+          app_type: string
           created_at: string
           enterprise_table_id: string
           id: string
@@ -49,6 +50,7 @@ export type Database = {
         }
         Insert: {
           app_details: Json
+          app_type: string
           created_at?: string
           enterprise_table_id: string
           id?: string
@@ -57,6 +59,7 @@ export type Database = {
         }
         Update: {
           app_details?: Json
+          app_type?: string
           created_at?: string
           enterprise_table_id?: string
           id?: string

@@ -7,11 +7,12 @@ import useSWR from "swr";
 import { cn } from "@/lib/utils";
 import { useParams, usePathname } from "next/navigation";
 import { toast } from "sonner";
+
 import { initializePlayIframe } from "../../lib/initialize-iframe";
 import { getAndroidManagementWebToken } from "../../actions/get-web-token";
 import { useApps } from "../../data/use-apps";
 
-export default function PublicAppsIframe({
+export default function PrivateAppIframe({
   className,
 }: {
   className?: string;
@@ -19,13 +20,14 @@ export default function PublicAppsIframe({
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
   const params = useParams();
+  const pathname = usePathname();
   const enterpriseId = params.id;
   const enterpriseName = "enterprises/" + enterpriseId;
-  const tokenType = "PUBLIC";
-  const { mutate } = useApps("/api/apps/public", enterpriseName, tokenType);
+  const tokenType = "PRIVATE";
+  const { mutate } = useApps("/api/apps/private", enterpriseName, tokenType);
 
   const { data, error } = useSWR(
-    "/api/public/iframe",
+    pathname,
     () => getAndroidManagementWebToken(enterpriseName, tokenType),
     {
       // dedupingInterval: 3600000, // enterpriseIdが同じ場合は1時間、関数を実行しない
@@ -61,7 +63,7 @@ export default function PublicAppsIframe({
   );
 
   useEffect(() => {
-    // console.log("public token", data?.token);
+    // console.log("private token", data?.value);
     if (data?.value) {
       initialize(data.value);
     }
@@ -82,7 +84,7 @@ export default function PublicAppsIframe({
       <div
         ref={containerRef}
         className={cn("w-full h-full relative", className)}
-        aria-label="Google Play 公開アプリ"
+        aria-label="Google Play 非公開アプリ"
         role="region"
       />
     </>
