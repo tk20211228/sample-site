@@ -1,18 +1,13 @@
 "use client";
 
 import { Table } from "@tanstack/react-table";
-import { RefreshCcwIcon, X } from "lucide-react";
+import { RefreshCcwIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { DataTableViewOptions } from "../../../devices/components/data-table-view-options";
-// import DateTableColumnAllResizer from "../../../devices/components/data-table-column-all-resizer";
-import { cn } from "@/lib/utils";
+
 import { SidebarTrigger } from "@/components/ui/sidebar";
-// import SyncPoliciesButton from "../sync-policies-button";
-// import { useEnterprise } from "../../../providers/enterprise";
-// import DataTableRowResizeButton from "./data-table-row-resizer";
-// import DeleteSelectedPoliciesButton from "./delete-selected-policies-button";
+import { cn } from "@/lib/utils";
 
 interface PublicAppsTableToolbarProps<TData> {
   table: Table<TData>;

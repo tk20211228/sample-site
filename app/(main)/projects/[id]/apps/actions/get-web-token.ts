@@ -1,10 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import {
-  createAndroidEnterpriseClient,
-  createAndroidManagementClient,
-} from "../../../../../../actions/emm/client";
+import { createAndroidManagementClient } from "../../../../../../actions/emm/client";
+import { IframeType } from "@/app/(main)/types/apps";
 
 /**
  * Android Management API
@@ -16,7 +14,7 @@ import {
  */
 export const getAndroidManagementWebToken = async (
   enterpriseName: string,
-  tokenType: "PUBLIC" | "PRIVATE" | "WEB"
+  tokenType: IframeType
 ) => {
   // 認証
   const supabase = await createClient();
@@ -30,12 +28,16 @@ export const getAndroidManagementWebToken = async (
   // トークンタイプに基づいて iframeFeatures を設定
   const iframeFeatures = (() => {
     switch (tokenType) {
-      case "PUBLIC":
+      case "PLAY_SEARCH":
         return ["PLAY_SEARCH", "STORE_BUILDER"];
-      case "PRIVATE":
+      case "PRIVATE_APPS":
         return ["PRIVATE_APPS", "STORE_BUILDER"];
-      case "WEB":
+      case "WEB_APPS":
         return ["WEB_APPS", "STORE_BUILDER"];
+      case "MANAGED_CONFIGURATIONS":
+        return ["MANAGED_CONFIGURATIONS"];
+      case "ZERO_TOUCH_CUSTOMER_MANAGEMENT":
+        return ["ZERO_TOUCH_CUSTOMER_MANAGEMENT"];
       default:
         return ["STORE_BUILDER"];
     }

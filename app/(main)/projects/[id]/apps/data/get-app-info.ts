@@ -6,7 +6,8 @@ import { saveApp } from "../actions/apps";
 
 export const getAppData = async (
   packageName: string,
-  enterpriseName: string
+  enterpriseName: string,
+  tokenType: string
 ) => {
   // 認証
   const supabase = await createClient();
@@ -33,7 +34,7 @@ export const getAppData = async (
   }
   console.log("Get getAppData:", data);
 
-  const saveData = await saveApp(data, enterpriseName);
+  const saveData = await saveApp(data, enterpriseName, tokenType);
 
   return saveData;
 };

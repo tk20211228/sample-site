@@ -22,36 +22,25 @@ import {
 
 import { DensityFeature } from "@/app/(main)/projects/types/density";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { PublicAppsTableType } from "@/app/(main)/types/apps";
-import { usePublicApps } from "../../../providers/public-apps";
 import { ManagementAppsTableToolbar } from "./management-apps-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  initialData: TData[];
+  data: TData[];
   className?: string;
 }
 
 export default function ManagementAppsTable<TData, TValue>({
   columns,
-  initialData,
+  data,
   className,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]); // ソート状態を管理
 
-  const { publicAppsTableData, setPublicAppsTableData } = usePublicApps();
-
-  // 初回レンダリング時にinitialDataをセット
-  useEffect(() => {
-    if (initialData && publicAppsTableData.length === 0) {
-      setPublicAppsTableData(initialData as PublicAppsTableType[]);
-    }
-  }, [initialData, setPublicAppsTableData, publicAppsTableData.length]);
-
   const table = useReactTable({
-    data: publicAppsTableData as TData[],
+    data,
     columns,
     columnResizeMode: "onChange", // リアルタイムで列のリサイズを行う
     enableColumnResizing: true, // カラムのリサイズを有効化
@@ -95,7 +84,8 @@ export default function ManagementAppsTable<TData, TValue>({
                       "[&:nth-child(2)]:border-l-0", // 2番目のセルの左ボーダーを削除
                       "first:sticky first:left-0 first:z-30 first:border-l-0 first:border-r",
                       "last:sticky  last:right-0 last:z-30 last:border-r-0",
-                      "p-1 h-8"
+                      "p-1 h-8",
+                      "first:px-0"
                     )}
                     key={header.id}
                     colSpan={header.colSpan}
@@ -149,7 +139,9 @@ export default function ManagementAppsTable<TData, TValue>({
                       "first:sticky first:left-0 first:z-10 first:bg-background first:border-r first:border-l-0",
                       "[&:nth-child(2)]:border-l-0", // 2番目のセルの左ボーダーを追加
                       "last:sticky last:right-0 last:z-10 last:bg-background last:border-r-0 last:border-l",
-                      "p-0"
+                      "py-0",
+                      "p-0",
+                      "first:p-4 first:pb-3"
                     )}
                     style={{ maxWidth: `${cell.column.getSize()}px` }}
                   >

@@ -1,8 +1,6 @@
 import { Loader2Icon } from "lucide-react";
-import { getDbApps } from "../data/get-db-apps";
-import PublicAppsTable from "../components/table/apps-table";
-import PrivateAppIframe from "./components/private-app-iframe";
 import { Suspense } from "react";
+import PrivateAppIframe from "./components/private-app-iframe";
 import PrivateAppsContent from "./components/private-apps-content";
 
 export default async function Page() {

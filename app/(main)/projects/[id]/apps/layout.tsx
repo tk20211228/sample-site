@@ -2,12 +2,6 @@ import AppsMenuBar from "@/app/(main)/components/projects/app-menu-ber";
 import type { Metadata } from "next";
 import { AppsInfoSheetProvider } from "../providers/apps-info-sheet";
 
-import { PublicAppsProvider } from "../providers/public-apps";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
 import { AppsSidebar } from "./components/apps-sidebar";
 
 export const metadata: Metadata = {
@@ -21,18 +15,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // <AppsProvider>
-    <PublicAppsProvider>
-      <AppsInfoSheetProvider>
-        <div className="flex">
-          <AppsSidebar />
-
-          <AppsMenuBar className="hidden xl:block" />
-
-          <div className="flex-1 min-w-0">{children}</div>
-        </div>
-      </AppsInfoSheetProvider>
-    </PublicAppsProvider>
-    // </AppsProvider>
+    <AppsInfoSheetProvider>
+      <div className="flex">
+        <AppsSidebar />
+        <AppsMenuBar className="hidden xl:block" />
+        <div className="flex-1 min-w-0">{children}</div>
+      </div>
+    </AppsInfoSheetProvider>
   );
 }

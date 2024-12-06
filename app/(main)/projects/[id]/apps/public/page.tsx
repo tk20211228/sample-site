@@ -4,14 +4,9 @@ import PublicAppsContent from "./components/public-apps-content";
 import PublicAppsIframe from "./components/public-apps-iframe";
 
 export default async function Page() {
-  // const enterpriseId = (await params).id;
-  // const enterpriseName = "enterprises/" + enterpriseId;
-  // const data = await getDbApps(enterpriseName);
-
   return (
     <div className="flex flex-row h-dvh space-x-1">
       <div className=" rounded-lg hidden lg:block py-1 pl-1">
-        {/* <AppsTable columns={appsColumns} initialData={data} /> */}
         <Suspense fallback={<div>Loading...</div>}>
           <PublicAppsContent />
         </Suspense>

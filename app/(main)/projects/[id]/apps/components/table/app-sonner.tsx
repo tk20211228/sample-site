@@ -1,10 +1,7 @@
-import Image from "next/image";
+import { AppsTableType } from "@/app/(main)/types/apps";
 import { Button } from "@/components/ui/button";
 import { ExternalLinkIcon } from "lucide-react";
-import { androidmanagement_v1 } from "googleapis";
-import { AppsTableType } from "@/app/(main)/types/apps";
-
-// type AppData = androidmanagement_v1.Schema$Application;
+import Image from "next/image";
 
 export default function AppSonner({ appData }: { appData: AppsTableType }) {
   return (

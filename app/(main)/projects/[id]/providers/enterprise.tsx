@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   ReactNode,
   createContext,
@@ -26,18 +26,20 @@ const Context = createContext<ContextType>({
 export function EnterpriseProvider({ children }: { children: ReactNode }) {
   const [enterpriseId, setEnterpriseId] = useState<string>("");
   const [enterpriseName, setEnterpriseName] = useState<string>("");
-  const pathname = usePathname();
+  const params = useParams();
 
   useEffect(() => {
     // 正規表現を使ってURLからenterpriseIdを抽出
-    const match = pathname.match(/\/projects\/([^/]+)(?:\/|$)/);
-    const id = match ? match[1] : null;
-    if (id) {
-      setEnterpriseId(id);
-      const name = "enterprises/" + id;
-      setEnterpriseName(name);
-    }
-  }, [pathname]);
+    // const match = pathname.match(/\/projects\/([^/]+)(?:\/|$)/);
+    // const id = match ? match[1] : null;
+    // if (id) {
+    //   setEnterpriseId(id);
+    //   const name = "enterprises/" + id;
+    //   setEnterpriseName(name);
+    // }
+    setEnterpriseId(params.id as string);
+    setEnterpriseName("enterprises/" + params.id);
+  }, [params.id]);
 
   return (
     <Context.Provider

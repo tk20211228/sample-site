@@ -1,47 +1,42 @@
 "use client";
 
-import Script from "next/script";
 import { useCallback, useEffect, useRef } from "react";
-import useSWR from "swr";
 
 import { cn } from "@/lib/utils";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
-import { initializePlayIframe } from "../../lib/initialize-iframe";
-import { getAndroidManagementWebToken } from "../../actions/get-web-token";
 import { useApps } from "../../data/use-apps";
+import { useWebToken } from "../../data/use-web-token";
+import { initializePlayIframe } from "../../lib/initialize-iframe";
+import { useGapiIframes } from "../../../providers/gapi-iframes";
 
 export default function WebAppIframe({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
   const params = useParams();
-  const pathname = usePathname();
-  const enterpriseId = params.id;
-  const enterpriseName = "enterprises/" + enterpriseId;
-  const tokenType = "WEB";
-  const { mutate } = useApps("/api/apps/web", enterpriseName, tokenType);
+  const { isLoaded } = useGapiIframes();
+  const enterpriseName = "enterprises/" + params.id;
+  const appType = "WEB";
+  const tokenType = "WEB_APPS";
+  const iframeKey = "/api/web/iframe";
+  const tableKey = "/api/apps/" + appType;
 
-  const { data, error } = useSWR(
-    pathname,
-    () => getAndroidManagementWebToken(enterpriseName, tokenType),
-    {
-      // dedupingInterval: 3600000, // enterpriseIdが同じ場合は1時間、関数を実行しない
-      revalidateOnFocus: false, // タブ移動しても関数を実行しない
-    }
-  );
+  const { mutate } = useApps(tableKey, enterpriseName, appType);
+  const { token, error } = useWebToken(iframeKey, enterpriseName, tokenType);
 
   const initialize = useCallback(
-    (value: string) => {
+    (token: string) => {
       if (isInitializedRef.current) {
-        console.log("既に初期化済みです"); // ２回目以降画面を開くと前回のトークンと最新トークンが取得されるため初期化が２回実行される。そのため、初期化フラグを設定
+        // console.log("既に初期化済みです"); // ２回目以降画面を開くと前回のトークンと最新トークンが取得されるため初期化が２回実行される。そのため、初期化フラグを設定
         return;
       }
       const success = initializePlayIframe({
-        token: value,
+        token,
         containerRef,
         enterpriseName,
         mutate,
+        appType,
         onSuccess: () => {
           isInitializedRef.current = true;
         },
@@ -54,34 +49,26 @@ export default function WebAppIframe({ className }: { className?: string }) {
         isInitializedRef.current = false;
       }
     },
-    [enterpriseName]
+    [enterpriseName, mutate]
   );
 
   useEffect(() => {
-    // console.log("web token", data?.value);
-    if (data?.value) {
-      initialize(data.value);
+    // console.log("web token", token);
+    if (token && isLoaded) {
+      initialize(token);
     }
-  }, [initialize, data?.value]);
+  }, [initialize, token, isLoaded]);
 
   if (error) {
-    toast.error("アクセストークンの取得に失敗しました。" + error);
+    toast.error("トークンの取得に失敗しました" + error);
   }
 
   return (
-    <>
-      <Script
-        src="https://apis.google.com/js/api.js"
-        onLoad={() => {
-          gapi.load("gapi.iframes", () => {});
-        }}
-      />
-      <div
-        ref={containerRef}
-        className={cn("w-full h-full relative", className)}
-        aria-label="Google Play ウェブアプリ"
-        role="region"
-      />
-    </>
+    <div
+      ref={containerRef}
+      className={cn("w-full h-full relative", className)}
+      aria-label="Google Play ウェブアプリ"
+      role="region"
+    />
   );
 }

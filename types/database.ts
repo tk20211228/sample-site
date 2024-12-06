@@ -46,7 +46,7 @@ export type Database = {
           enterprise_table_id: string
           id: string
           name: string
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           app_details: Json
@@ -55,7 +55,7 @@ export type Database = {
           enterprise_table_id: string
           id?: string
           name: string
-          updated_at?: string | null
+          updated_at: string
         }
         Update: {
           app_details?: Json
@@ -64,7 +64,7 @@ export type Database = {
           enterprise_table_id?: string
           id?: string
           name?: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: [
           {

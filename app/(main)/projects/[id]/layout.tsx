@@ -4,6 +4,7 @@ import { PolicyProvider } from "./providers/policy";
 import { EnterpriseProvider } from "./providers/enterprise";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
+import { GapiIframesProvider } from "./providers/gapi-iframes";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,20 +20,22 @@ export default async function RootLayout({
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
   return (
     <EnterpriseProvider>
-      <PolicyProvider>
-        <div className="flex">
-          <NavigationBar className="hidden xl:block" />
-          <SidebarProvider defaultOpen={defaultOpen}>
-            {/* <div className="hidden lg:block">
+      <GapiIframesProvider>
+        <PolicyProvider>
+          <div className="flex">
+            <NavigationBar className="hidden xl:block" />
+            <SidebarProvider defaultOpen={defaultOpen} className="min-w-0">
+              {/* <div className="hidden lg:block">
         <NavigationBar />
       </div>
       <div className="lg:hidden">
         <MobileNavigationBar />
       </div> */}
-            <div className="flex-1 min-w-0">{children}</div>
-          </SidebarProvider>
-        </div>
-      </PolicyProvider>
+              <div className="flex-1 min-w-0">{children}</div>
+            </SidebarProvider>
+          </div>
+        </PolicyProvider>
+      </GapiIframesProvider>
     </EnterpriseProvider>
   );
 }

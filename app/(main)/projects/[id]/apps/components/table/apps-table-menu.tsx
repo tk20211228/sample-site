@@ -26,21 +26,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { Row } from "@tanstack/react-table";
-// import { PolicyTableType } from "../../types/policy";
-// import { deletePolicy } from "../../actions/delete-policy";
-// import { usePolicy } from "../../../providers/policy";
-
-// import { editPolicy } from "../../actions/edit-policy";
-import { AppsTableType } from "@/app/(main)/types/apps";
+import { AppsTableType, AppType } from "@/app/(main)/types/apps";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppsInfoSheet } from "../../../providers/apps-info-sheet";
-import { usePublicApps } from "../../../providers/public-apps";
 import { deleteApp } from "../../actions/delete-app";
+import { useApps } from "../../data/use-apps";
 
 interface DataTableMenuProps {
   row: Row<AppsTableType>;
@@ -49,7 +44,12 @@ interface DataTableMenuProps {
 
 export default function AppsTableMenu({ row, className }: DataTableMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { publicAppsTableData, setPublicAppsTableData } = usePublicApps();
+  const [isPendingMenu, startTransition] = useTransition();
+  const params = useParams();
+  const enterpriseName = "enterprises/" + params.id;
+  const appType = row.original.appType;
+  const key = "/api/apps/" + appType;
+  const { mutate } = useApps(key, enterpriseName, appType as AppType);
   const { isPending } = useAppsInfoSheet();
   const router = useRouter();
   const pathName = usePathname();
@@ -67,26 +67,22 @@ export default function AppsTableMenu({ row, className }: DataTableMenuProps) {
   };
 
   const handleDelete = async () => {
-    await deleteApp(row.original.name)
-      .then(() => {
-        toast.success("アプリを削除しました。");
-        const newData = publicAppsTableData.filter(
-          (p) => p.name !== row.original.name
-        );
-        setPublicAppsTableData(newData);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+    startTransition(async () => {
+      await deleteApp(row.original.name)
+        .then(() => {
+          toast.success("アプリを削除しました。");
+          mutate((currentData) => {
+            const data = currentData?.filter(
+              (p) => p.name !== row.original.name
+            );
+            return data;
+          });
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+    });
   };
-  // appDate.author に”Private”が含まれている場合は、アプリの種別を”PRIVATE”とする
-  // appDate.author に”Web”が含まれている場合は、アプリの種別を”WEB”とする
-  // 上記以外は、アプリの種別を”PUBLIC”とする
-  // const appType = appData.author?.includes("Private")
-  //   ? "PRIVATE"
-  //   : appData.author?.includes("Web")
-  //   ? "WEB"
-  //   : "PUBLIC";
 
   return (
     <div>
@@ -112,18 +108,33 @@ export default function AppsTableMenu({ row, className }: DataTableMenuProps) {
               </>
             )}
           </DropdownMenuItem>
+          {row.original.appType === "PUBLIC" && (
+            <DropdownMenuItem onClick={handleExternalLink}>
+              <ExternalLinkIcon className="mr-4 h-4 w-4" />
+              <span>Play Store を開く</span>
+            </DropdownMenuItem>
+          )}
 
-          <DropdownMenuItem onClick={handleExternalLink}>
-            <ExternalLinkIcon className="mr-4 h-4 w-4" />
-            <span>Play Store を開く</span>
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={handleDownload}>
             <Download className="mr-4 h-4 w-4" />
             <span>アプリ情報をダウンロード</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
-            <Trash2 className="mr-4 h-4 w-4 text-red-500" />
-            <span className="text-red-500">削除</span>
+
+          <DropdownMenuItem
+            onSelect={() => setIsDialogOpen(true)}
+            disabled={isPendingMenu}
+          >
+            {isPendingMenu ? (
+              <div className="flex items-center">
+                <Loader2Icon className="mr-4 h-4 w-4 animate-spin" />
+                <span>削除中...</span>
+              </div>
+            ) : (
+              <>
+                <Trash2 className="mr-4 h-4 w-4 text-red-500" />
+                <span className="text-red-500">削除</span>
+              </>
+            )}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

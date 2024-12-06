@@ -9,7 +9,10 @@ import { DataTableColumnSortHeader } from "@/app/(main)/projects/components/tabl
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { selectColumn } from "@/app/(main)/projects/components/table/select-column";
-import { formatToJapaneseDate } from "@/lib/date-fns/get-date";
+import {
+  formatToJapaneseDate,
+  formatToJapaneseDateTime,
+} from "@/lib/date-fns/get-date";
 
 export type ManagementAppsColumnDef = ColumnDef<AppsTableType>;
 
@@ -45,7 +48,7 @@ export const ManagementAppsColumns: ManagementAppsColumnDef[] = [
   {
     accessorKey: "iconUrl",
     minSize: 40,
-    size: 40,
+    size: 50,
     header: () => (
       <div className="flex items-center justify-center size-10 pt-1">Icon</div>
     ),
@@ -69,7 +72,7 @@ export const ManagementAppsColumns: ManagementAppsColumnDef[] = [
   {
     accessorKey: "title",
     minSize: 100,
-    size: 250,
+    size: 300,
     header: ({ column }) => (
       <DataTableColumnSortHeader column={column} title="アプリ名" />
     ),
@@ -81,9 +84,25 @@ export const ManagementAppsColumns: ManagementAppsColumnDef[] = [
     filterFn: "includesString", //大文字と小文字を区別しない
   },
   {
+    accessorKey: "name",
+    minSize: 100,
+    size: 320,
+    header: ({ column }) => (
+      <DataTableColumnSortHeader column={column} title="パッケージ名" />
+    ),
+    cell: ({ row }) => (
+      <div className="truncate pl-4" title={row.getValue("name")}>
+        {(row.getValue("name") as string).replace(
+          /^enterprises\/.*\/applications\//,
+          ""
+        )}
+      </div>
+    ),
+  },
+  {
     accessorKey: "updateTime",
     minSize: 155,
-    size: 155,
+    size: 170,
     header: ({ column }) => (
       <DataTableColumnSortHeader
         column={column}
@@ -97,6 +116,86 @@ export const ManagementAppsColumns: ManagementAppsColumnDef[] = [
         title={row.getValue("updateTime")}
       >
         {formatToJapaneseDate(row.getValue("updateTime"))}
+      </div>
+    ),
+    // enableResizing: false, // リサイズを無効化
+  },
+  {
+    accessorKey: "minAndroidSdkVersion",
+    minSize: 120,
+    size: 120,
+    header: ({ column }) => (
+      <DataTableColumnSortHeader column={column} title="minSdkVersion" />
+    ),
+    cell: ({ row }) => (
+      <div
+        className="truncate flex items-center justify-center"
+        title={row.getValue("minAndroidSdkVersion")}
+      >
+        {row.getValue("minAndroidSdkVersion")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "appType",
+    minSize: 120,
+    size: 120,
+    header: ({ column }) => (
+      <DataTableColumnSortHeader column={column} title="アプリ種別" />
+    ),
+    cell: ({ row }) => (
+      <div
+        className="truncate flex items-center justify-center"
+        title={row.getValue("appType")}
+      >
+        {row.getValue("appType") === "PUBLIC"
+          ? "Google Play"
+          : row.getValue("appType") === "PRIVATE"
+          ? "限定公開"
+          : row.getValue("appType") === "WEB"
+          ? "Webアプリ"
+          : "不明"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "created_at",
+    minSize: 155,
+    size: 190,
+    header: ({ column }) => (
+      <DataTableColumnSortHeader
+        column={column}
+        title="アプリ情報の登録日"
+        className=""
+      />
+    ),
+    cell: ({ row }) => (
+      <div
+        className="truncate flex items-center justify-center pl-2"
+        title={row.getValue("created_at")}
+      >
+        {formatToJapaneseDateTime(row.getValue("created_at"))}
+      </div>
+    ),
+    // enableResizing: false, // リサイズを無効化
+  },
+  {
+    accessorKey: "updated_at",
+    minSize: 155,
+    size: 190,
+    header: ({ column }) => (
+      <DataTableColumnSortHeader
+        column={column}
+        title="アプリ情報の更新日"
+        className=""
+      />
+    ),
+    cell: ({ row }) => (
+      <div
+        className="truncate flex items-center justify-center pl-2"
+        title={row.getValue("updated_at")}
+      >
+        {formatToJapaneseDateTime(row.getValue("updated_at"))}
       </div>
     ),
     // enableResizing: false, // リサイズを無効化

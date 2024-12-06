@@ -1,8 +1,8 @@
-import { AppData, AppsTableType } from "@/app/(main)/types/apps";
+import { AppsTableType, AppType } from "@/app/(main)/types/apps";
 import { toast } from "sonner";
+import AppSonner from "../components/table/app-sonner";
 import { APP_IFRAME_CONFIG } from "../data/app-iframe-config";
 import { getAppData } from "../data/get-app-info";
-import AppSonner from "../components/table/app-sonner";
 
 type SelectEvent = {
   action: "selected";
@@ -36,7 +36,10 @@ interface InitializePlayIframeParams {
   token?: string | null;
   containerRef: React.RefObject<HTMLDivElement>;
   enterpriseName: string;
-  mutate?: (data?: any, shouldRevalidate?: boolean) => Promise<any>;
+  appType: AppType;
+  mutate?: (
+    updater?: (currentData: AppsTableType[] | undefined) => AppsTableType[]
+  ) => void;
   onSuccess?: () => void;
   onError?: (error: unknown) => void;
 }
@@ -47,6 +50,7 @@ interface InitializePlayIframeParams {
  * @param containerRef - iframeを表示するコンテナのref
  * @param enterpriseName - エンタープライズ名
  * @param mutate - データ更新関数
+ * @param appType - DBに保存するアプリの種類
  * @param onSuccess - 初期化成功時のコールバック関数
  * @returns boolean - 初期化成功かどうか
  */
@@ -54,6 +58,7 @@ export const initializePlayIframe = ({
   token,
   containerRef,
   enterpriseName,
+  appType,
   mutate,
   onSuccess,
   onError,
@@ -77,32 +82,31 @@ export const initializePlayIframe = ({
     const handleProductSelect = async (event: SelectEvent) => {
       if (event.action === "selected") {
         try {
-          const data = await getAppData(event.packageName, enterpriseName);
+          const data = await getAppData(
+            event.packageName,
+            enterpriseName,
+            appType
+          );
           toast.success(<AppSonner appData={data} />);
           // mutate?.();
           // 楽観的更新: 現在のデータを取得して新しいアプリを追加
+          mutate?.((currentData: AppsTableType[] | undefined) => {
+            if (!currentData) return [data]; // 現在のデータがない場合は新しいアプリのみを返す
 
-          mutate?.(
-            (currentData: AppsTableType[]) => {
-              // 既に存在するアプリを探す
-              const existingIndex = currentData.findIndex(
-                (app) => app.name === data.name
-              );
+            // 既に存在するアプリを探す
+            const existingIndex = currentData.findIndex(
+              (app) => app.name === data.name
+            );
 
-              const newApp = data;
+            const newApp = data;
 
-              if (existingIndex !== -1) {
-                // 既存のアプリを更新して先頭に移動
-                const updatedData = [...currentData];
-                updatedData.splice(existingIndex, 1); // 既存のアプリを削除
-                return [newApp, ...updatedData]; // 更新したアプリを先頭に追加
-              } else {
-                // 新しいアプリを配列の先頭に追加
-                return [newApp, ...currentData];
-              }
-            },
-            false // サーバーの再検証をスキップ
-          );
+            if (existingIndex !== -1) {
+              const updatedData = [...currentData]; // 現在のデータをコピー
+              updatedData.splice(existingIndex, 1); // 既存のアプリを削除
+              return [newApp, ...updatedData]; // 更新したアプリを先頭に追加して返す
+            }
+            return [newApp, ...currentData]; // 新しいアプリを配列の先頭に追加して返す
+          });
         } catch (error) {
           toast.error("アプリデータの取得に失敗しました" + error);
           onError?.(error);
@@ -116,7 +120,7 @@ export const initializePlayIframe = ({
       gapi.iframes.CROSS_ORIGIN_IFRAMES_FILTER
     );
 
-    console.log("iframeの初期化に成功");
+    // console.log("iframeの初期化に成功");
     onSuccess?.();
     return true;
   } catch (error) {

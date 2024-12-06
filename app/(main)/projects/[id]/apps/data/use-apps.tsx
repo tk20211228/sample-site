@@ -1,11 +1,20 @@
 import useSWR from "swr";
 
-import { AppsTableType } from "@/app/(main)/types/apps";
+import { AppsTableType, AppType } from "@/app/(main)/types/apps";
 import { getDbApps } from "./get-db-apps";
 
-export function useApps(key: string, enterpriseName: string, appType?: string) {
-  // console.log("useApps", appType);
-  // const { data, error, isLoading, mutate } = useSWR<AppsTableType[]>(key, () =>
+/**
+ * DBからアプリ情報を取得
+ * @param key　SWRのkey
+ * @param enterpriseName　"enterprises/{enterpriseId}"
+ * @param appType アプリの種類　※引数がない場合は全てのアプリを取得
+ * @returns
+ */
+export function useApps(
+  key: string,
+  enterpriseName: string,
+  appType?: AppType
+) {
   const { data, error, isLoading, mutate } = useSWR<AppsTableType[]>(
     key,
     () => getDbApps(enterpriseName, appType),

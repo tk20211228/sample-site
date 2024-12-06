@@ -1,18 +1,12 @@
-import ManagementAppsTable from "./components/table/management-apps-table";
-import { ManagementAppsColumns } from "./components/table/management-apps-columns";
-import { getDbApps } from "./data/get-db-apps";
+import { Suspense } from "react";
+import ManagementAppsContent from "./components/management-apps-content";
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const enterpriseId = (await params).id;
-  const enterpriseName = "enterprises/" + enterpriseId;
-  const data = await getDbApps(enterpriseName);
+export default async function Page() {
   return (
-    <div className="flex flex-row h-dvh p-1 border space-x-1">
-      <ManagementAppsTable columns={ManagementAppsColumns} initialData={data} />
+    <div className="flex flex-row h-dvh p-1 border space-x-1 overflow-hidden">
+      <Suspense fallback={<div>Loading...</div>}>
+        <ManagementAppsContent />
+      </Suspense>
     </div>
   );
 }
