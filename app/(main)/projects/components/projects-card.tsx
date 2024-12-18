@@ -25,7 +25,7 @@ import { deleteProject } from "../actions/projects";
 import ProductOptionsButton from "./product-options-button";
 
 import { SiAndroid } from "@icons-pack/react-simple-icons";
-import { getBaseURL } from "@/lib/utils";
+import { getBaseURL } from "@/lib/base-url/client";
 
 interface ProjectCardProps {
   projectsData: ProjectWithEnterpriseRelation[];

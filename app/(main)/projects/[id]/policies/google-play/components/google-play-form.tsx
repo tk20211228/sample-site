@@ -33,8 +33,8 @@ export default function GooglePlayForm() {
             <FormLabel>Play ストア モード</FormLabel>
             <Select
               onValueChange={field.onChange}
-              defaultValue={field.value}
-              value={field.value}
+              defaultValue={field.value ?? "PLAY_STORE_MODE_UNSPECIFIED"}
+              value={field.value ?? "PLAY_STORE_MODE_UNSPECIFIED"}
             >
               <FormControl>
                 <SelectTrigger>

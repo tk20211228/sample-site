@@ -109,13 +109,10 @@ export const policySchema = z.object({
   locationMode: z.enum(["LOCATION_ENFORCED", "LOCATION_UNSPECIFIED"]),
   modifyAccountsDisabled: z.boolean().default(false),
   mountPhysicalMediaDisabled: z.boolean().default(false),
-  playStoreMode: z.enum([
-    "BLACKLIST",
-    "WHITELIST",
-    "PLAY_STORE_MODE_UNSPECIFIED",
-  ]),
-  // .nullable()
-  // .optional(),
+  playStoreMode: z
+    .enum(["BLACKLIST", "WHITELIST", "PLAY_STORE_MODE_UNSPECIFIED"])
+    .nullable()
+    .optional(),
   statusReportingSettings: statusReportingSettingsSchema,
   applications: z.array(applicationsSchema).optional(),
 }) satisfies z.ZodType<AndroidManagementPolicy>;

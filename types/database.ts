@@ -379,6 +379,33 @@ export type Database = {
           },
         ]
       }
+      pubsub_logs: {
+        Row: {
+          attributes_data: Json
+          created_at: string
+          id: string
+          message_data: Json
+          message_id: string
+          publish_time: string
+        }
+        Insert: {
+          attributes_data: Json
+          created_at?: string
+          id?: string
+          message_data: Json
+          message_id: string
+          publish_time: string
+        }
+        Update: {
+          attributes_data?: Json
+          created_at?: string
+          id?: string
+          message_data?: Json
+          message_id?: string
+          publish_time?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           created_at: string

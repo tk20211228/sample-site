@@ -29,7 +29,7 @@ import { z } from "zod";
 import { onboardingSchema } from "../../schema/onboarding-schema";
 import { toast } from "sonner";
 import { getSignUpUrl } from "@/actions/emm/signup-url";
-import { getBaseURL } from "@/lib/utils";
+import { getBaseURL } from "@/lib/base-url/client";
 
 type FormData = z.infer<typeof onboardingSchema>;
 

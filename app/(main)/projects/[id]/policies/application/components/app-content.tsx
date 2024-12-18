@@ -162,7 +162,7 @@ export default function AppContent() {
     } else {
       setApps(appData ?? []);
     }
-  }, [currentCreatePolicy, appData, form, setPolicyApps, setApps]);
+  }, [currentCreatePolicy, appData]);
 
   return (
     <DndContext onDragEnd={handleDragEnd}>

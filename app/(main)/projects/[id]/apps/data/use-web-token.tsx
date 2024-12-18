@@ -2,7 +2,7 @@ import useSWR from "swr";
 
 import { getAndroidManagementWebToken } from "../actions/get-web-token";
 import { IframeType } from "@/app/(main)/types/apps";
-import { getBaseURL } from "@/lib/utils";
+import { getBaseURL } from "@/lib/base-url/client";
 
 /**
  * Android Management APIのWeb Tokenを取得

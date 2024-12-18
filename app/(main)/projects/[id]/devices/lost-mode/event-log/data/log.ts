@@ -17,7 +17,7 @@ export const getLog = async () => {
     const pubsub = pubSubClient;
     // Creates a new topic
     const subscription = pubsub.subscription(subscriptionName);
-    console.log("subscription test", subscription);
+    // console.log("subscription test", subscription);
 
     // サブスクリプションが存在するか確認
     const [exists] = await subscription.exists();
@@ -34,7 +34,7 @@ export const getLog = async () => {
     const messageHandler = (message: Message) => {
       console.log(`Received message ${message.id}:`);
       // console.log(`\tData: ${message.data}`);
-      // console.log(`\tAttributes: ${message.attributes}`);
+      console.log(`\tAttributes: ${message.attributes}`);
       console.log(`\tAttributes: ${message.attributes.notificationType}`);
       messageCount += 1;
 
