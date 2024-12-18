@@ -14,7 +14,8 @@ import { IframeType } from "@/app/(main)/types/apps";
  */
 export const getAndroidManagementWebToken = async (
   enterpriseName: string,
-  tokenType: IframeType
+  tokenType: IframeType,
+  parentFrameUrl: string
 ) => {
   // 認証
   const supabase = await createClient();
@@ -49,7 +50,8 @@ export const getAndroidManagementWebToken = async (
       parent: enterpriseName,
       requestBody: {
         enabledFeatures: iframeFeatures,
-        parentFrameUrl: process.env.HOST,
+        parentFrameUrl,
+        // parentFrameUrl: process.env.HOST,
       },
     })
     .catch((error) => {

@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
  * @returns enterpriseId
  */
 export const getEnterprisesTableId = async (enterpriseName: string) => {
+  // console.log("getEnterprisesTableId", enterpriseName);
   const supabase = await createClient();
   const { data: enterpriseData } = await supabase
     .from("enterprises")

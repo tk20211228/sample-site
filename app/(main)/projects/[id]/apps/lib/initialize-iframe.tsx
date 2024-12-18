@@ -67,9 +67,7 @@ export const initializePlayIframe = ({
     console.log("gapiが読み込まれていません");
     return false;
   }
-
   const iframeUrl = `${APP_IFRAME_CONFIG.BASE_URL}?token=${token}&locale=${APP_IFRAME_CONFIG.LOCALE}&mode=${APP_IFRAME_CONFIG.MODE}&showsearchbox=true`;
-
   try {
     const options = {
       url: iframeUrl,

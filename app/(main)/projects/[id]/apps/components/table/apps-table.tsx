@@ -23,18 +23,21 @@ import {
 import { DensityFeature } from "@/app/(main)/projects/types/density";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { PublicAppsTableToolbar } from "../../public/components/table/public-apps-table-toolbar";
+import { AppsTableToolbar } from "./apps-table-toolbar";
+import LoaderTable from "./loader-table";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   className?: string;
+  isValidating?: boolean;
 }
 
 export default function AppsTable<TData, TValue>({
   columns,
   data,
   className,
+  isValidating,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]); // ソート状態を管理
 
@@ -62,11 +65,11 @@ export default function AppsTable<TData, TValue>({
 
   return (
     <div className={cn("flex flex-col h-full w-full max-w-full", className)}>
-      <PublicAppsTableToolbar table={table} className="pb-1" />
+      <AppsTableToolbar table={table} className="pb-1" />
       <Table
         style={{ width: table.getCenterTotalSize() }}
         className={cn(
-          "bg-background",
+          isValidating ? "bg-transparent" : "bg-background",
           // "p-1",
           "border-separate border-spacing-0" // セルの境界を分離し、あとでボーダーを重ねる
         )}
@@ -119,7 +122,9 @@ export default function AppsTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {isValidating ? (
+            <LoaderTable />
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 className="group"

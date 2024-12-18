@@ -31,7 +31,7 @@ export const createEnrollmentToken = async (parent: string) => {
         //   "expirationTimestamp": "my_expirationTimestamp",
         //   "name": "my_name",
         oneTimeOnly: false,
-        policyName: `${parent}/policies/first-policy`,
+        policyName: `${parent}/policies/default`,
         //   "qrCode": "my_qrCode",
         //   "user": {},
         //   "value": "my_value"

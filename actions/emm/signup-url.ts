@@ -6,12 +6,16 @@ import { redirect } from "next/navigation";
 import { createAndroidManagementClient } from "./client";
 import { encryptData } from "./crypto";
 
-// const host =
-//   process.env.NODE_ENV === "production" //本番環境にデプロイされていれば、本番とみなす
-//     ? "https://sample-site-pearl.vercel.app" // 本番環境の URL
-//     : process.env.HOST; // ローカル環境の URL
-
-export const getSignUpUrl = async (id: string) => {
+/**
+ *　サインアップURLを取得する
+ * @param projectId ProjectテーブルのテーブルID
+ * @param url リダイレクト先のURL　例: `${process.env.HOST}/api/emm/callback`　※https必須
+ */
+export const getSignUpUrl = async (
+  projectId: string,
+  url: string,
+  projectName: string
+) => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -23,7 +27,8 @@ export const getSignUpUrl = async (id: string) => {
   const { data } = await androidmanagement.signupUrls
     .create({
       // callbackUrl: process.env.EMM_SIGNUP_URL + "/api/emm/callback",
-      callbackUrl: `${process.env.HOST}/api/emm/callback`,
+      // callbackUrl: `${process.env.HOST}/api/emm/callback
+      callbackUrl: `${url}/api/emm/callback`,
       projectId: process.env.EMM_PROJECT_ID,
     })
     .catch((error) => {
@@ -40,7 +45,7 @@ export const getSignUpUrl = async (id: string) => {
 
   // URLを暗号化してCookieに保存
   const cookieStore = await cookies();
-  const encryptedUrl = encryptData({ name: data.name, id }); // セキュリティのため暗号化
+  const encryptedUrl = encryptData({ name: data.name, projectId, projectName }); // セキュリティのため暗号化
   // console.log("暗号化:", encryptedUrl);
 
   cookieStore.set("emm_signup_object", encryptedUrl, {

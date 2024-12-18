@@ -1,4 +1,3 @@
-import AppsMenuBar from "@/app/(main)/components/projects/app-menu-ber";
 import type { Metadata } from "next";
 import { AppsInfoSheetProvider } from "../providers/apps-info-sheet";
 
@@ -17,8 +16,8 @@ export default function RootLayout({
   return (
     <AppsInfoSheetProvider>
       <div className="flex">
-        <AppsSidebar />
-        <AppsMenuBar className="hidden xl:block" />
+        <AppsSidebar className="hidden xl:block" />
+        {/* <AppsMenuBar className="hidden xl:block" /> */}
         <div className="flex-1 min-w-0">{children}</div>
       </div>
     </AppsInfoSheetProvider>

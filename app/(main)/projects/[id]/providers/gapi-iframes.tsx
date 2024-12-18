@@ -22,7 +22,10 @@ export function GapiIframesProvider({ children }: { children: ReactNode }) {
 
   //isLoadedを監視
   useEffect(() => {
-    console.log("GapiIframesProvider isLoaded", isLoaded);
+    // console.log("GapiIframesProvider isLoaded", isLoaded);
+    // if (window.gapi) {
+    //   console.log("gapi is loaded");
+    // }
   }, [isLoaded]);
 
   return (

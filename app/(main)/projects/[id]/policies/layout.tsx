@@ -1,5 +1,5 @@
-import PoliciesMenuBar from "@/app/(main)/components/projects/policies-menu-ber";
 import type { Metadata } from "next";
+import { PolicySidebar } from "./components/policy-sidebar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -12,8 +12,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex">
-      <PoliciesMenuBar className="hidden md:block" />
+    <div className="flex h-dvh">
+      <PolicySidebar />
+      {/* <PolicySidebarR1 className="hidden xl:block bg-sidebar" /> */}
       <div className="flex-1 min-w-0">{children}</div>
     </div>
   );

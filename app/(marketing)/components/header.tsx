@@ -1,6 +1,6 @@
 import HeaderLogoButton from "@/components/header-logo-button";
 import { Button } from "@/components/ui/button";
-import { Book, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import Link from "next/link";
 import { cn } from "../../../lib/utils";
 import SingInButton from "./sign-in-button";
@@ -18,12 +18,12 @@ export default async function Header({ className }: { className?: string }) {
             <Info size={20} />
           </Link>
         </Button>
-        <Button variant="ghost" className="gap-2" asChild>
+        {/* <Button variant="ghost" className="gap-2" asChild>
           <Link href="/docs/books" replace>
             <span className="hidden sm:block">ドキュメント</span>
             <Book size={20} />
           </Link>
-        </Button>
+        </Button> */}
         <SingInButton />
       </nav>
     </header>

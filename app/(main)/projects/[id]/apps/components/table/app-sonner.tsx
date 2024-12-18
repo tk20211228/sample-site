@@ -21,7 +21,7 @@ export default function AppSonner({ appData }: { appData: AppsTableType }) {
         <div className="text-sm text-muted-foreground">
           アプリ名：{appData.title ?? ""}
         </div>
-        {appData.appType === "PUBLIC" && (
+        {appData.distributionChannel === "PUBLIC_GOOGLE_HOSTED" && (
           <div className="flex justify-end">
             <Button
               variant="outline"

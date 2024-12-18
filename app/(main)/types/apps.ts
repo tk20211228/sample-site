@@ -1,12 +1,17 @@
+import { androidmanagement_v1 } from "googleapis";
 import { z } from "zod";
 import { AppsTableSchema, AppTypeSchema } from "../schema/apps";
-import { androidmanagement_v1 } from "googleapis";
 
 export type AppsTableType = z.infer<typeof AppsTableSchema>;
 
 export type AppData = androidmanagement_v1.Schema$Application;
 
 export type AppType = z.infer<typeof AppTypeSchema>;
+
+export type SheetAppInfo = {
+  app_details: AppData;
+  app_type: string;
+};
 
 /**
  * iframeの種類

@@ -4,20 +4,22 @@ import { Button } from "@/components/ui/button";
 
 import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
+import { usePoliciesTableData } from "../../apps/data/use-policies-table";
+import { getSyncedPolicies } from "../../policies/data/policy";
 import { useEnterprise } from "../../providers/enterprise";
-import { usePolicy } from "../../providers/policy";
-import { getSyncedPolicies } from "../data/policy";
 
 export default function SyncPoliciesButton() {
   const [isPending, startTransition] = useTransition();
   const { enterpriseId } = useEnterprise();
-  const { setPolicyTableData } = usePolicy();
+  // const { setPolicyTableData } = usePolicy();
   const enterpriseName = `enterprises/${enterpriseId}`;
+  const key = `/api/policies/table/${enterpriseName}`;
+  const { mutate } = usePoliciesTableData(key, enterpriseName);
   const handleClick = async () => {
     startTransition(async () => {
       if (enterpriseName) {
         const data = await getSyncedPolicies(enterpriseName);
-        setPolicyTableData(data);
+        mutate(data, false);
         console.log("Policies data", data);
       }
     });

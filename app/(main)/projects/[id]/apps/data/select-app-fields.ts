@@ -6,6 +6,7 @@ export const selectAppFields = `
   app_details->>minAndroidSdkVersion,
   app_details->>playStoreUrl,
   appType:app_type,
+  app_details->>distributionChannel,
   created_at,
   updated_at
 `;

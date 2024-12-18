@@ -1,5 +1,5 @@
-import DevicesMenuBar from "@/app/(main)/components/projects/devices-menu-ber";
 import type { Metadata } from "next";
+import { DeviceSidebar } from "./components/device-sidebar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,7 +13,8 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex">
-      <DevicesMenuBar />
+      <DeviceSidebar className="hidden xl:block" />
+      {/* <DevicesMenuBar className="hidden md:block" /> */}
       {/* <DevicesMenuBar
         className={cn(
           "w-80 hidden lg:block",

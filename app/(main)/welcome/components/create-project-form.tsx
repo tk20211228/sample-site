@@ -29,6 +29,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { onboardingSchema } from "../../schema/onboarding-schema";
 import { toast } from "sonner";
+import { getBaseURL } from "@/lib/utils";
 
 type FormData = z.infer<typeof onboardingSchema>;
 
@@ -66,6 +67,8 @@ export default function CreateProjectForm({
     },
   });
   const [isPending, startTransition] = useTransition();
+  const currentUrl = window.location.origin;
+  const url = getBaseURL(currentUrl);
 
   const onSubmit = async (data: FormData) => {
     // agreeToTermsButtonがfalseの場合、サーバーアクション用にデータを加工
@@ -77,7 +80,7 @@ export default function CreateProjectForm({
     startTransition(async () => {
       await createProject(submitData).then(async (project) => {
         toast.success("プロジェクトが作成されました");
-        await getSignUpUrl(project.id);
+        await getSignUpUrl(project.id, url, project.project_name);
       });
     });
   };

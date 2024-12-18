@@ -5,37 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
 import { createAndroidManagementClient } from "./client";
 import { Json } from "@/types/database";
-
-type PolicyRequestBody = androidmanagement_v1.Schema$Policy;
-
-type Policy = androidmanagement_v1.Schema$Policy;
-// オブジェクト　リテラルとして直接記述されている値は、
-// すべてTypeScriptの基本的なデータ型（文字列、数値、真偽値、オブジェクト）のみで構成されているため、
-// 自動的にSupabaseのJson型の要件を満たす
-type PolicyDataSchema = {
-  name?: string | null;
-  version?: string | null;
-  statusReportingSettings?: {
-    applicationReportsEnabled?: boolean | null;
-    deviceSettingsEnabled?: boolean | null;
-    softwareInfoEnabled?: boolean | null;
-    memoryInfoEnabled?: boolean | null;
-    networkInfoEnabled?: boolean | null;
-    displayInfoEnabled?: boolean | null;
-    powerManagementEventsEnabled?: boolean | null;
-    hardwareStatusEnabled?: boolean | null;
-    systemPropertiesEnabled?: boolean | null;
-    applicationReportingSettings?: {
-      includeRemovedApps?: boolean | null;
-    } | null;
-    commonCriteriaModeEnabled?: boolean | null;
-  } | null;
-  locationMode?: string | null;
-  playStoreMode?: string | null;
-  advancedSecurityOverrides?: {
-    developerSettings?: string | null;
-  } | null;
-};
+import { AndroidManagementPolicy } from "@/app/(main)/types/policy";
 
 export const createDefaultPolicy = async (
   enterpriseName: string,
@@ -51,7 +21,7 @@ export const createDefaultPolicy = async (
   }
 
   // ポリシー作成
-  const requestBody: PolicyRequestBody = defaultPolicyRequestBody;
+  const requestBody: AndroidManagementPolicy = defaultPolicyRequestBody;
   const androidmanagement = await createAndroidManagementClient();
   const { data } =
     // const { data }: { data: PolicyDataSchema } =

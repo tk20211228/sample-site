@@ -24,11 +24,13 @@ export const selectColumn = <T extends object>(): ColumnDef<T> & {
     </div>
   ),
   cell: ({ row }) => (
-    <Checkbox
-      checked={row.getIsSelected()}
-      onCheckedChange={(value) => row.toggleSelected(!!value)}
-      aria-label="Select row"
-    />
+    <div className="flex items-center justify-center">
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    </div>
   ),
   enableSorting: false,
   enableHiding: false,

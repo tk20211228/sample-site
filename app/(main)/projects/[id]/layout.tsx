@@ -17,7 +17,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
+  const sidebarState = cookieStore.get("sidebar:state")?.value;
+  const defaultOpen =
+    sidebarState === undefined ? true : sidebarState === "true"; // クッキーが存在しない場合（初回アクセス時）はsidebarStateがundefinedなのでtrue
   return (
     <EnterpriseProvider>
       <GapiIframesProvider>

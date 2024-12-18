@@ -43,14 +43,14 @@ export const deletePolicy = async (policyName: string) => {
  * @returns
  */
 export const deleteSelectedPolicies = async (policyNames: string[]) => {
-  const result = [];
+  const policiesTableIds = [];
   for (const policyName of policyNames) {
     // デフォルトポリシーは削除できないのでスキップ
     if (defaultPolicyPattern.test(policyName)) continue;
     const data = await deletePolicy(policyName);
-    result.push(data);
+    policiesTableIds.push(data.split("/")[3]);
   }
-  return result;
+  return policiesTableIds;
 };
 
 // DBから対象のポリシーを使用している端末を取得

@@ -24,7 +24,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import PasswordForm from "../../components/password-form";
 import { signUpFormSchema } from "../../schemas/auth-validation";
-import { notifyError } from "@/lib/notify-error";
+import { toast } from "sonner";
+// import { notifyError } from "@/lib/notify-error";
 
 const schema = signUpFormSchema;
 
@@ -46,7 +47,7 @@ export default function UsernamePasswordSignUpForm() {
 
   const onSubmit = async (data: FormData) => {
     await signUpNewUser(data).catch((error) => {
-      notifyError(error);
+      toast.error(error.message);
     });
   };
 

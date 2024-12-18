@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { useApps } from "../../data/use-apps";
 import { useWebToken } from "../../data/use-web-token";
 import { initializePlayIframe } from "../../lib/initialize-iframe";
-import { useGapiIframes } from "../../../providers/gapi-iframes";
 
 export default function PrivateAppIframe({
   className,
@@ -19,7 +18,7 @@ export default function PrivateAppIframe({
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
   const params = useParams();
-  const { isLoaded } = useGapiIframes();
+  // const { isLoaded } = useGapiIframes();
   const enterpriseName = "enterprises/" + params.id;
   const appType = "PRIVATE";
   const tokenType = "PRIVATE_APPS";
@@ -58,10 +57,11 @@ export default function PrivateAppIframe({
 
   useEffect(() => {
     console.log("private token", token);
-    if (token && isLoaded) {
+    if (token && window.gapi) {
+      // if (token && isLoaded) {
       initialize(token);
     }
-  }, [initialize, token, isLoaded]);
+  }, [initialize, token]);
 
   if (error) {
     toast.error("トークンの取得に失敗しました" + error);

@@ -15,21 +15,22 @@ export function useApps(
   enterpriseName: string,
   appType?: AppType
 ) {
-  const { data, error, isLoading, mutate } = useSWR<AppsTableType[]>(
-    key,
-    () => getDbApps(enterpriseName, appType),
-    {
-      // dedupingInterval: 3600000, // enterpriseIdが同じ場合は1時間、関数を実行しない
-      revalidateOnFocus: false, // タブ移動しても関数を実行しない　//iframeの操作も検知されるため、追加
-      // revalidateOnMount: true, //  コンポーネントマウント時に必ず再検証
-      // keepPreviousData: false, // 前のデータを保持しない
-    }
-  );
+  const { data, error, isLoading, mutate, isValidating } = useSWR<
+    AppsTableType[]
+  >(key, () => getDbApps(enterpriseName, appType), {
+    // dedupingInterval: 3600000, // enterpriseIdが同じ場合は1時間、関数を実行しない
+    revalidateOnFocus: false, // タブ移動しても関数を実行しない　//iframeの操作も検知されるため、追加。
+    revalidateIfStale: false, // 追加: キャッシュが古くても再検証しない
+
+    // revalidateOnMount: true, //  コンポーネントマウント時に必ず再検証
+    // keepPreviousData: false, // 前のデータを保持しない
+  });
 
   return {
     apps: data,
     isLoading,
     isError: error,
     mutate,
+    isValidating,
   };
 }

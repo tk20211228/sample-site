@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useApps } from "../../data/use-apps";
 import { useWebToken } from "../../data/use-web-token";
 import { initializePlayIframe } from "../../lib/initialize-iframe";
-import { useGapiIframes } from "../../../providers/gapi-iframes";
+// import { useGapiIframes } from "../../../providers/gapi-iframes";
 
 /**
  * Google Play 公開アプリのiframe
@@ -24,14 +24,14 @@ export default function PublicAppsIframe({
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
   const params = useParams();
-  const { isLoaded } = useGapiIframes();
+  // const { isLoaded } = useGapiIframes();
   const enterpriseName = "enterprises/" + params.id;
   const appType = "PUBLIC";
   const tokenType = "PLAY_SEARCH";
   const iframeKey = "/api/public/iframe";
   const tableKey = "/api/apps/" + appType;
 
-  const { mutate } = useApps(tableKey, enterpriseName, appType); //ソナーにアプリ更新機能を追加するためのmutate
+  const { mutate } = useApps(tableKey, enterpriseName, appType); // ソナーにアプリ更新機能を追加するためのmutate
   const { token, error } = useWebToken(iframeKey, enterpriseName, tokenType);
 
   const initialize = useCallback(
@@ -64,10 +64,12 @@ export default function PublicAppsIframe({
   useEffect(() => {
     // console.log("public token", token);
     // console.log("isLoaded", isLoaded);
-    if (token && isLoaded) {
+    // console.log("window.gapi", window.gapi);
+    if (token && window.gapi) {
+      // if (token && isLoaded) {
       initialize(token);
     }
-  }, [initialize, token, isLoaded]);
+  }, [initialize, token]);
 
   if (error) {
     toast.error("トークンの取得に失敗しました" + error);

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import CreateProjectForm from "../../welcome/components/create-project-form";
 
 export default function Page() {

@@ -13,13 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import { QRCodeSVG } from "qrcode.react";
 import { useState } from "react";
+import { useEnterprise } from "../../providers/enterprise";
 
-export default function CreateQrButton({
-  enterpriseName,
-}: {
-  enterpriseName: string;
-}) {
+export default function CreateQrButton() {
   const [qrCode, setQrCode] = useState<string | null>(null);
+  const { enterpriseName } = useEnterprise();
 
   const onClick = async () => {
     setQrCode(null);
@@ -36,9 +34,9 @@ export default function CreateQrButton({
       <Dialog>
         <DialogTrigger asChild>
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
-            className="text-primary size-10 transition-all duration-300 hover: hover:text-foreground z-30 "
+            className="text-primary size-8 transition-all duration-300 hover: hover:text-foreground z-30"
             onClick={onClick}
           >
             <QrCodeIcon />

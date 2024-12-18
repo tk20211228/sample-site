@@ -102,6 +102,7 @@ export type Database = {
       }
       devices: {
         Row: {
+          command_config_data: Json | null
           created_at: string
           device_config_data: Json
           device_name: string
@@ -113,6 +114,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          command_config_data?: Json | null
           created_at?: string
           device_config_data: Json
           device_name: string
@@ -121,9 +123,10 @@ export type Database = {
           id?: string
           policy_name?: string | null
           policy_table_id?: string | null
-          updated_at?: string
+          updated_at: string
         }
         Update: {
+          command_config_data?: Json | null
           created_at?: string
           device_config_data?: Json
           device_name?: string
@@ -198,7 +201,7 @@ export type Database = {
           enterprise_name: string
           id?: string
           owner_id?: string | null
-          updated_at?: string
+          updated_at: string
         }
         Update: {
           created_at?: string
@@ -405,6 +408,12 @@ export type Database = {
       has_enterprise_access: {
         Args: {
           enterprise_table_id: string
+        }
+        Returns: boolean
+      }
+      has_project_user: {
+        Args: {
+          project_id: string
         }
         Returns: boolean
       }

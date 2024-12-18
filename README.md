@@ -113,5 +113,6 @@ pnpm dlx supabase db push
 
 ## 特定のプロジェクトを開くための環境構築
 
-1. [alias pj='cd ~/Projects'] エイリアスの追加
-2. [source ~/.zshrc] ターミナル再起動
+1. [code ~/.zshrc] ファイルを開く
+2. [alias pj='cd ~/Projects'] エイリアスの追加
+3. [source ~/.zshrc] ターミナル再起動

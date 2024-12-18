@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 
 import { useState, useTransition } from "react";
-import { getDevices } from "../data/device";
+import { fetchDevicesFromGoogle } from "../data/device";
 import { Loader2 } from "lucide-react";
 import { Tables } from "@/types/database";
 
@@ -20,7 +20,7 @@ export default function GetDevicesListButton({
   const handleClick = async () => {
     startTransition(async () => {
       if (enterpriseName) {
-        const devices = await getDevices(enterpriseName);
+        const devices = await fetchDevicesFromGoogle(enterpriseName);
         setDeviceData(devices.devices);
       }
     });

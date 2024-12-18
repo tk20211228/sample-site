@@ -1,64 +1,138 @@
 import { z } from "zod";
+import { AndroidManagementPolicy, PolicyApps } from "../types/policy";
 
-export const createPolicySchema = z.object({
-  // displayName: z.string().trim().min(1),
+const advancedSecurityOverridesSchema = z.object({
+  untrustedAppsPolicy: z.enum([
+    "UNTRUSTED_APPS_POLICY_UNSPECIFIED",
+    "DISALLOW_INSTALL",
+    "ALLOW_INSTALL_IN_PERSONAL_PROFILE_ONLY",
+    "ALLOW_INSTALL_DEVICE_WIDE",
+  ]),
+  googlePlayProtectVerifyApps: z
+    .enum([
+      "GOOGLE_PLAY_PROTECT_VERIFY_APPS_UNSPECIFIED",
+      "GOOGLE_PLAY_PROTECT_VERIFY_APPS_ALLOWED",
+      "GOOGLE_PLAY_PROTECT_VERIFY_APPS_BLOCKED",
+    ])
+    .optional(),
+  developerSettings: z.enum([
+    "DEVELOPER_SETTINGS_ALLOWED",
+    "DEVELOPER_SETTINGS_BLOCKED",
+  ]),
+  commonCriteriaMode: z
+    .enum([
+      "COMMON_CRITERIA_MODE_UNSPECIFIED",
+      "COMMON_CRITERIA_MODE_ALLOWED",
+      "COMMON_CRITERIA_MODE_BLOCKED",
+    ])
+    .optional(),
+  personalAppsThatCanReadWorkNotifications: z.array(z.string()).optional(),
+  mtePolicy: z
+    .enum([
+      "MTE_POLICY_UNSPECIFIED",
+      "MTE_POLICY_ALLOWED",
+      "MTE_POLICY_BLOCKED",
+    ])
+    .optional(),
+  contentProtectionPolicy: z
+    .enum([
+      "CONTENT_PROTECTION_POLICY_UNSPECIFIED",
+      "CONTENT_PROTECTION_POLICY_ALLOWED",
+      "CONTENT_PROTECTION_POLICY_BLOCKED",
+    ])
+    .optional(),
+});
+const statusReportingSettingsSchema = z.object({
+  applicationReportsEnabled: z.boolean().default(true),
+  deviceSettingsEnabled: z.boolean().default(true),
+  softwareInfoEnabled: z.boolean().default(true),
+  memoryInfoEnabled: z.boolean().default(true),
+  networkInfoEnabled: z.boolean().default(true),
+  displayInfoEnabled: z.boolean().default(true),
+  powerManagementEventsEnabled: z.boolean().default(true),
+  hardwareStatusEnabled: z.boolean().default(true),
+  systemPropertiesEnabled: z.boolean().default(true),
+  applicationReportingSettings: z.object({
+    includeRemovedApps: z.boolean().default(true),
+  }),
+  commonCriteriaModeEnabled: z.boolean().default(true),
+});
+
+export const managedConfigurationTemplateSchema = z
+  .object({
+    // ManagedConfigurationTemplate の詳細なスキーマが必要な場合は追加
+  })
+  .optional();
+
+export const permissionGrantSchema = z.object({
+  // PermissionGrant の詳細なスキーマが必要な場合は追加
+});
+
+export const installConstraintSchema = z.object({
+  // InstallConstraint の詳細なスキーマが必要な場合は追加
+});
+
+export const extensionConfigSchema = z
+  .object({
+    // ExtensionConfig の詳細なスキーマが必要な場合は追加
+  })
+  .optional();
+
+export const applicationsSchema = z.object({
+  accessibleTrackIds: z.array(z.string()).nullable().optional(),
+  alwaysOnVpnLockdownExemption: z.string().nullable().optional(),
+  autoUpdateMode: z.string().nullable().optional(),
+  connectedWorkAndPersonalApp: z.string().nullable().optional(),
+  credentialProviderPolicy: z.string().nullable().optional(),
+  defaultPermissionPolicy: z.string().nullable().optional(),
+  delegatedScopes: z.array(z.string()).nullable().optional(),
+  disabled: z.boolean().nullable().optional(),
+  extensionConfig: extensionConfigSchema.optional(),
+  installConstraint: z.array(installConstraintSchema).optional(),
+  installPriority: z.number().min(0).max(10000).nullable().optional(),
+  installType: z.string().nullable().optional(),
+  lockTaskAllowed: z.boolean().nullable().optional(),
+  managedConfiguration: z.record(z.any()).nullable().optional(),
+  managedConfigurationTemplate: managedConfigurationTemplateSchema,
+  minimumVersionCode: z.number().nullable().optional(),
+  packageName: z.string().nullable().optional(),
+  permissionGrants: z.array(permissionGrantSchema).optional(),
+  userControlSettings: z.string().nullable().optional(),
+  workProfileWidgets: z.string().nullable().optional(),
+}) satisfies z.ZodType<PolicyApps>;
+
+export const policySchema = z.object({
   screenCaptureDisabled: z.boolean().default(false),
   cameraDisabled: z.boolean().default(false),
-  // keyguardDisabledFeatures: z.enum(["none", "secure", "trust", "disabled"]),
-  // defaultPermissionPolicy: z.enum(["prompt", "grant", "deny"]),
-  // accountTypesWithManagementDisabled: z.string(),
-  // addUserDisabled: z.boolean().default(false),
-  // adjustVolumeDisabled: z.boolean().default(false),
-  // factoryResetDisabled: z.boolean().default(false),
-  // installAppsDisabled: z.boolean().default(false),
-  // mountPhysicalMediaDisabled: z.boolean().default(false),
-  // modifyAccountsDisabled: z.boolean().default(false),
-  // safeBootDisabled: z.boolean().default(false),
-  // uninstallAppsDisabled: z.boolean().default(false),
-  // keyguardDisabled: z.boolean().default(false),
-  // minimumApiLevel: z.number().int().positive(),
-  // bluetoothContactSharingDisabled: z.boolean().default(false),
-  // shortSupportMessage: z.string(),
-  // longSupportMessage: z.string(),
-  // bluetoothConfigDisabled: z.boolean().default(false),
-  // cellBroadcastsConfigDisabled: z.boolean().default(false),
-  // credentialsConfigDisabled: z.boolean().default(false),
-  // mobileNetworksConfigDisabled: z.boolean().default(false),
-  // vpnConfigDisabled: z.boolean().default(false),
-  // wifiConfigDisabled: z.boolean().default(false),
-  // createWindowsDisabled: z.boolean().default(false),
-  // networkResetDisabled: z.boolean().default(false),
-  // outgoingBeamDisabled: z.boolean().default(false),
-  // outgoingCallsDisabled: z.boolean().default(false),
-  // removeUserDisabled: z.boolean().default(false),
-  // shareLocationDisabled: z.boolean().default(false),
-  // smsDisabled: z.boolean().default(false),
-  // unmuteMicrophoneDisabled: z.boolean().default(false),
-  // usbFileTransferDisabled: z.boolean().default(false),
-  // ensureVerifyAppsEnabled: z.boolean().default(false),
-  // appAutoUpdatePolicy: z.enum([
-  //   "choiceToUser",
-  //   "neverUpdate",
-  //   "wifiOnly",
-  //   "alwaysUpdate",
-  // ]),
-  // kioskCustomLauncherEnabled: z.boolean().default(false),
-  // skipFirstUseHintsEnabled: z.boolean().default(false),
-  // privateKeySelectionEnabled: z.boolean().default(false),
-  // encryptionPolicy: z.enum(["none", "requireEncryption"]),
-  // playStoreMode: z.enum(["allow", "whitelist", "blacklist"]),
-  // locationMode: z.enum(["highAccuracy", "batterySaving", "sensorsOnly", "off"]),
-  // networkEscapeHatchEnabled: z.boolean().default(false),
-  // bluetoothDisabled: z.boolean().default(false),
-  // funDisabled: z.boolean().default(false),
-  // cameraAccess: z.enum(["allow", "deny", "askUser"]),
-  // microphoneAccess: z.enum(["allow", "deny", "askUser"]),
+  advancedSecurityOverrides: advancedSecurityOverridesSchema,
+  bluetoothDisabled: z.boolean().default(false),
+  locationMode: z.enum(["LOCATION_ENFORCED", "LOCATION_UNSPECIFIED"]),
+  modifyAccountsDisabled: z.boolean().default(false),
+  mountPhysicalMediaDisabled: z.boolean().default(false),
+  playStoreMode: z.enum([
+    "BLACKLIST",
+    "WHITELIST",
+    "PLAY_STORE_MODE_UNSPECIFIED",
+  ]),
+  // .nullable()
+  // .optional(),
+  statusReportingSettings: statusReportingSettingsSchema,
+  applications: z.array(applicationsSchema).optional(),
+}) satisfies z.ZodType<AndroidManagementPolicy>;
+
+export const policyDisplayNameSchema = z.object({
+  display_name: z
+    .string()
+    .trim()
+    .min(1, "ポリシー名を入力してください。")
+    .optional(),
 });
 
-export const createPolicyFormSchema = createPolicySchema.extend({
-  displayName: z.string().trim().min(1, "ポリシー名を入力してください。"),
-});
-
-export const editPolicyFormSchema = createPolicySchema.extend({
-  displayName: z.string().optional(),
+export const formPolicySchema = z.object({
+  policy_config_data: policySchema,
+  display_name: z
+    .string()
+    .trim()
+    .min(1, "ポリシー名を入力してください。")
+    .optional(),
 });

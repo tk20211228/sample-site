@@ -108,7 +108,7 @@ export default function AppsTableMenu({ row, className }: DataTableMenuProps) {
               </>
             )}
           </DropdownMenuItem>
-          {row.original.appType === "PUBLIC" && (
+          {row.original.distributionChannel === "PUBLIC_GOOGLE_HOSTED" && (
             <DropdownMenuItem onClick={handleExternalLink}>
               <ExternalLinkIcon className="mr-4 h-4 w-4" />
               <span>Play Store を開く</span>

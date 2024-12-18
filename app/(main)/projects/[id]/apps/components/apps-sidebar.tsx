@@ -1,4 +1,6 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+"use client";
+
+import { FileSlidersIcon, LayoutListIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -11,13 +13,30 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEnterprise } from "../../providers/enterprise";
+import { appTypeItems } from "../data/app-type";
 
-export function AppsSidebar() {
+export function AppsSidebar({ className }: { className?: string }) {
+  const { enterpriseId } = useEnterprise();
+  const pathname = usePathname();
+
+  // 管理アプリ一覧のパス
+  const appListPath = `/projects/${enterpriseId}/apps`;
+  const isAppListActive = pathname === appListPath;
+
+  // 管理アプリ構成のパス
+  const appConfigPath = `/projects/${enterpriseId}/apps/configurations`;
+  const isAppConfigActive = pathname === appConfigPath;
+
   return (
     <Sidebar
-      className="inset-x-14"
+      className={cn("inset-x-14", className)}
       // collapsible="icon"
     >
       {/* // <Sidebar variant="inset"> */}
@@ -27,55 +46,99 @@ export function AppsSidebar() {
         </SidebarContent>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup />
-        <SidebarGroupLabel>Application</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {items.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url}>
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </a>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem className="px-3 pt-2">
+                <SidebarMenuButton asChild isActive={isAppListActive}>
+                  <Link href={appListPath}>
+                    <LayoutListIcon
+                      className={cn(
+                        !isAppListActive && "text-muted-foreground"
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "font-semibold pl-2",
+                        !isAppListActive && "text-muted-foreground"
+                      )}
+                    >
+                      管理アプリ一覧
+                    </span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-        <SidebarGroup />
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="px-3 font-mono">
+            管理アプリ種別
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {appTypeItems.map((item) => {
+                const fullPath = `/projects/${enterpriseId}${item.url}`;
+                const isActive = pathname === fullPath;
+
+                return (
+                  <SidebarMenuItem key={item.title} className="px-3">
+                    <SidebarMenuButton asChild isActive={isActive}>
+                      <Link href={fullPath}>
+                        <item.icon
+                          className={cn(!isActive && "text-muted-foreground")}
+                        />
+                        <span
+                          className={cn(
+                            "font-semibold pl-2",
+                            !isActive && "text-muted-foreground"
+                          )}
+                        >
+                          {item.title}
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem className="px-3">
+                <SidebarMenuButton asChild isActive={isAppConfigActive}>
+                  <Link href={appConfigPath}>
+                    <FileSlidersIcon
+                      className={cn(
+                        !isAppConfigActive && "text-muted-foreground"
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "font-semibold pl-2",
+                        !isAppConfigActive && "text-muted-foreground"
+                      )}
+                    >
+                      管理アプリ構成
+                    </span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         <SidebarSeparator />
       </SidebarContent>
       <SidebarFooter />
+      <SidebarRail />
     </Sidebar>
   );
 }
-
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import OnboardingForm from "./components/onboardingForm";
 
 export default function Page() {

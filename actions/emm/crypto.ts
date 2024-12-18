@@ -6,7 +6,8 @@ const ALGORITHM = "aes-256-gcm"; // 暗号化アルゴリズム
 // 暗号化するデータの型定義
 interface SignupData {
   name: string;
-  id: string;
+  projectId: string;
+  projectName: string;
 }
 
 export function encryptData(data: SignupData): string {

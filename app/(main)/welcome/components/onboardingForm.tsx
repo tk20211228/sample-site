@@ -29,6 +29,7 @@ import { z } from "zod";
 import { onboardingSchema } from "../../schema/onboarding-schema";
 import { toast } from "sonner";
 import { getSignUpUrl } from "@/actions/emm/signup-url";
+import { getBaseURL } from "@/lib/utils";
 
 type FormData = z.infer<typeof onboardingSchema>;
 
@@ -43,11 +44,13 @@ export default function OnboardingForm() {
       agreeToTerms: false,
     },
   });
+  const currentUrl = window.location.origin;
+  const url = getBaseURL(currentUrl);
 
   const onSubmit = async (data: FormData) => {
     await createProject(data).then(async (project) => {
       toast.success("プロジェクトが作成されました");
-      await getSignUpUrl(project.id);
+      await getSignUpUrl(project.id, url, project.project_name);
     });
   };
 

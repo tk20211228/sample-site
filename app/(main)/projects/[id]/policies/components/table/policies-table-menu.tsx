@@ -28,14 +28,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 
-import { editPolicyFormSchema } from "@/app/(main)/schema/policy";
 import { Row } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useEnterprise } from "../../../providers/enterprise";
-import { usePolicy } from "../../../providers/policy";
 import { deletePolicy } from "../../actions/delete-policy";
-import { editPolicy } from "../../actions/edit-policy";
+
+import { toast } from "sonner";
 import { PolicyTableType } from "../../types/policy";
+import { usePoliciesTableData } from "../../../apps/data/use-policies-table";
 
 interface DataTableMenuProps {
   row: Row<PolicyTableType>;
@@ -43,40 +43,39 @@ interface DataTableMenuProps {
 
 export default function PoliciesTableMenu({ row }: DataTableMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const {
-    policyTableData,
-    setPolicyTableData,
-    // currentCreatePolicy,
-    setCurrentCreatePolicy,
-  } = usePolicy();
   const { enterpriseName, enterpriseId } = useEnterprise();
   const router = useRouter();
+
+  const key = `/api/policies/table/${enterpriseName}`;
+  const { deletePolicyTableData } = usePoliciesTableData(key, enterpriseName);
 
   const onClick = async () => {
     console.log(parent);
   };
   const handleDelete = async () => {
+    const policyId = row.original.id;
     if (row.original.policy_name === enterpriseName + "/policies/default") {
-      alert("デフォルトポリシーは削除できません。");
+      toast.error("デフォルトポリシーは削除できません。");
       return;
     }
-    await deletePolicy(row.original.policy_name).then((policyName) => {
-      alert("削除に成功しました。");
-      const newData = policyTableData.filter(
-        (p) => p.policy_name !== policyName
-      );
-      setPolicyTableData(newData);
+    await deletePolicy(row.original.policy_name).then(async () => {
+      await deletePolicyTableData(policyId);
+      toast.success("ポリシーを削除しました。");
+      router.push(`/projects/${enterpriseId}/policies`);
     });
   };
   const handleEditPolicy = async () => {
-    const data = await editPolicy(row.original.policy_name);
-    if (!data) return;
-    const displayName = row.original.display_name ?? "";
-    const policyConfigData = data.policy_config_data;
-    const parsed = editPolicyFormSchema.parse(policyConfigData);
-    parsed.displayName = displayName;
-    setCurrentCreatePolicy(parsed);
-    router.push(`/projects/${enterpriseId}/policies/general`);
+    // const data = await editPolicy(row.original.policy_name);
+    // if (!data) return;
+    // const displayName = row.original.display_name ?? "";
+    // const policyConfigData = data.policy_config_data;
+    // const parsed = editPolicyFormSchema.parse(policyConfigData);
+    // parsed.displayName = displayName;
+    // setCurrentCreatePolicy(parsed);
+    const policyId = row.original.policy_name.split("/")[3];
+    router.push(
+      `/projects/${enterpriseId}/policies/device-general?policyId=${policyId}`
+    );
   };
 
   return (
@@ -84,29 +83,29 @@ export default function PoliciesTableMenu({ row }: DataTableMenuProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
-            <EllipsisIcon className="h-4 w-4" />
+            <EllipsisIcon className="size-4" />
             <span className="sr-only">メニューを開く</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className=" space-y-1 px-2" align="end">
           <DropdownMenuItem onSelect={handleEditPolicy}>
-            <PenBoxIcon className="mr-4 h-4 w-4" />
+            <PenBoxIcon className="mr-4 size-4" />
             <span>ポリシー詳細</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onClick}>
-            <Download className="mr-4 h-4 w-4" />
+            <Download className="mr-4 size-4" />
             <span>設定をダウンロード</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <UploadIcon className="mr-4 h-4 w-4" />
+            <UploadIcon className="mr-4 size-4" />
             <span>設定をアップロード</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <RefreshCw className="mr-4 h-4 w-4" />
+            <RefreshCw className="mr-4 size-4" />
             <span>Googleサーバーと同期</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
-            <Trash2 className="mr-4 h-4 w-4" />
+            <Trash2 className="mr-4 size-4" />
             <span className="text-red-500">削除</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -25,6 +25,7 @@ import { deleteProject } from "../actions/projects";
 import ProductOptionsButton from "./product-options-button";
 
 import { SiAndroid } from "@icons-pack/react-simple-icons";
+import { getBaseURL } from "@/lib/utils";
 
 interface ProjectCardProps {
   projectsData: ProjectWithEnterpriseRelation[];
@@ -36,11 +37,13 @@ export default function ProjectsCard({ projectsData }: ProjectCardProps) {
   // console.log(projects);
   const [isPending, startTransition] = useTransition();
   const [pendingProjectId, setPendingProjectId] = useState<string | null>(null);
+  const currentUrl = window.location.origin;
+  const url = getBaseURL(currentUrl);
 
-  const handleGetSignUpUrl = (projectId: string) => {
+  const handleGetSignUpUrl = (projectId: string, projectName: string) => {
     setPendingProjectId(projectId);
     startTransition(async () => {
-      await getSignUpUrl(projectId);
+      await getSignUpUrl(projectId, url, projectName);
       setPendingProjectId(null);
     });
   };
@@ -103,13 +106,15 @@ export default function ProjectsCard({ projectsData }: ProjectCardProps) {
                   <ProductOptionsButton
                     className="z-30"
                     icon={<SiAndroid />}
-                    link={`/projects/${enterpriseId}/apps/public`}
+                    link={`/projects/${enterpriseId}/apps`}
                   />
                 </div>
               )}
               {!project.enterprise_name && (
                 <button
-                  onClick={() => handleGetSignUpUrl(project.id)}
+                  onClick={() =>
+                    handleGetSignUpUrl(project.id, project.project_name)
+                  }
                   className="group/button absolute inset-0 z-20 w-full h-full transition-colors duration-300"
                 >
                   {/* <span className="absolute inset-0 z-20 group"></span> */}

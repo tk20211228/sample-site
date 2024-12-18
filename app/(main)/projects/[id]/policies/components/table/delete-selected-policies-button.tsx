@@ -1,13 +1,15 @@
 "use client";
 
+import { defaultPolicyPattern } from "@/app/(main)/data/policy";
 import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 import { Loader2Icon, Trash2Icon } from "lucide-react";
-import { PolicyTableType } from "../../types/policy";
-import { deleteSelectedPolicies } from "../../actions/delete-policy";
-import { usePolicy } from "../../../providers/policy";
-import { defaultPolicyPattern } from "@/app/(main)/data/policy";
+import { useParams, useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { toast } from "sonner";
+import { usePoliciesTableData } from "../../../apps/data/use-policies-table";
+import { deleteSelectedPolicies } from "../../actions/delete-policy";
+import { PolicyTableType } from "../../types/policy";
 
 interface DeleteSelectedPoliciesButtonProps<TData extends PolicyTableType> {
   table: Table<TData>;
@@ -16,8 +18,14 @@ interface DeleteSelectedPoliciesButtonProps<TData extends PolicyTableType> {
 export default function DeleteSelectedPoliciesButton<
   TData extends PolicyTableType
 >({ table }: DeleteSelectedPoliciesButtonProps<TData>) {
-  const { policyTableData, setPolicyTableData } = usePolicy();
   const [isPending, startTransition] = useTransition();
+  const params = useParams();
+  const enterpriseId = params.id;
+  const router = useRouter();
+  const enterpriseName = `enterprises/${enterpriseId}`;
+  const key = `/api/policies/table/${enterpriseName}`;
+  const { deletePoliciesTableData } = usePoliciesTableData(key, enterpriseName);
+
   const handleDeletePolicies = async () => {
     const deletePolicyNameList = table.getSelectedRowModel().rows.map((row) => {
       if (defaultPolicyPattern.test(row.original.policy_name)) {
@@ -29,13 +37,10 @@ export default function DeleteSelectedPoliciesButton<
     });
     startTransition(async () => {
       await deleteSelectedPolicies(deletePolicyNameList).then(
-        (deletedPolicyNameList) => {
-          alert("削除に成功しました。");
-          // 削除したポリシーを除外したデータをセット
-          const newData = policyTableData.filter(
-            (p) => !deletedPolicyNameList.includes(p.policy_name)
-          );
-          setPolicyTableData(newData);
+        async (policiesTableIds) => {
+          await deletePoliciesTableData(policiesTableIds);
+          toast.success("ポリシーを削除しました。");
+          router.push(`/projects/${enterpriseId}/policies`);
         }
       );
     });
@@ -47,16 +52,12 @@ export default function DeleteSelectedPoliciesButton<
       className="h-8 px-2 lg:px-3"
       onClick={handleDeletePolicies}
       disabled={isPending}
+      size="icon"
     >
       {isPending ? (
-        <>
-          <Loader2Icon className="size-4 w-full animate-spin" />
-        </>
+        <Loader2Icon className="size-4 w-full animate-spin" />
       ) : (
-        <>
-          <Trash2Icon className="size-4 mr-2 text-red-500" />
-          削除
-        </>
+        <Trash2Icon className="size-4 text-red-500" />
       )}
     </Button>
   );

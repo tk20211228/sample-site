@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
+import { Json } from "@/types/database";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -24,17 +25,22 @@ export async function GET(request: NextRequest) {
     if (!user) {
       throw new Error("User not found");
     }
-    // console.log("enterpriseToken", enterpriseToken);
-    const { id: projectId, name: signupUrlName } = decryptData(
-      encryptedData.value
-    );
-    // console.log("projectId", projectId);
+    const {
+      projectId,
+      name: signupUrlName,
+      projectName,
+    } = decryptData(encryptedData.value);
     //Cookieを削除
-    // cookieStore.delete("emm_signup_object");
-    // console.log("signup", signupUrlName);
+    cookieStore.delete("emm_signup_object");
+
     // token,signupUrl,でenterpriseを作成する。
     const androidmanagement = await createAndroidManagementClient();
-    const { data } = await androidmanagement.enterprises
+
+    const logo = {
+      url: "https://sample-site-pearl.vercel.app/images/logo.png",
+      sha256Hash: "zwB79wWGgXq7V5Yk1Jt6khr1BrsM2msHYszD9MOa9Cc=",
+    };
+    const { data: enterpriseData } = await androidmanagement.enterprises
       .create({
         enterpriseToken,
         projectId: process.env.EMM_PROJECT_ID,
@@ -45,12 +51,17 @@ export async function GET(request: NextRequest) {
           // {
           //   "appAutoApprovalEnabled": false,
           //   "contactInfo": {},
-          //   "enabledNotificationTypes": [],
-          // enterpriseDisplayName: "my_enterpriseDisplayName",
-          //   "logo": {},
+          enabledNotificationTypes: [
+            "ENROLLMENT",
+            "STATUS_REPORT",
+            "COMMAND",
+            "USAGE_LOGS",
+          ],
+          enterpriseDisplayName: projectName,
+          logo,
           //   "name": "my_name",
           //   "primaryColor": 0,
-          //   "pubsubTopic": "my_pubsubTopic",
+          pubsubTopic: process.env.PUBSUB_TOPIC,
           //   "signinDetails": [],
           //   "termsAndConditions": []
           // }
@@ -62,14 +73,14 @@ export async function GET(request: NextRequest) {
       });
     // console.log(data);
 
-    if (!data.name) {
+    if (!enterpriseData.name) {
       throw new Error("Enterprise name not found");
     }
     // まず既存のエンタープライズを確認
     const { data: existingEnterprise } = await supabase
       .from("enterprises")
       .select()
-      .eq("enterprise_name", data.name)
+      .eq("enterprise_name", enterpriseData.name)
       .single();
 
     // 成功したら、応答文からenterprise_nameを取得し、enterprisesテーブルにアップサート
@@ -77,8 +88,10 @@ export async function GET(request: NextRequest) {
       .from("enterprises")
       .upsert(
         {
-          enterprise_name: data.name,
-          data: JSON.stringify(data),
+          enterprise_name: enterpriseData.name,
+          // data: JSON.stringify(data),
+          data: enterpriseData as Json,
+          updated_at: new Date().toISOString(),
           // 既存のエンタープライズがある場合は owner_id を変更しない
           ...(existingEnterprise ? {} : { owner_id: user.id }),
         },
@@ -98,7 +111,7 @@ export async function GET(request: NextRequest) {
       .from("enterprise_settings_history")
       .insert({
         enterprise_id: enterpriseTableId,
-        settings: JSON.stringify(data),
+        settings: enterpriseData as Json,
       });
     if (enterpriseSettingsError) {
       console.error(
@@ -119,13 +132,15 @@ export async function GET(request: NextRequest) {
     }
 
     // defaultポリシーを作成
-    await createDefaultPolicy(data.name, enterpriseTableId).catch((error) => {
-      console.error("Error creating default policy:", error);
-      throw new Error("Error creating default policy");
-    });
+    await createDefaultPolicy(enterpriseData.name, enterpriseTableId).catch(
+      (error) => {
+        console.error("Error creating default policy:", error);
+        throw new Error("Error creating default policy");
+      }
+    );
 
     const enterpriseId = extractEnterpriseIdFromPath({
-      enterprisesName: data.name,
+      enterprisesName: enterpriseData.name,
     });
 
     redirect(`/projects/${enterpriseId}/devices`);

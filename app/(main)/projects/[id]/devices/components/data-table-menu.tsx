@@ -41,18 +41,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Row } from "@tanstack/react-table";
-import { Device } from "../types/device";
+import { DeviceConfigData, DeviceTable } from "@/app/(main)/types/device";
+import { fetchDeviceInfoFromDB } from "../data/device";
 
 interface DataTableMenuProps {
-  row: Row<Device>;
+  row: Row<DeviceTable>;
+  // column: Column<DeviceTable>;
 }
 
 export default function DataTableMenu({ row }: DataTableMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [initializationOption, setInitializationOption] = useState("");
+  const [device, setDevice] = useState<DeviceConfigData>();
   // デバイス情報を正しく取得
-  const device = row.original.device_config_data;
+  // const device = row.original.device_config_data;
 
   const onClick = async () => {
     console.log(parent);
@@ -65,6 +68,31 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
     // setQrCode(`https://enterprise.google.com/android/enroll?et=${qrData}`);
     // }
   };
+
+  const handleDeviceInfo = async (columnId: string) => {
+    console.log(columnId);
+    const device = await fetchDeviceInfoFromDB(columnId);
+    setDevice(device);
+    setIsDetailsDialogOpen(true);
+    console.log(columnId);
+  };
+
+  const handleDeviceAction = async (action: string) => {
+    console.log(action);
+  };
+
+  const handleLostMode = async (action: string) => {
+    console.log(action);
+  };
+
+  // const handleDeviceReset = async (action: string) => {
+  //   console.log(action);
+  // };
+
+  // const handleDeviceDelete = async (action: string) => {
+  //   console.log(action);
+  // };
+
   return (
     <div>
       <DropdownMenu>
@@ -75,7 +103,7 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className=" space-y-1 px-2" align="end">
-          <DropdownMenuItem onSelect={() => setIsDetailsDialogOpen(true)}>
+          <DropdownMenuItem onSelect={() => handleDeviceInfo(row.original.id)}>
             <Smartphone className="mr-4 h-4 w-4" />
             <span>デバイス詳細</span>
           </DropdownMenuItem>
@@ -83,23 +111,33 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
             <Download className="mr-4 h-4 w-4" />
             <span>デバイス情報取得</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => handleDeviceAction(row.original.device_name)}
+          >
             <Lock className="mr-4 h-4 w-4" />
             <span>リモートロック</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => handleDeviceAction(row.original.device_name)}
+          >
             <Key className="mr-4 h-4 w-4" />
             <span>パスワードリセット</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => handleDeviceAction(row.original.device_name)}
+          >
             <RefreshCw className="mr-4 h-4 w-4" />
             <span>端末再起動</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => handleDeviceAction(row.original.device_name)}
+          >
             <CaptionsOff className="mr-4 h-4 w-4" />
             <span>アプリデータ削除</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => handleLostMode(row.original.device_name)}
+          >
             <Search className="mr-4 h-4 w-4" />
             <span>紛失モード</span>
           </DropdownMenuItem>
@@ -161,25 +199,27 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h3 className="font-semibold">基本情報</h3>
-              <p>API Level: {device.apiLevel ?? "不明"}</p>
-              <p>管理モード: {device.managementMode ?? "不明"}</p>
-              <p>所有権: {device.ownership ?? "不明"}</p>
-              <p>状態: {device.state ?? "不明"}</p>
-              <p>ポリシー準拠: {device.policyCompliant ? "はい" : "いいえ"}</p>
+              <p>API Level: {device?.apiLevel ?? "不明"}</p>
+              <p>管理モード: {device?.managementMode ?? "不明"}</p>
+              <p>所有権: {device?.ownership ?? "不明"}</p>
+              <p>状態: {device?.state ?? "不明"}</p>
+              <p>ポリシー準拠: {device?.policyCompliant ? "はい" : "いいえ"}</p>
             </div>
             <div>
               <h3 className="font-semibold">ハードウェア情報</h3>
-              <p>ブランド: {device.hardwareInfo?.brand ?? "不明"}</p>
-              <p>製造元: {device.hardwareInfo?.manufacturer ?? "不明"}</p>
-              <p>モデル: {device.hardwareInfo?.model ?? "不明"}</p>
-              <p>シリアル番号: {device.hardwareInfo?.serialNumber ?? "不明"}</p>
+              <p>ブランド: {device?.hardwareInfo?.brand ?? "不明"}</p>
+              <p>製造元: {device?.hardwareInfo?.manufacturer ?? "不明"}</p>
+              <p>モデル: {device?.hardwareInfo?.model ?? "不明"}</p>
+              <p>
+                シリアル番号: {device?.hardwareInfo?.serialNumber ?? "不明"}
+              </p>
             </div>
             <div>
               <h3 className="font-semibold">メモリ情報</h3>
               <p>
                 内部ストレージ:{" "}
                 {(
-                  parseInt(device.memoryInfo?.totalInternalStorage ?? "0") /
+                  parseInt(device?.memoryInfo?.totalInternalStorage ?? "0") /
                   (1024 * 1024 * 1024)
                 ).toFixed(2)}{" "}
                 GB
@@ -187,7 +227,7 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
               <p>
                 RAM:{" "}
                 {(
-                  parseInt(device.memoryInfo?.totalRam ?? "0") /
+                  parseInt(device?.memoryInfo?.totalRam ?? "0") /
                   (1024 * 1024 * 1024)
                 ).toFixed(2)}{" "}
                 GB
@@ -197,13 +237,15 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
               <h3 className="font-semibold">ポリシー情報</h3>
               <p>
                 適用ポリシー名:{" "}
-                {device.appliedPolicyName?.split("/").pop() ?? "不明"}
+                {device?.appliedPolicyName?.split("/").pop() ?? "不明"}
               </p>
-              <p>ポリシーバージョン: {device.appliedPolicyVersion ?? "不明"}</p>
+              <p>
+                ポリシーバージョン: {device?.appliedPolicyVersion ?? "不明"}
+              </p>
               <p>
                 最終同期:{" "}
-                {device.lastPolicySyncTime
-                  ? new Date(device.lastPolicySyncTime).toLocaleString("ja-JP")
+                {device?.lastPolicySyncTime
+                  ? new Date(device?.lastPolicySyncTime).toLocaleString("ja-JP")
                   : "不明"}
               </p>
             </div>
@@ -211,21 +253,21 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
               <h3 className="font-semibold">セキュリティ情報</h3>
               <p>
                 デバイスの姿勢:{" "}
-                {device.securityPosture?.devicePosture ?? "不明"}
+                {device?.securityPosture?.devicePosture ?? "不明"}
               </p>
             </div>
             <div>
               <h3 className="font-semibold">その他</h3>
               <p>
                 登録日時:{" "}
-                {device.enrollmentTime
-                  ? new Date(device.enrollmentTime).toLocaleString("ja-JP")
+                {device?.enrollmentTime
+                  ? new Date(device?.enrollmentTime).toLocaleString("ja-JP")
                   : "不明"}
               </p>
               <p>
                 最終ステータス報告:{" "}
-                {device.lastStatusReportTime
-                  ? new Date(device.lastStatusReportTime).toLocaleString(
+                {device?.lastStatusReportTime
+                  ? new Date(device?.lastStatusReportTime).toLocaleString(
                       "ja-JP"
                     )
                   : "不明"}
