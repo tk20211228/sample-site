@@ -9,9 +9,7 @@ export const getBaseURL = (parentUrl?: string) => {
   // 本番環境の場合
   if (isProd) {
     const prodUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL; // (ex: myemm.next.work)
-    return prodUrl
-      ? `https://${prodUrl}`
-      : `http://localhost:${process.env.PORT || 3000}`;
+    return prodUrl ? prodUrl : `http://localhost:${process.env.PORT || 3000}`;
   }
 
   // 開発環境でparentFrameUrlが提供されている場合
@@ -19,9 +17,6 @@ export const getBaseURL = (parentUrl?: string) => {
     return parentUrl; // (ex: https://xxxx.ngrok-free.app)
   }
 
-  // 開発環境のVercel URL
-  const vercelUrl = process.env.VERCEL_URL; // (ex: xxxx.vercel.app)
-  return vercelUrl
-    ? `https://${vercelUrl}`
-    : `http://localhost:${process.env.PORT || 3000}`;
+  // 開発環境 URL
+  return `http://localhost:${process.env.PORT || 3000}`;
 };
