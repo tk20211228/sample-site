@@ -1,9 +1,6 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-
-// import { toast } from "@/components/hooks/use-toast";
-import { signInWithEmailOrUsername } from "@/actions/auth-supabase";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
@@ -19,6 +16,7 @@ import { signInFormSchema } from "../../schemas/auth-validation";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTransition } from "react";
+import { signInWithEmailOrUsername } from "@/actions/auth-supabase";
 
 const schema = signInFormSchema;
 
@@ -35,8 +33,10 @@ export function SignInForm() {
     const parsedFormData = schema.parse(formData); //型にbrandメソッドを使って"SignIn"という名前があるため、zodのスキーマを使ってデータをパースする
     startTransition(async () => {
       await signInWithEmailOrUsername(parsedFormData)
-        .then((path) => {
-          router.push(path);
+        .then((res) => {
+          console.log("res", res);
+          console.log("success login");
+          router.push("/projects");
         })
         .catch(async (error) => {
           toast.error(error.message);

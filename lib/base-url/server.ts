@@ -10,10 +10,10 @@ export const getBaseSubscriptionURL = () => {
     const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL; //my-site.vercel.app
     const branchUrl = process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL; // my-site-git-improve-about-page.vercel.app
     const devUrl = process.env.PUBSUB_SUBSCRIPTION_PUSH_URL;
-    console.log("prodUrl", prodUrl);
-    console.log("vercelUrl", vercelUrl);
-    console.log("branchUrl", branchUrl);
-    console.log("devUrl", devUrl);
+    // console.log("prodUrl", prodUrl);
+    // console.log("vercelUrl", vercelUrl);
+    // console.log("branchUrl", branchUrl);
+    // console.log("devUrl", devUrl);
     const url = isProd
       ? prodUrl
       : devUrl
