@@ -31,9 +31,9 @@ export function SignInForm() {
   const onSubmit = async (formData: FormData) => {
     const parsedFormData = schema.parse(formData); //型にbrandメソッドを使って"SignIn"という名前があるため、zodのスキーマを使ってデータをパースする
     await signInWithEmailOrUsername(parsedFormData).catch(async (error) => {
-      if (error.message !== "NEXT_REDIRECT") {
-        alert(error.message);
-      }
+      // if (error.message !== "NEXT_REDIRECT") {
+      alert(error.message);
+      // }
     });
   };
 

@@ -10,6 +10,7 @@ export const getBaseURL = (parentUrl?: string) => {
   // 本番環境の場合
   if (isProd) {
     const prodUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL; // (ex: myemm.next.work)
+    console.log("prodUrl", prodUrl);
     return prodUrl ? prodUrl : `http://localhost:${process.env.PORT || 3000}`;
   }
 

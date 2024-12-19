@@ -129,12 +129,9 @@ export const signInWithEmailOrUsername = async (formData: SignIn) => {
   // メールアドレスかユーザー名かを判断
   const isEmail = formData.emailOrUserName.includes("@");
   isEmail
-    ? await signInWithEmail(safeParsedFormData.data).then(() => {
-        redirect("/projects");
-      })
-    : await signInWithUsername(safeParsedFormData.data).then(() => {
-        redirect("/projects");
-      });
+    ? await signInWithEmail(safeParsedFormData.data)
+    : await signInWithUsername(safeParsedFormData.data);
+  redirect("/projects");
 };
 
 export const resendSignUpOPT = async ({
