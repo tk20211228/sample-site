@@ -18,7 +18,7 @@ import PasswordWithResetForm from "../../components/password-with-reset-form";
 import { signInFormSchema } from "../../schemas/auth-validation";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-const router = useRouter();
+
 const schema = signInFormSchema;
 
 // type emailOrUsernameType = z.infer<typeof emailOrUsernameSchema>;
@@ -29,6 +29,7 @@ type FormData = {
 };
 
 export function SignInForm() {
+  const router = useRouter();
   const form = useFormContext<FormData>();
   const onSubmit = async (formData: FormData) => {
     const parsedFormData = schema.parse(formData); //型にbrandメソッドを使って"SignIn"という名前があるため、zodのスキーマを使ってデータをパースする

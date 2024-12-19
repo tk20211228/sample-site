@@ -25,7 +25,6 @@ import { z } from "zod";
 import PasswordForm from "../../components/password-form";
 import { signUpFormSchema } from "../../schemas/auth-validation";
 import { toast } from "sonner";
-// import { notifyError } from "@/lib/notify-error";
 
 const schema = signUpFormSchema;
 
