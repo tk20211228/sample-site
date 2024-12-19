@@ -17,6 +17,7 @@ export function useWebToken(
   tokenType: IframeType
 ) {
   const currentUrl = window.location.origin;
+  console.log("currentUrl", currentUrl);
   const parentFrameUrl = getBaseURL(currentUrl);
   console.log("parentFrameUrl", parentFrameUrl);
 

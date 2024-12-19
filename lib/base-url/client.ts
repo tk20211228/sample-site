@@ -5,6 +5,7 @@
  */
 export const getBaseURL = (parentUrl?: string) => {
   const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
+  console.log("isProd", isProd);
 
   // 本番環境の場合
   if (isProd) {
