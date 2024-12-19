@@ -113,7 +113,7 @@ export async function POST(request: Request) {
       description = `
       デバイスID: ${deviceId} のステータスレポートを受信しました
       デバイスモデル：${deviceModel}
-      ��テータス：${appliedState}
+      ステータス：${appliedState}
       ポリシー準拠：${policyCompliance}
       ${nonComplianceDetails ? `非準拠詳細：${nonComplianceDetails}` : ""}
       `;

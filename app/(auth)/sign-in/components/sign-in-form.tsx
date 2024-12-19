@@ -16,7 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import PasswordWithResetForm from "../../components/password-with-reset-form";
 import { signInFormSchema } from "../../schemas/auth-validation";
-
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+const router = useRouter();
 const schema = signInFormSchema;
 
 // type emailOrUsernameType = z.infer<typeof emailOrUsernameSchema>;
@@ -30,11 +32,13 @@ export function SignInForm() {
   const form = useFormContext<FormData>();
   const onSubmit = async (formData: FormData) => {
     const parsedFormData = schema.parse(formData); //型にbrandメソッドを使って"SignIn"という名前があるため、zodのスキーマを使ってデータをパースする
-    await signInWithEmailOrUsername(parsedFormData).catch(async (error) => {
-      // if (error.message !== "NEXT_REDIRECT") {
-      alert(error.message);
-      // }
-    });
+    await signInWithEmailOrUsername(parsedFormData)
+      .then((path) => {
+        router.push(path);
+      })
+      .catch(async (error) => {
+        toast.error(error.message);
+      });
   };
 
   return (

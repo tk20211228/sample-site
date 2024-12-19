@@ -131,7 +131,8 @@ export const signInWithEmailOrUsername = async (formData: SignIn) => {
   isEmail
     ? await signInWithEmail(safeParsedFormData.data)
     : await signInWithUsername(safeParsedFormData.data);
-  redirect("/projects");
+  const path = "/projects";
+  return path;
 };
 
 export const resendSignUpOPT = async ({
