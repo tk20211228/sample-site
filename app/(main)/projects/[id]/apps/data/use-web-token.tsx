@@ -18,6 +18,7 @@ export function useWebToken(
 ) {
   const currentUrl = window.location.origin;
   const parentFrameUrl = getBaseURL(currentUrl);
+  console.log("parentFrameUrl", parentFrameUrl);
 
   const { data, error, isLoading, mutate } = useSWR(
     key,
