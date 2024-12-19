@@ -6,7 +6,7 @@
 export const getBaseSubscriptionURL = () => {
   try {
     const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
-    const vercelUrl = process.env.VERCEL_URL; // (ex: xxxx.vercel.app)
+    const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL; // (ex: xxxx.vercel.app)
     const url = isProd
       ? `https://${vercelUrl}`
       : process.env.PUBSUB_SUBSCRIPTION_PUSH_URL;

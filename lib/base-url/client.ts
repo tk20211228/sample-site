@@ -3,6 +3,7 @@
  * @param parentUrl? 親フレームURL
  * @returns ベースURL
  * 参考URL　https://vercel.com/docs/projects/environment-variables/system-environment-variables
+ * https://vercel.com/docs/projects/environment-variables/framework-environment-variables#framework-environment-variables
  */
 export const getBaseURL = (parentUrl?: string) => {
   const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
@@ -10,8 +11,8 @@ export const getBaseURL = (parentUrl?: string) => {
 
   // 本番環境の場合
   if (isProd) {
-    const prodUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL; // (ex: myemm.next.work)
-    const vercelUrl = process.env.VERCEL_URL; // (ex: xxxx.vercel.app)
+    const prodUrl = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL; // (ex: myemm.next.work)
+    const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL; // (ex: xxxx.vercel.app)
     console.log("prodUrl", prodUrl);
     console.log("vercelUrl", vercelUrl);
     return prodUrl

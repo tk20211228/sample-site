@@ -18,10 +18,9 @@ import PasswordWithResetForm from "../../components/password-with-reset-form";
 import { signInFormSchema } from "../../schemas/auth-validation";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTransition } from "react";
 
 const schema = signInFormSchema;
-
-// type emailOrUsernameType = z.infer<typeof emailOrUsernameSchema>;
 
 type FormData = {
   emailOrUserName: string;
@@ -30,16 +29,19 @@ type FormData = {
 
 export function SignInForm() {
   const router = useRouter();
+  const [isLoading, startTransition] = useTransition();
   const form = useFormContext<FormData>();
   const onSubmit = async (formData: FormData) => {
     const parsedFormData = schema.parse(formData); //型にbrandメソッドを使って"SignIn"という名前があるため、zodのスキーマを使ってデータをパースする
-    await signInWithEmailOrUsername(parsedFormData)
-      .then((path) => {
-        router.push(path);
-      })
-      .catch(async (error) => {
-        toast.error(error.message);
-      });
+    startTransition(async () => {
+      await signInWithEmailOrUsername(parsedFormData)
+        .then((path) => {
+          router.push(path);
+        })
+        .catch(async (error) => {
+          toast.error(error.message);
+        });
+    });
   };
 
   return (
@@ -68,10 +70,11 @@ export function SignInForm() {
         disabled={
           !form.formState.isValid ||
           form.formState.isSubmitting ||
-          form.formState.isValidating
+          form.formState.isValidating ||
+          isLoading
         }
       >
-        {form.formState.isSubmitting ? (
+        {form.formState.isSubmitting || isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ログイン中...
