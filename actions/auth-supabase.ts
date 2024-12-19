@@ -84,7 +84,7 @@ export const signUpNewUser = async (formData: SignUp) => {
 async function signInWithEmail(formData: SignIn) {
   const { emailOrUserName: email, password } = formData;
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -96,6 +96,7 @@ async function signInWithEmail(formData: SignIn) {
     const errorCode = error.code as SupabaseAuthErrorCode;
     throw new Error(await authErrorMessage(errorCode));
   }
+  return data;
 }
 
 async function signInWithUsername(formData: SignIn) {
@@ -132,6 +133,7 @@ export const signInWithEmailOrUsername = async (formData: SignIn) => {
     ? await signInWithEmail(safeParsedFormData.data)
     : await signInWithUsername(safeParsedFormData.data);
   const path = "/projects";
+  console.log("path", path);
   return path;
 };
 

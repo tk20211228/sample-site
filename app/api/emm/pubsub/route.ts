@@ -54,6 +54,8 @@ async function verifyPubSubToken() {
     // Pub/Subサービスアカウントの検証
     const expectedServiceAccount =
       process.env.PUBSUB_SUBSCRIPTION_AUTH_SERVICE_ACCOUNT;
+    console.log("claim.email", claim.email);
+    console.log("expectedServiceAccount", expectedServiceAccount);
     if (claim.email !== expectedServiceAccount) {
       throw new Error("Invalid service account");
     } else if (claim.email === expectedServiceAccount) {
