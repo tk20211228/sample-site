@@ -4,17 +4,16 @@ import { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "./data-table-view-options";
 
-import { deviceStates } from "../data/data";
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import DeleteSelectedAppsButton from "../../apps/components/table/management-apps/delete-selected-apps-button";
-import SyncPoliciesButton from "./sync-devices-button";
+import { cn } from "@/lib/utils";
+
+import { deviceStates } from "../data/data";
 import CreateQrButton from "./create-qr-button";
+import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import SyncPoliciesButton from "./sync-devices-button";
+import DeleteSelectedDevicesButton from "./delete-selected-devices-button";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -38,7 +37,7 @@ export function DataTableToolbar<TData>({
             <SidebarTrigger className="w-full" />
           </div>
           <div className="w-[54px] flex justify-center ">
-            {isSelected && <DeleteSelectedAppsButton table={table} />}
+            {isSelected && <DeleteSelectedDevicesButton table={table} />}
           </div>
           {/* <Input
             placeholder="識別 ID"

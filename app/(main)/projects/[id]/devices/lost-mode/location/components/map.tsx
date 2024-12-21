@@ -4,13 +4,9 @@ import {
   APIProvider,
   AdvancedMarker,
   Map,
-  Marker,
   Pin,
 } from "@vis.gl/react-google-maps";
-import { MapPinCheckInsideIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import Image from "next/image";
-import Logo from "@/public/images/logo.png";
 
 export default function QRWidget() {
   const { resolvedTheme } = useTheme();

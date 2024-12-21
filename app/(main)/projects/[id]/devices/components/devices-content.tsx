@@ -1,14 +1,13 @@
 "use client";
 
 import { Loader2Icon } from "lucide-react";
-import { useParams, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useParams } from "next/navigation";
 // import { useDevices } from "../../apps/data/use-devices";
-import { deviceColumns } from "./devices-table-columns";
-import DeviceTable from "./device-table";
 import { DeviceTableType } from "@/app/(main)/types/device";
-import { fetchDevicesFromDB } from "../data/device";
 import useSWR from "swr";
+import { fetchDevicesFromDB } from "../data/device";
+import DeviceTable from "./device-table";
+import { deviceColumns } from "./devices-table-columns";
 
 export default function DevicesContent({ data }: { data: DeviceTableType[] }) {
   // const pathname = usePathname();

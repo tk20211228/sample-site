@@ -20,7 +20,6 @@ import {
   Key,
   Lock,
   RefreshCw,
-  Search,
   Smartphone,
   Trash2,
   Vibrate,
@@ -35,6 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 
+import { DeviceConfigData, DeviceTableType } from "@/app/(main)/types/device";
 import {
   Dialog,
   DialogContent,
@@ -43,14 +43,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Row } from "@tanstack/react-table";
-import { DeviceConfigData, DeviceTableType } from "@/app/(main)/types/device";
-import { fetchDeviceInfoFromDB, syncDeviceInfoFromDB } from "../data/device";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
 import {
   startLostModeSelectedDevice,
   stopLostModeSelectedDevice,
 } from "../actions/lost-mode-devices copy";
-import { toast } from "sonner";
-import { useParams } from "next/navigation";
+import { fetchDeviceInfoFromDB, syncDeviceInfoFromDB } from "../data/device";
 
 interface DataTableMenuProps {
   row: Row<DeviceTableType>;
@@ -68,17 +67,17 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
   // デバイス情報を正しく取得
   // const device = row.original.device_config_data;
 
-  const onClick = async () => {
-    console.log(parent);
-    // setQrCode(null);
-    // const qrData = await createEnrollmentToken(parent);
-    // console.log("qrData", qrData);
-    // if (qrData) {
-    // setQrCode(qrData);
-    // setQrCode(`http://192.168.10.117:3000/api/emm/qr?parent=${parent}`);
-    // setQrCode(`https://enterprise.google.com/android/enroll?et=${qrData}`);
-    // }
-  };
+  // const onClick = async () => {
+  //   console.log(parent);
+  // setQrCode(null);
+  // const qrData = await createEnrollmentToken(parent);
+  // console.log("qrData", qrData);
+  // if (qrData) {
+  // setQrCode(qrData);
+  // setQrCode(`http://192.168.10.117:3000/api/emm/qr?parent=${parent}`);
+  // setQrCode(`https://enterprise.google.com/android/enroll?et=${qrData}`);
+  // }
+  // };
 
   const handleDeviceInfo = async (columnId: string) => {
     console.log(columnId);
@@ -94,7 +93,10 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
       toast.error("企業IDが取得できませんでした。");
       return;
     }
-    const device = await syncDeviceInfoFromDB(deviceName, enterpriseId);
+    await syncDeviceInfoFromDB(deviceName, enterpriseId).catch((error) => {
+      toast.error("デバイス情報の取得に失敗しました。");
+      console.error("デバイス情報の取得に失敗しました。", error);
+    });
   };
 
   const handleDeviceAction = async (action: string) => {

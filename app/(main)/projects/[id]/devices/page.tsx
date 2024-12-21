@@ -2,8 +2,13 @@ import { Suspense } from "react";
 import DevicesContent from "./components/devices-content";
 import { fetchDevicesFromDB } from "./data/device";
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const enterpriseName = "enterprises/" + params.id;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const id = (await params).id;
+  const enterpriseName = "enterprises/" + id;
   const devices = await fetchDevicesFromDB(enterpriseName);
   // const devices = [
   //   {

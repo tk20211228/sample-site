@@ -2,23 +2,18 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import {
-  ArrowUpDown,
-  CheckCircle2Icon,
-  LucideXCircle,
-  PlusIcon,
-} from "lucide-react"; // 行アクション
+import { CheckCircle2Icon, LucideXCircle, PlusIcon } from "lucide-react"; // 行アクション
 
 import { Button } from "@/components/ui/button";
 import { formatToJapaneseDateTime } from "@/lib/date-fns/get-date";
 import { devicesTableColumnList } from "../data/columnList";
 
+import { DeviceTableType } from "@/app/(main)/types/device";
 import { DataTableColumnHeader } from "../../../components/table/data-table-column-header";
-import DataTableColumnState from "./data-table-column-state";
-import DataTableMenu from "./data-table-menu";
 import { generateSortFilterColumnsHeader } from "../../../components/table/generate-sort-filter-columns-header";
 import { selectColumn } from "../../../components/table/select-column";
-import { DeviceTableType } from "@/app/(main)/types/device";
+import DataTableColumnState from "./data-table-column-state";
+import DataTableMenu from "./data-table-menu";
 
 export const deviceColumns: ColumnDef<DeviceTableType>[] = [
   selectColumn<DeviceTableType>(),

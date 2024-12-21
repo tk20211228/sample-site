@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export const deleteApp = async (appName: string) => {
   const supabase = await createClient();
@@ -16,10 +17,13 @@ export const deleteApp = async (appName: string) => {
  * @param deviceNames
  * @returns
  */
-export const deleteSelectedDevices = async (deviceNames: string[]) => {
-  console.log("deviceNames", deviceNames);
+export const deleteSelectedDevices = async (
+  deviceNames: string[],
+  enterpriseId: string
+) => {
+  // console.log("deviceNames", deviceNames);
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("devices")
     .delete()
     .in("device_name", deviceNames);
@@ -27,5 +31,5 @@ export const deleteSelectedDevices = async (deviceNames: string[]) => {
     throw new Error(error.message);
   }
 
-  return data;
+  revalidatePath(`/projects/${enterpriseId}/devices`);
 };
