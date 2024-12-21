@@ -28,7 +28,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const schema = z.object({
@@ -40,6 +42,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function PasswordResetVerifyForm() {
   const { emailOrUsername } = useEmailOrUsername();
+  const router = useRouter();
   const form = useForm({
     mode: "onChange",
     resolver: zodResolver(schema),
@@ -50,11 +53,14 @@ export default function PasswordResetVerifyForm() {
   });
 
   const onSubmit = async (data: FormData) => {
-    await resetPasswordVerify(data).catch((error) => {
-      if (error.message !== "NEXT_REDIRECT") {
-        alert(error.message);
-      }
-    });
+    await resetPasswordVerify(data)
+      .then(() => {
+        toast.success("パスワードを更新しました。");
+        router.push("/password-update");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   return (

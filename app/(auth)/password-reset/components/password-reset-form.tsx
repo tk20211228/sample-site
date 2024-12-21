@@ -18,17 +18,23 @@ import { z } from "zod";
 import DiscordSingInButton from "../../components/discord-sing-in_button";
 import { GitHubLoginButton } from "../../components/github-login-button";
 import GoogleSingInButton from "../../components/google-sing-in-button";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type FormData = z.infer<typeof emailOrUsernameSchema>;
 
 export default function PasswordResetForm() {
   const form = useFormContext<FormData>();
+  const router = useRouter();
   const onSubmit = async (data: FormData) => {
-    await resetPassword(data.emailOrUserName).catch((error) => {
-      if (error.message !== "NEXT_REDIRECT") {
-        alert(error.message);
-      }
-    });
+    await resetPassword(data.emailOrUserName)
+      .then(() => {
+        toast.success("パスワードリセットのメールを送信しました。");
+        router.push("/password-reset/verify");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   return (

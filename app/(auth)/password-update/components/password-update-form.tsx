@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import PasswordForm from "../../components/password-form";
 import { passwordUpdateSchema } from "../../schemas/password-update-schema";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const schema = passwordUpdateSchema;
 
@@ -21,6 +23,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function PasswordUpdateForm() {
   const { emailOrUsername } = useEmailOrUsername();
+  const router = useRouter();
   const form = useForm({
     mode: "onChange",
     resolver: zodResolver(schema),
@@ -30,11 +33,14 @@ export default function PasswordUpdateForm() {
   });
 
   const onSubmit = async (data: FormData) => {
-    await updatePassword(data).catch((error) => {
-      if (error.message !== "NEXT_REDIRECT") {
-        alert(error.message);
-      }
-    });
+    await updatePassword(data)
+      .then(() => {
+        toast.success("パスワードを更新しました。");
+        router.push("/projects");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
   return (
     <Card className="w-full">

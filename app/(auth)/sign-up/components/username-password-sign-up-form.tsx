@@ -25,12 +25,14 @@ import { z } from "zod";
 import PasswordForm from "../../components/password-form";
 import { signUpFormSchema } from "../../schemas/auth-validation";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const schema = signUpFormSchema;
 
 type FormData = z.infer<typeof schema>;
 
 export default function UsernamePasswordSignUpForm() {
+  const router = useRouter();
   const form = useForm({
     mode: "onChange",
     resolver: zodResolver(schema),
@@ -45,9 +47,14 @@ export default function UsernamePasswordSignUpForm() {
   });
 
   const onSubmit = async (data: FormData) => {
-    await signUpNewUser(data).catch((error) => {
-      toast.error(error.message);
-    });
+    await signUpNewUser(data)
+      .then((id) => {
+        toast.success("サインアップ登録が完了しました。");
+        router.push(`/sign-up/verify-email-address?id=${id}`);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   return (

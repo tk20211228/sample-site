@@ -76,9 +76,7 @@ export const signUpNewUser = async (formData: SignUp) => {
       "サインアップ登録は完了しましたが、ユーザー名の登録に失敗しました。ログインする際はユーザー名とパスワードでログインできません。"
     );
   }
-
-  // 登録したメールアドレスに確認メールを送信した旨を表示するページにリダイレクト
-  redirect(`/sign-up/verify-email-address?id=${user.id}`);
+  return user.id;
 };
 
 async function signInWithEmail(formData: SignIn) {
@@ -132,9 +130,9 @@ export const signInWithEmailOrUsername = async (formData: SignIn) => {
   isEmail
     ? await signInWithEmail(safeParsedFormData.data)
     : await signInWithUsername(safeParsedFormData.data);
-  const path = "/projects";
-  console.log("path", path);
-  return path;
+  // const path = "/projects";
+  // console.log("path", path);
+  // return path;
 };
 
 export const resendSignUpOPT = async ({
@@ -239,7 +237,7 @@ export async function resetPassword(email: string) {
     throw new Error(error.code);
   }
   // return { message: "ご登録のメールアドレスに確認メールを送信しました。" };
-  return redirect("/password-reset/verify");
+  // return redirect("/password-reset/verify");
 }
 
 export async function resetPasswordVerify(formData: {
@@ -259,7 +257,7 @@ export async function resetPasswordVerify(formData: {
     const errorCode = error.code as SupabaseAuthErrorCode;
     throw new Error(await authErrorMessage(errorCode));
   }
-  return redirect("/password-update");
+  // return redirect("/password-update");
 }
 
 export async function updatePassword(formData: PasswordUpdate) {
@@ -279,5 +277,5 @@ export async function updatePassword(formData: PasswordUpdate) {
     const errorCode = error.code as SupabaseAuthErrorCode;
     throw new Error(await authErrorMessage(errorCode));
   }
-  return redirect("/projects");
+  // return redirect("/projects");
 }
