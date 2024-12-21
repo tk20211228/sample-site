@@ -18,11 +18,11 @@ import DataTableColumnState from "./data-table-column-state";
 import DataTableMenu from "./data-table-menu";
 import { generateSortFilterColumnsHeader } from "../../../components/table/generate-sort-filter-columns-header";
 import { selectColumn } from "../../../components/table/select-column";
-import { DeviceTable } from "@/app/(main)/types/device";
+import { DeviceTableType } from "@/app/(main)/types/device";
 
-export const deviceColumns: ColumnDef<DeviceTable>[] = [
-  selectColumn<DeviceTable>(),
-  ...generateSortFilterColumnsHeader<DeviceTable>(devicesTableColumnList),
+export const deviceColumns: ColumnDef<DeviceTableType>[] = [
+  selectColumn<DeviceTableType>(),
+  ...generateSortFilterColumnsHeader<DeviceTableType>(devicesTableColumnList),
   {
     accessorKey: "state",
     id: "ステータス",
@@ -38,40 +38,40 @@ export const deviceColumns: ColumnDef<DeviceTable>[] = [
       return value.includes(row.getValue(id));
     },
   },
-  {
-    accessorKey: "enrollmentTokenName",
-    id: "識別 ID",
-    minSize: 250,
-    size: 300,
-    header: ({ column }) => {
-      return (
-        <div className="flex items-center justify-center">
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {column.id}
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      );
-    },
-    cell: ({ row, column }) => (
-      <div className="truncate" title={row.getValue(column.id)}>
-        {row.getValue(column.id)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "appliedPolicyVersion",
-    id: "ポリシー バージョン",
-    minSize: 225,
-    size: 250,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.id} />
-    ),
-    cell: ({ row, column }) => <div>{row.getValue(column.id)}</div>,
-  },
+  // {
+  //   accessorKey: "enrollmentTokenName",
+  //   id: "識別 ID",
+  //   minSize: 250,
+  //   size: 300,
+  //   header: ({ column }) => {
+  //     return (
+  //       <div className="flex items-center justify-center">
+  //         <Button
+  //           variant="ghost"
+  //           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //         >
+  //           {column.id}
+  //           <ArrowUpDown className="ml-2 h-4 w-4" />
+  //         </Button>
+  //       </div>
+  //     );
+  //   },
+  //   cell: ({ row, column }) => (
+  //     <div className="truncate" title={row.getValue(column.id)}>
+  //       {row.getValue(column.id)}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "appliedPolicyVersion",
+  //   id: "ポリシー バージョン",
+  //   minSize: 225,
+  //   size: 250,
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title={column.id} />
+  //   ),
+  //   cell: ({ row, column }) => <div>{row.getValue(column.id)}</div>,
+  // },
   {
     accessorKey: "policyCompliant",
     id: "ポリシー 準拠",
@@ -97,7 +97,7 @@ export const deviceColumns: ColumnDef<DeviceTable>[] = [
     accessorKey: "lastStatusReportTime",
     id: "同期時刻",
     minSize: 150,
-    size: 160,
+    size: 200,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title={column.id} />
     ),
@@ -111,24 +111,24 @@ export const deviceColumns: ColumnDef<DeviceTable>[] = [
       );
     },
   },
-  {
-    accessorKey: "lastPolicySyncTime",
-    id: "ポリシー同期時刻",
-    minSize: 210,
-    size: 220,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.id} />
-    ),
-    cell: ({ row, column }) => {
-      return (
-        <div>
-          {row.getValue(column.id)
-            ? formatToJapaneseDateTime(row.getValue(column.id))
-            : "不明"}
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "lastPolicySyncTime",
+  //   id: "ポリシー同期時刻",
+  //   minSize: 210,
+  //   size: 220,
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title={column.id} />
+  //   ),
+  //   cell: ({ row, column }) => {
+  //     return (
+  //       <div>
+  //         {row.getValue(column.id)
+  //           ? formatToJapaneseDateTime(row.getValue(column.id))
+  //           : "不明"}
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     id: "actions",
     enableResizing: false, // リサイズを無効化

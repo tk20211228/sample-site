@@ -23,6 +23,8 @@ import {
   Search,
   Smartphone,
   Trash2,
+  Vibrate,
+  VibrateOffIcon,
 } from "lucide-react";
 
 import {
@@ -41,11 +43,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Row } from "@tanstack/react-table";
-import { DeviceConfigData, DeviceTable } from "@/app/(main)/types/device";
-import { fetchDeviceInfoFromDB } from "../data/device";
+import { DeviceConfigData, DeviceTableType } from "@/app/(main)/types/device";
+import { fetchDeviceInfoFromDB, syncDeviceInfoFromDB } from "../data/device";
+import {
+  startLostModeSelectedDevice,
+  stopLostModeSelectedDevice,
+} from "../actions/lost-mode-devices copy";
+import { toast } from "sonner";
+import { useParams } from "next/navigation";
 
 interface DataTableMenuProps {
-  row: Row<DeviceTable>;
+  row: Row<DeviceTableType>;
   // column: Column<DeviceTable>;
 }
 
@@ -54,6 +62,9 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [initializationOption, setInitializationOption] = useState("");
   const [device, setDevice] = useState<DeviceConfigData>();
+  const [isLostMode, setIsLostMode] = useState(false);
+  const params = useParams();
+  const enterpriseId = params.id as string;
   // デバイス情報を正しく取得
   // const device = row.original.device_config_data;
 
@@ -77,12 +88,31 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
     console.log(columnId);
   };
 
+  const handleSyncDeviceInfo = async (deviceName: string) => {
+    console.log(deviceName);
+    if (!enterpriseId) {
+      toast.error("企業IDが取得できませんでした。");
+      return;
+    }
+    const device = await syncDeviceInfoFromDB(deviceName, enterpriseId);
+  };
+
   const handleDeviceAction = async (action: string) => {
     console.log(action);
   };
 
-  const handleLostMode = async (action: string) => {
-    console.log(action);
+  const handleStartLostMode = async (deviceName: string) => {
+    await startLostModeSelectedDevice(deviceName).then(() => {
+      toast.success("紛失モードを有効にしました");
+      setIsLostMode(true);
+    });
+  };
+
+  const handleStopLostMode = async (deviceName: string) => {
+    await stopLostModeSelectedDevice(deviceName).then(() => {
+      toast.success("紛失モードを無効にしました");
+      setIsLostMode(false);
+    });
   };
 
   // const handleDeviceReset = async (action: string) => {
@@ -107,7 +137,9 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
             <Smartphone className="mr-4 h-4 w-4" />
             <span>デバイス詳細</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={onClick}>
+          <DropdownMenuItem
+            onClick={() => handleSyncDeviceInfo(row.original.device_name)}
+          >
             <Download className="mr-4 h-4 w-4" />
             <span>デバイス情報取得</span>
           </DropdownMenuItem>
@@ -135,12 +167,21 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
             <CaptionsOff className="mr-4 h-4 w-4" />
             <span>アプリデータ削除</span>
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={() => handleLostMode(row.original.device_name)}
-          >
-            <Search className="mr-4 h-4 w-4" />
-            <span>紛失モード</span>
-          </DropdownMenuItem>
+          {isLostMode ? (
+            <DropdownMenuItem
+              onSelect={() => handleStopLostMode(row.original.device_name)}
+            >
+              <VibrateOffIcon className="mr-4 h-4 w-4" />
+              <span>紛失モード停止</span>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              onSelect={() => handleStartLostMode(row.original.device_name)}
+            >
+              <Vibrate className="mr-4 h-4 w-4" />
+              <span>紛失モード</span>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
             <Trash2 className="mr-4 h-4 w-4" />
             <span className="text-red-500">端末初期化</span>

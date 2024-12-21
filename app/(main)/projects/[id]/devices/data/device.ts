@@ -7,6 +7,8 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { getEnterprisesTableId } from "@/app/(main)/lib/get-enterprises-table-id";
 import { selectDevicesTableFields } from "./select-device-fields";
 import { DeviceConfigData } from "@/app/(main)/types/device";
+import { Json } from "@/types/database";
+import { revalidatePath } from "next/cache";
 
 type NextPageToken = string | null | undefined;
 type Device = androidmanagement_v1.Schema$Device | undefined;
@@ -198,4 +200,28 @@ export const fetchDeviceInfoFromDB = async (deviceTableId: string) => {
   }
 
   return device.device_config_data as DeviceConfigData;
+};
+
+export const syncDeviceInfoFromDB = async (
+  deviceName: string,
+  enterpriseId: string
+) => {
+  const androidmanagement = await createAndroidManagementClient();
+  const { data: device } = await androidmanagement.enterprises.devices.get({
+    name: deviceName,
+  });
+  if (!device) {
+    throw new Error("Failed to fetch device from Google EMM");
+  }
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("devices")
+    .update({ device_config_data: device as Json })
+    .eq("device_name", deviceName);
+
+  if (error) {
+    throw new Error("Failed to update device in database");
+  }
+  //http://localhost:3000/projects/XXXXXX/devices のバスを更新する
+  revalidatePath(`/projects/${enterpriseId}/devices`);
 };

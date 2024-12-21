@@ -40,7 +40,7 @@ export function DataTableToolbar<TData>({
           <div className="w-[54px] flex justify-center ">
             {isSelected && <DeleteSelectedAppsButton table={table} />}
           </div>
-          <Input
+          {/* <Input
             placeholder="識別 ID"
             value={
               (table.getColumn("識別 ID")?.getFilterValue() as string) ?? ""
@@ -49,7 +49,7 @@ export function DataTableToolbar<TData>({
               table.getColumn("識別 ID")?.setFilterValue(event.target.value)
             }
             className="h-8 w-[150px] lg:w-[250px]"
-          />
+          /> */}
           {table.getColumn("ステータス") && (
             <DataTableFacetedFilter
               column={table.getColumn("ステータス")}
@@ -80,7 +80,7 @@ export function DataTableToolbar<TData>({
         <CreateQrButton />
         <CreateQrButton />
         <SyncPoliciesButton />
-        <DataTableViewOptions table={table} />
+        {/* <DataTableViewOptions table={table} /> */}
       </div>
     </ScrollArea>
   );

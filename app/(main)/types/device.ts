@@ -13,6 +13,6 @@ import { DevicesTableSchema } from "../schema/devices";
 //   device_config_data: AndroidManagementDeviceSchema;
 // };
 
-export type DeviceTable = z.infer<typeof DevicesTableSchema>;
+export type DeviceTableType = z.infer<typeof DevicesTableSchema>;
 
 export type DeviceConfigData = androidmanagement_v1.Schema$Device;

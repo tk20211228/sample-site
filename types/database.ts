@@ -383,6 +383,7 @@ export type Database = {
         Row: {
           attributes_data: Json
           created_at: string
+          device_name: string
           id: string
           message_data: Json
           message_id: string
@@ -391,6 +392,7 @@ export type Database = {
         Insert: {
           attributes_data: Json
           created_at?: string
+          device_name: string
           id?: string
           message_data: Json
           message_id: string
@@ -399,6 +401,7 @@ export type Database = {
         Update: {
           attributes_data?: Json
           created_at?: string
+          device_name?: string
           id?: string
           message_data?: Json
           message_id?: string

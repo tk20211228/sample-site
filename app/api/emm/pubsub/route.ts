@@ -5,8 +5,12 @@ import { OAuth2Client } from "google-auth-library";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { Device } from "../../types/device";
+import { Device, DeviceOperation } from "../../types/device";
 import { getBaseSubscriptionURL } from "@/lib/base-url/server";
+import { createCommandDescription } from "./lib/command";
+import { createUsageLogsDescription } from "./lib/usage-logs";
+import { BatchUsageLogEvents } from "../../types/event";
+import { createStatusReportDescription } from "./lib/status-report";
 
 // Pub/Subメッセージの型定義
 interface PubSubMessage {
@@ -37,7 +41,7 @@ async function verifyPubSubToken() {
   }
   const baseSubscriptionURL = getBaseSubscriptionURL();
   const audience = `${baseSubscriptionURL}/api/emm/pubsub`;
-  console.log("Audience:", audience);
+  // console.log("Audience:", audience);
 
   // OAuth2クライアントの初期化
   const authClient = new OAuth2Client();
@@ -54,7 +58,7 @@ async function verifyPubSubToken() {
     // Pub/Subサービスアカウントの検証
     const expectedServiceAccount =
       process.env.PUBSUB_SUBSCRIPTION_AUTH_SERVICE_ACCOUNT;
-    console.log("claim.email", claim.email);
+    // console.log("claim.email", claim.email);
     console.log("expectedServiceAccount", expectedServiceAccount);
     if (claim.email !== expectedServiceAccount) {
       throw new Error("Invalid service account");
@@ -84,12 +88,25 @@ export async function POST(request: Request) {
     const decodedData = Buffer.from(body.message.data, "base64").toString();
     const data = JSON.parse(decodedData);
     const supabase = createAdminClient();
+    let deviceName = "不明";
+    if (body.message.attributes.notificationType === "COMMAND") {
+      // "name": "enterprises/LC0283n6ru/devices/3dddfe1a76fb9492/operations/1734680584437", から"enterprises/LC0283n6ru/devices/3dddfe1a76fb9492"のみを取得
+      deviceName = data.name?.split("/operations/")[0];
+    } else if (body.message.attributes.notificationType === "USAGE_LOGS") {
+      deviceName = data.device;
+    } else if (
+      body.message.attributes.notificationType === "STATUS_REPORT" ||
+      body.message.attributes.notificationType === "ENROLLMENT"
+    ) {
+      deviceName = data.name;
+    }
 
     const { error } = await supabase.from("pubsub_logs").insert({
       message_id: body.message.messageId,
       publish_time: body.message.publishTime,
       attributes_data: body.message.attributes as Json,
       message_data: data as Json,
+      device_name: deviceName,
     });
     if (error) throw error;
 
@@ -97,32 +114,27 @@ export async function POST(request: Request) {
 
     let description = "";
 
+    // デバイスのステータスレポート取得時、デバイス登録時のメッセージ
     if (
       notificationType === "STATUS_REPORT" ||
       notificationType === "ENROLLMENT"
     ) {
-      const deviceDate = data as Device;
-      const deviceId = deviceDate.name?.split("/")[3];
-      const deviceModel = deviceDate.hardwareInfo?.model;
-      const appliedState = deviceDate.appliedState;
-      const policyCompliance = deviceDate.policyCompliant ? "◯" : "×";
-      const nonComplianceDetails = deviceDate.nonComplianceDetails
-        ?.map((nonComplianceDetail) => {
-          return `${nonComplianceDetail.nonComplianceReason}`;
-        })
-        .join("\n");
-
-      description = `
-      デバイスID: ${deviceId} のステータスレポートを受信しました
-      デバイスモデル：${deviceModel}
-      ステータス：${appliedState}
-      ポリシー準拠：${policyCompliance}
-      ${nonComplianceDetails ? `非準拠詳細：${nonComplianceDetails}` : ""}
-      `;
+      description = createStatusReportDescription(data as Device);
     }
 
+    // デバイスのコマンド取得時のメッセージ
+    if (notificationType === "COMMAND") {
+      description = createCommandDescription(data as DeviceOperation);
+    }
+    if (notificationType === "USAGE_LOGS") {
+      description = createUsageLogsDescription(data as BatchUsageLogEvents);
+    }
+
+    const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
+    const contentTitle = isProd ? "" : "【開発環境】";
+
     await sendDiscordWebhookMessage(
-      "Pub/Subメッセージを受信しました",
+      `${contentTitle}Pub/Subメッセージを受信しました`,
       notificationType,
       description
     );
