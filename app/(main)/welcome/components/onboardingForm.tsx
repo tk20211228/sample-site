@@ -46,11 +46,12 @@ export default function OnboardingForm() {
   });
   const currentUrl = window.location.origin;
   const url = getBaseURL(currentUrl);
+  console.log(url);
 
   const onSubmit = async (data: FormData) => {
     await createProject(data).then(async (project) => {
       toast.success("プロジェクトが作成されました");
-      await getSignUpUrl(project.id, url, project.project_name);
+      await getSignUpUrl(project.project_id, url, project.project_name);
     });
   };
 

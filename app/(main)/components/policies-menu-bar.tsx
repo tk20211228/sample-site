@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useEnterprise } from "../projects/[id]/providers/enterprise";
+import { usePoliciesTable } from "../[enterpriseId]/policies/components/policies-table-provider";
 
 export default function PoliciesMenuBar({ className }: { className?: string }) {
-  const { enterpriseId } = useEnterprise();
+  const { enterpriseId } = usePoliciesTable();
   return (
     <div className={cn(`w-64 h-dvh border-r flex flex-col`, className)}>
       <div className="border-b flex min-h-12 items-center px-6">
@@ -24,9 +24,7 @@ export default function PoliciesMenuBar({ className }: { className?: string }) {
                 className="w-full px-3 font-semibold justify-start gap-2"
                 asChild
               >
-                <Link href={`/projects/${enterpriseId}/policies`}>
-                  テーブル
-                </Link>
+                <Link href={`/${enterpriseId}/policies`}>テーブル</Link>
               </Button>
               <Button
                 variant="ghost"
@@ -64,9 +62,7 @@ export default function PoliciesMenuBar({ className }: { className?: string }) {
                 className="w-full px-3 font-semibold justify-start gap-2"
                 asChild
               >
-                <Link href={`/projects/${enterpriseId}/policies/general`}>
-                  端末全般
-                </Link>
+                <Link href={`/${enterpriseId}/policies/general`}>端末全般</Link>
               </Button>
               <Button
                 variant="ghost"

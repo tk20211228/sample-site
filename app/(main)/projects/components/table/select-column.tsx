@@ -1,13 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 
-type ColumnMeta = {
-  title: string;
-};
-
-export const selectColumn = <T extends object>(): ColumnDef<T> & {
-  meta: ColumnMeta;
-} => ({
+export const selectColumn = <T extends object>(): ColumnDef<T> => ({
   id: "select",
   minSize: 48,
   size: 48,
@@ -35,7 +29,4 @@ export const selectColumn = <T extends object>(): ColumnDef<T> & {
   enableSorting: false,
   enableHiding: false,
   enableResizing: false,
-  meta: {
-    title: "選択",
-  },
 });

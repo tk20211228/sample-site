@@ -1,12 +1,13 @@
+import { formatToJapaneseDateTime } from "@/lib/date-fns/get-date";
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const appName = searchParams.get("name");
+  const appId = searchParams.get("appId");
 
-  if (!appName) {
-    return new NextResponse("App name is required", { status: 400 });
+  if (!appId) {
+    return new NextResponse("App id is required", { status: 400 });
   }
 
   try {
@@ -18,16 +19,19 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from("apps")
-      .select("app_details")
-      .eq("name", appName)
+      .select("app_data")
+      .eq("app_id", appId)
       .single();
 
     if (error || !data) {
       return new NextResponse("App not found", { status: 404 });
     }
 
-    const jsonString = JSON.stringify(data.app_details, null, 2);
-    const fileName = `${appName}_app_details.json`;
+    const jsonString = JSON.stringify(data.app_data, null, 2);
+    const date = formatToJapaneseDateTime(new Date(), "yyyy_MMdd_HHmmss");
+
+    console.log("date", date);
+    const fileName = `${appId}_appData_${date}.json`;
 
     const headers = new Headers({
       "Content-Type": "application/json",

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { androidmanagement_v1 } from "googleapis";
 import { createAndroidManagementClient } from "./client";
 import { Json } from "@/types/database";
-import { AndroidManagementPolicy } from "@/app/(main)/types/policy";
+import { AndroidManagementPolicy } from "@/app/types/policy";
 
 export const createDefaultPolicy = async (
   enterpriseName: string,
@@ -23,7 +23,7 @@ export const createDefaultPolicy = async (
   // ポリシー作成
   const requestBody: AndroidManagementPolicy = defaultPolicyRequestBody;
   const androidmanagement = await createAndroidManagementClient();
-  const { data } =
+  const { data: PolicyResponseData } =
     // const { data }: { data: PolicyDataSchema } =
     await androidmanagement.enterprises.policies
       .patch({
@@ -34,25 +34,22 @@ export const createDefaultPolicy = async (
         console.error("Error creating signup URL:", error.message);
         throw new Error(error.message);
       });
-  console.log("data", data);
-  if (!data?.name) {
+  if (!PolicyResponseData?.name) {
     throw new Error("Policy name is required");
   }
 
   // ポリシー情報をDBに保存
-  const { error: policyError } = await supabase
+  const { data: policyUpsertDate, error: policyError } = await supabase
     .from("policies")
     .upsert(
       {
-        enterprise_table_id: enterpriseTableId,
-        policy_name: data.name,
-        display_name: "デフォルトポリシー",
-        policy_config_data: data as Json,
-        created_at: new Date().toISOString(),
+        enterprise_id: enterpriseTableId,
+        policy_display_name: "デフォルトポリシー",
+        policy_data: PolicyResponseData as Json,
         updated_at: new Date().toISOString(),
       },
       {
-        onConflict: "policy_name",
+        onConflict: "policy_id",
       }
     )
     .select()
@@ -63,5 +60,16 @@ export const createDefaultPolicy = async (
     throw new Error("Error saving policy");
   }
 
-  console.log("Policy created:", data);
+  // 応答文を　policies_historiesテーブルに保存
+  const { error: policyHistoryError } = await supabase
+    .from("policies_histories")
+    .insert({
+      policy_id: policyUpsertDate.policy_id,
+      policy_request_data: requestBody as Json,
+      policy_response_data: PolicyResponseData as Json,
+    });
+  if (policyHistoryError) {
+    console.error("Error inserting policy_histories:", policyHistoryError);
+    throw new Error("Error inserting policy_histories");
+  }
 };

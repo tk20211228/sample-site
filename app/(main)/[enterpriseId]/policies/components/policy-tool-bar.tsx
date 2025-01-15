@@ -1,0 +1,117 @@
+"use client";
+
+import { FormPolicy } from "@/app/types/policy";
+import { Button } from "@/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
+
+import { formPolicySchema } from "@/app/(main)/schema/policy";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import { useTransition } from "react";
+import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
+import { createOrUpdateEnterprisePolicy } from "../actions/create-or-update-policy";
+import { RouteParams } from "@/app/types/enterprise";
+
+export default function PolicyToolBar() {
+  const form = useFormContext<FormPolicy>();
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const searchPolicyId = searchParams.get("policyId");
+  const param = useParams<RouteParams>();
+  let policyId = param.policyId ?? "new";
+  if (searchPolicyId) {
+    policyId = searchPolicyId;
+  }
+  const enterpriseId = param.enterpriseId;
+
+  const policyBasePath = `/${enterpriseId}/policies/${policyId}`;
+  const currentBase = pathname.split(policyBasePath)[1];
+
+  const handleSave = async (data: FormPolicy) => {
+    startTransition(async () => {
+      if (!policyId) {
+        toast.error("ポリシーIDが取得できませんでした。");
+        return;
+      }
+      if (!data.policyDisplayName) {
+        toast.error("ポリシー名を設定してください。");
+        return;
+      }
+      const policyDisplayName = data.policyDisplayName;
+      const parsed = formPolicySchema.parse(data);
+
+      console.log("parsed", parsed);
+      const savedPolicyId = await createOrUpdateEnterprisePolicy({
+        enterpriseId,
+        policyId,
+        policyDisplayName,
+        requestBody: parsed.policyData,
+      });
+      router.push(`/${enterpriseId}/policies/${savedPolicyId}/${currentBase}`);
+    });
+  };
+
+  const isLoading =
+    policyId !== "new" && // 新規作成時はローディングチェックをスキップ
+    !form.formState.isDirty && // フォームが一度も編集されていない
+    !form.getValues("policyDisplayName");
+
+  if (isLoading) {
+    return null;
+  }
+
+  return (
+    <form
+      onSubmit={form.handleSubmit(handleSave)}
+      className="h-14 px-4 flex flex-row items-center gap-2"
+    >
+      <span className="text-sm">ポリシー名：</span>
+      <FormField
+        control={form.control}
+        name="policyDisplayName"
+        render={({ field }) => (
+          <FormItem className=" flex flex-row space-x-2 items-center w-[420px]">
+            <FormControl>
+              <Input
+                placeholder="ポリシー名"
+                {...field}
+                autoComplete="off"
+                className="h-8 w-[200px]"
+              />
+            </FormControl>
+            <FormMessage className=" w-[220px] flex items-center mt-1" />
+          </FormItem>
+        )}
+      />
+      <span className="flex-1" />
+      <Button
+        disabled={isPending || !form.formState.isValid}
+        className="h-8"
+        variant="outline"
+      >
+        {isPending ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            保存中...
+          </>
+        ) : (
+          "保存"
+        )}
+      </Button>
+    </form>
+  );
+}

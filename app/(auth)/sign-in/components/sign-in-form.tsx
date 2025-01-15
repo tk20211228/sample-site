@@ -33,9 +33,7 @@ export function SignInForm() {
     const parsedFormData = schema.parse(formData); //型にbrandメソッドを使って"SignIn"という名前があるため、zodのスキーマを使ってデータをパースする
     startTransition(async () => {
       await signInWithEmailOrUsername(parsedFormData)
-        .then((res) => {
-          console.log("res", res);
-          console.log("success login");
+        .then(() => {
           router.push("/projects");
         })
         .catch(async (error) => {
@@ -77,10 +75,10 @@ export function SignInForm() {
         {form.formState.isSubmitting || isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ログイン中...
+            サインイン中...
           </>
         ) : (
-          <>ログイン</>
+          <>サインイン</>
         )}
       </Button>
       <Button

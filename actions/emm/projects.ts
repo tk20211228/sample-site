@@ -21,18 +21,22 @@ export const createProject = async (data: FormData) => {
 
   const supabase = await createClient();
   const { projectName, organizationName } = data;
-  const authUser = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   // console.log(authUser);
-  if (!authUser) {
+  if (!user) {
     throw new Error("ユーザー情報が取得できませんでした");
   }
 
   // プロジェクトの作成
+  const currentIsoTimestamp = new Date().toISOString();
   const { data: project, error: projectError } = await supabase
     .from("projects")
     .insert({
       project_name: projectName,
       organization_name: organizationName,
+      updated_at: currentIsoTimestamp,
     })
     .select()
     .single();
@@ -41,18 +45,13 @@ export const createProject = async (data: FormData) => {
     console.error("プロジェクト作成エラー:", projectError);
     throw new Error("プロジェクトの作成に失敗しました");
   }
-  // プロジェクトとユーザーの紐付け
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    throw new Error("ユーザー情報が取得できませんでした。");
-  }
   const { error: managementError } = await supabase
     .from("project_members")
     .insert({
-      project_id: project.id,
+      project_id: project.project_id,
       user_id: user.id,
+      role: "OWNER",
+      updated_at: currentIsoTimestamp,
     });
   if (managementError) {
     console.error("プロジェクトユーザー紐付けエラー:", managementError);

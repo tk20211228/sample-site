@@ -5,6 +5,7 @@ import Hero from "./hero";
 import Wave from "./wave";
 import Link from "next/link";
 
+import aePhoneImage from "./images/phone.webp";
 import aerBadgeImage from "./images/aer-badge.webp";
 import androidEnterImage from "./images/android-enterprise.webp";
 
@@ -40,10 +41,8 @@ export default function Home() {
         </div>
         <div className="flex flex-col items-center">
           <Image
-            src="/images/phone.webp"
-            alt=""
-            width={400}
-            height={400}
+            src={aePhoneImage}
+            alt="Android Enterprise Phone"
             className="w-[150px] md:w-auto md:h-[500px] ml-1 md:ml-2"
           />
           <Link

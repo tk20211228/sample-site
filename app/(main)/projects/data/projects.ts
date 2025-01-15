@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import { ProjectWithEnterpriseRelation } from "../../types/project";
+import { ProjectWithEnterpriseRelation } from "../../../types/project";
 
 /**
  * プロジェクト一覧を取得
@@ -34,10 +34,7 @@ export const getProjects = async (): Promise<
     .select(
       `
       ...projects (
-      *,
-        ...enterprises (
-          enterprise_name
-        )
+      *
       )
     `
     )

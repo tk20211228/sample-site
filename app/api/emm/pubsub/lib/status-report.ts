@@ -1,11 +1,23 @@
-import { Device } from "@/app/(main)/projects/types/device";
+import { getDeviceDisplayName } from "@/app/data/device";
+import { AndroidManagementDevice } from "@/app/types/device";
 
-export const createStatusReportDescription = (data: Device) => {
-  const deviceId = data.name?.split("/")[3];
-  const deviceModel = data.hardwareInfo?.model;
-  const appliedState = data.appliedState;
-  const policyCompliance = data.policyCompliant ? "◯" : "×";
-  const nonComplianceDetails = data.nonComplianceDetails
+export const createStatusReportDescription = async ({
+  enterpriseId,
+  deviceIdentifier,
+  deviceData,
+}: {
+  enterpriseId: string;
+  deviceIdentifier: string;
+  deviceData: AndroidManagementDevice;
+}) => {
+  const deviceId = deviceIdentifier;
+  const deviceDisplayName =
+    (await getDeviceDisplayName(enterpriseId, deviceIdentifier)) ??
+    "端末名未設定";
+  const deviceModel = deviceData.hardwareInfo?.model;
+  const appliedState = deviceData.appliedState;
+  const policyCompliance = deviceData.policyCompliant ? "◯" : "×";
+  const nonComplianceDetails = deviceData.nonComplianceDetails
     ?.map((nonComplianceDetail) => {
       return `${nonComplianceDetail.nonComplianceReason}`;
     })
@@ -13,6 +25,7 @@ export const createStatusReportDescription = (data: Device) => {
 
   const description = `
       デバイスID: ${deviceId} のステータスレポートを受信しました
+      端末名：${deviceDisplayName}
       デバイスモデル：${deviceModel}
       ステータス：${appliedState}
       ポリシー準拠：${policyCompliance}

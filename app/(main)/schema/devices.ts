@@ -1,29 +1,36 @@
 import { z } from "zod";
 
 export const DevicesTableSchema = z.object({
-  id: z.string(),
-  device_name: z.string(),
-  display_name: z.string(),
-  policy_name: z.string().nullable(),
+  deviceId: z.string(),
+  enterpriseId: z.string(),
+  policyId: z.string().nullable(),
+  deviceIdentifier: z.string(),
+  deviceDisplayName: z.string().nullable(),
   state: z.string(),
+  appliedState: z.string(),
   lastSyncTime: z.string(),
   policyCompliant: z.string(),
   enrollmentTime: z.string(),
   lastStatusReportTime: z.string(),
-  created_at: z.string(),
-  updated_at: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  policyDisplayName: z.string().nullable(), // ポリシー名の表示名
 });
 
 /**
- *  id: string;
-    device_name: string;
-    display_name: string;
-    policy_name: string | null;
-    state: string;
-    lastSyncTime: string;
-    policyCompliant: string;
-    enrollmentTime: string;
-    lastStatusReportTime: string;
-    created_at: string;
-    updated_at: string;
+ *      enterpriseId:enterprise_id,
+        policyId:policy_id,
+        deviceIdentifier:device_identifier,
+        deviceDisplayName:device_display_name,
+        device_data->>state,
+        device_data->>appliedState,
+        device_data->>lastSyncTime,
+        device_data->>policyCompliant,
+        device_data->>enrollmentTime,
+        device_data->>lastStatusReportTime,
+        createdAt:created_at,
+        updatedAt:updated_at,
+        ...policies (
+            policyDisplayName:policy_display_name
+            )
  */

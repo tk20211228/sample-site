@@ -11,8 +11,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
     mode: "onChange",
     resolver: zodResolver(emailOrUsernameSchema),
     defaultValues: {
-      emailOrUserName: "t3kuboki@gmail.com",
-      password: "testTEST123!!",
+      emailOrUserName: process.env.NEXT_PUBLIC_DEV_EMAIL ?? "",
+      password: process.env.NEXT_PUBLIC_DEV_PASSWORD ?? "",
     },
   });
 

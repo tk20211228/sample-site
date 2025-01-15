@@ -80,7 +80,7 @@ export default function CreateProjectForm({
     startTransition(async () => {
       await createProject(submitData).then(async (project) => {
         toast.success("プロジェクトが作成されました");
-        await getSignUpUrl(project.id, url, project.project_name);
+        await getSignUpUrl(project.project_id, url, project.project_name);
       });
     });
   };

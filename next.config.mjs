@@ -10,8 +10,51 @@ const nextConfig = {
           "/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/**",
       },
       {
+        //Android Enterpriseで必要なホスト
         protocol: "https",
-        hostname: "lh3.googleusercontent.com",
+        hostname: "*.gstatic.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        //Android Enterpriseで必要なホスト
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        //Android Enterpriseで必要なホスト
+        protocol: "https",
+        hostname: "*.gvt1.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        //Android Enterpriseで必要なホスト
+        protocol: "https",
+        hostname: "*.ggpht.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        //Android Enterpriseで必要なホスト
+        protocol: "https",
+        hostname: "dl.google.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        //Android Enterpriseで必要なホスト
+        protocol: "https",
+        hostname: "dl-ssl.google.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        //Android Enterpriseで必要なホスト
+        protocol: "https",
+        hostname: "android.clients.google.com",
         port: "",
         pathname: "/**",
       },

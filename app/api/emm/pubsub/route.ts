@@ -1,16 +1,15 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendDiscordWebhookMessage } from "@/lib/webhook/discord";
 import { Json } from "@/types/database";
-import { OAuth2Client } from "google-auth-library";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { Device, DeviceOperation } from "../../types/device";
-import { getBaseSubscriptionURL } from "@/lib/base-url/server";
-import { createCommandDescription } from "./lib/command";
-import { createUsageLogsDescription } from "./lib/usage-logs";
 import { BatchUsageLogEvents } from "../../types/event";
+import { createCommandDescription } from "./lib/command";
+import { dispatchDeviceEvent } from "./lib/data/device-event";
 import { createStatusReportDescription } from "./lib/status-report";
+import { createUsageLogsDescription } from "./lib/usage-logs";
+import { verifyPubSubToken } from "./lib/verify-token";
+import { AndroidManagementDevice, DeviceOperation } from "@/app/types/device";
 
 // Pub/Subメッセージの型定義
 interface PubSubMessage {
@@ -26,52 +25,12 @@ interface PubSubMessage {
   };
   subscription: string;
 }
-
-/**
- * Pub/Subのトークンを検証する
- * @param request
- * @returns トークンの検証結果
- */
-async function verifyPubSubToken() {
-  const authHeader = (await headers()).get("authorization");
-  // スキーム部分とトークン部分を分離
-  const [scheme, token] = authHeader?.split(" ") ?? [];
-  if (scheme !== "Bearer" || !token) {
-    throw new Error("Invalid authorization header format");
-  }
-  const baseSubscriptionURL = getBaseSubscriptionURL();
-  const audience = `${baseSubscriptionURL}/api/emm/pubsub`;
-  // console.log("Audience:", audience);
-
-  // OAuth2クライアントの初期化
-  const authClient = new OAuth2Client();
-  try {
-    // トークンの検証
-    const ticket = await authClient.verifyIdToken({
-      idToken: token,
-      audience, // プッシュエンドポイントのURL
-    });
-
-    const claim = ticket.getPayload();
-    if (!claim) throw new Error("Invalid claim");
-
-    // Pub/Subサービスアカウントの検証
-    const expectedServiceAccount =
-      process.env.PUBSUB_SUBSCRIPTION_AUTH_SERVICE_ACCOUNT;
-    // console.log("claim.email", claim.email);
-    console.log("expectedServiceAccount", expectedServiceAccount);
-    if (claim.email !== expectedServiceAccount) {
-      throw new Error("Invalid service account");
-    } else if (claim.email === expectedServiceAccount) {
-      console.log("Pub/Sub service account is valid");
-    }
-
-    return claim;
-  } catch (error) {
-    console.error("Token verification failed:", error);
-    throw new Error("Invalid token");
-  }
-}
+export type notificationType =
+  | "COMMAND"
+  | "USAGE_LOGS"
+  | "STATUS_REPORT"
+  | "ENROLLMENT"
+  | "test";
 
 /**
  * Pub/Subのメッセージを受信する
@@ -87,30 +46,79 @@ export async function POST(request: Request) {
     // Base64でエンコードされたデータをデコード
     const decodedData = Buffer.from(body.message.data, "base64").toString();
     const data = JSON.parse(decodedData);
+    const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
+    const contentTitle = isProd ? "" : "【開発環境】";
     const supabase = createAdminClient();
-    let deviceName = "不明";
-    if (body.message.attributes.notificationType === "COMMAND") {
-      // "name": "enterprises/LC0283n6ru/devices/3dddfe1a76fb9492/operations/1734680584437", から"enterprises/LC0283n6ru/devices/3dddfe1a76fb9492"のみを取得
-      deviceName = data.name?.split("/operations/")[0];
-    } else if (body.message.attributes.notificationType === "USAGE_LOGS") {
-      deviceName = data.device;
-    } else if (
-      body.message.attributes.notificationType === "STATUS_REPORT" ||
-      body.message.attributes.notificationType === "ENROLLMENT"
-    ) {
-      deviceName = data.name;
-    }
 
-    const { error } = await supabase.from("pubsub_logs").insert({
-      message_id: body.message.messageId,
+    // デバイス名の取得ロジックをマッピングオブジェクトで単純化
+    const deviceNameExtractors = {
+      COMMAND: (data: DeviceOperation) => data.name?.split("/operations/")[0],
+      USAGE_LOGS: (data: BatchUsageLogEvents) => data.device,
+      STATUS_REPORT: (data: AndroidManagementDevice) => data.name,
+      ENROLLMENT: (data: AndroidManagementDevice) => data.name,
+      test: () => {
+        sendDiscordWebhookMessage(
+          `${contentTitle}Pub/Subメッセージを受信しました`,
+          "test",
+          "任意のEnterpriseでPubSubの設定を検知しました。"
+        );
+        return null;
+      },
+    } as const;
+
+    // デバイス名の取得とバリデーション
+    const notificationType = body.message.attributes
+      .notificationType as notificationType;
+    const deviceName = deviceNameExtractors[notificationType]?.(data);
+    const operationName =
+      notificationType === "COMMAND"
+        ? data.name?.split("/operations/")[1]
+        : undefined;
+
+    let enterpriseId: string | null = null;
+    let deviceIdentifier: string | null = null;
+
+    if (deviceName) {
+      // enterprises/の後ろの文字列を取得
+      const enterpriseParts = deviceName.split("enterprises/")[1];
+      if (enterpriseParts) {
+        // 最初の/までの文字列をenterpriseIdとして取得
+        enterpriseId = enterpriseParts.split("/")[0];
+        // devices/の後ろの文字列をdeviceIdentifierとして取得
+        deviceIdentifier = deviceName.split("/devices/")[1];
+      }
+    }
+    // nullのまま処理を続行するとエラーが発生するため、警告を出力して処理を続行
+    console.warn("Failed to parse device name:", deviceName);
+
+    const pubsubMessageId = body.message.messageId;
+    //pubsub_logsにデータを保存
+    const { error } = await supabase.from("pubsub_messages").insert({
+      pubsub_message_id: pubsubMessageId,
+      enterprise_id: enterpriseId,
+      device_identifier: deviceIdentifier,
+      notification_type: notificationType,
+      pubsub_message_data: data as Json,
+      pubsub_message_attributes_data: body.message.attributes,
       publish_time: body.message.publishTime,
-      attributes_data: body.message.attributes as Json,
-      message_data: data as Json,
-      device_name: deviceName,
     });
     if (error) throw error;
+    if (!enterpriseId || !deviceIdentifier) {
+      if (notificationType === "test") {
+        return NextResponse.json({ status: 200 });
+      }
+      throw new Error("enterpriseId or deviceIdentifier is null");
+    }
 
-    const notificationType = body.message.attributes.notificationType;
+    //タイプ別に他のテーブルにも保存する
+    const deviceData = await dispatchDeviceEvent({
+      enterpriseId,
+      deviceIdentifier,
+      notificationType,
+      data: data as Json,
+      operationName,
+      pubsubMessageId,
+    });
 
     let description = "";
 
@@ -119,25 +127,35 @@ export async function POST(request: Request) {
       notificationType === "STATUS_REPORT" ||
       notificationType === "ENROLLMENT"
     ) {
-      description = createStatusReportDescription(data as Device);
+      description = await createStatusReportDescription({
+        enterpriseId,
+        deviceIdentifier,
+        deviceData: deviceData as AndroidManagementDevice,
+      });
     }
 
     // デバイスのコマンド取得時のメッセージ
     if (notificationType === "COMMAND") {
-      description = createCommandDescription(data as DeviceOperation);
+      description = await createCommandDescription({
+        enterpriseId,
+        deviceIdentifier,
+        operationDate: data as DeviceOperation,
+      });
     }
     if (notificationType === "USAGE_LOGS") {
-      description = createUsageLogsDescription(data as BatchUsageLogEvents);
+      description = await createUsageLogsDescription({
+        enterpriseId,
+        deviceIdentifier,
+        usageLogDate: data as BatchUsageLogEvents,
+      });
     }
-
-    const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
-    const contentTitle = isProd ? "" : "【開発環境】";
 
     await sendDiscordWebhookMessage(
       `${contentTitle}Pub/Subメッセージを受信しました`,
       notificationType,
       description
     );
+    // DB
 
     // 成功レスポンス(ステータスコード200)を返す
     return NextResponse.json({ success: true }, { status: 200 });
@@ -148,7 +166,7 @@ export async function POST(request: Request) {
       "ERROR",
       error instanceof Error ? error.message : "不明なエラーが発生しました"
     );
-    // エラーの場合は再試行されるよう4xxではなく500を返す
+    // 500を返すとPub/Subがメッセージを再試行するため202を返す。最適化の可能性あり。
     return NextResponse.json(
       { error: "データ処理に失敗しました。" },
       { status: 202 }

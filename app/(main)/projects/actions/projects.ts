@@ -7,7 +7,7 @@ export const deleteProject = async (projectId: string) => {
   const { error } = await supabase
     .from("projects")
     .delete()
-    .eq("id", projectId);
+    .eq("project_id", projectId);
   if (error) {
     console.error("Error deleting project:", error);
     throw new Error("Error deleting project");

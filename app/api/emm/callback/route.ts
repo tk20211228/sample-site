@@ -1,12 +1,11 @@
 import { createAndroidManagementClient } from "@/actions/emm/client";
 import { decryptData } from "@/actions/emm/crypto";
-import { extractEnterpriseIdFromPath } from "@/lib/extract-enterpriseId-from-path";
 import { createDefaultPolicy } from "@/actions/emm/policy";
 import { createClient } from "@/lib/supabase/server";
+import { Json } from "@/types/database";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
-import { Json } from "@/types/database";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -14,8 +13,6 @@ export async function GET(request: NextRequest) {
   const enterpriseToken = requestUrl.searchParams.get("enterpriseToken");
   const cookieStore = await cookies();
   const encryptedData = cookieStore.get("emm_signup_object");
-  // console.log("encryptedData", encryptedData);
-  // console.log("enterpriseToken", enterpriseToken);
   if (enterpriseToken && encryptedData) {
     // Supabaseクライアントを作成
     const supabase = await createClient();
@@ -40,92 +37,97 @@ export async function GET(request: NextRequest) {
       url: "https://sample-site-pearl.vercel.app/images/logo.png",
       sha256Hash: "zwB79wWGgXq7V5Yk1Jt6khr1BrsM2msHYszD9MOa9Cc=",
     };
+    const requestBody = {
+      // request body parameters
+      // {
+      //   "appAutoApprovalEnabled": false,
+      //   "contactInfo": {},
+      enabledNotificationTypes: [
+        "ENROLLMENT",
+        "STATUS_REPORT",
+        "COMMAND",
+        "USAGE_LOGS",
+      ],
+      enterpriseDisplayName: projectName,
+      logo,
+      //   "name": "my_name",
+      //   "primaryColor": 0,
+      pubsubTopic: process.env.PUBSUB_TOPIC,
+      //   "signinDetails": [],
+      //   "termsAndConditions": []
+      // }
+    };
     const { data: enterpriseData } = await androidmanagement.enterprises
       .create({
         enterpriseToken,
         projectId: process.env.EMM_PROJECT_ID,
         signupUrlName,
         // Request body metadata
-        requestBody: {
-          // request body parameters
-          // {
-          //   "appAutoApprovalEnabled": false,
-          //   "contactInfo": {},
-          enabledNotificationTypes: [
-            "ENROLLMENT",
-            "STATUS_REPORT",
-            "COMMAND",
-            "USAGE_LOGS",
-          ],
-          enterpriseDisplayName: projectName,
-          logo,
-          //   "name": "my_name",
-          //   "primaryColor": 0,
-          pubsubTopic: process.env.PUBSUB_TOPIC,
-          //   "signinDetails": [],
-          //   "termsAndConditions": []
-          // }
-        },
+        requestBody,
       })
       .catch((error) => {
         console.error("Error creating enterprise:", error);
         throw new Error("Error creating enterprise");
       });
-    // console.log(data);
 
     if (!enterpriseData.name) {
       throw new Error("Enterprise name not found");
     }
+    const enterpriseId = enterpriseData.name.split("enterprises/")[1];
     // まず既存のエンタープライズを確認
     const { data: existingEnterprise } = await supabase
       .from("enterprises")
       .select()
-      .eq("enterprise_name", enterpriseData.name)
+      .eq("enterprise_id", enterpriseId)
       .single();
 
-    // 成功したら、応答文からenterprise_nameを取得し、enterprisesテーブルにアップサート
-    const { data: enterprise } = await supabase
+    // 成功したら、応答文からenterprise_idを取得し、enterprisesテーブルにアップサート
+    const { data: enterprise, error: upsertEnterpriseError } = await supabase
       .from("enterprises")
       .upsert(
         {
-          enterprise_name: enterpriseData.name,
-          // data: JSON.stringify(data),
-          data: enterpriseData as Json,
+          enterprise_id: enterpriseId,
+          enterprise_data: enterpriseData as Json,
           updated_at: new Date().toISOString(),
           // 既存のエンタープライズがある場合は owner_id を変更しない
           ...(existingEnterprise ? {} : { owner_id: user.id }),
         },
         {
-          onConflict: "enterprise_name",
+          onConflict: "enterprise_id",
         }
       )
       .select()
       .single();
+    if (upsertEnterpriseError) {
+      console.error("Error upsert enterprise:", upsertEnterpriseError);
+      throw new Error("Error upsert enterprise");
+    }
     if (!enterprise) {
       throw new Error("Error upsert enterprise"); // RLSで、エンタープライズIDにアクセスできない場合にエラーをスローする
     }
-    const enterpriseTableId = enterprise.id;
+    const enterpriseTableId = enterprise.enterprise_id;
 
     // 応答文を　enterprise_settings_historyテーブルに保存
-    const { error: enterpriseSettingsError } = await supabase
-      .from("enterprise_settings_history")
+    const { error: enterpriseHistoryError } = await supabase
+      .from("enterprises_histories")
       .insert({
         enterprise_id: enterpriseTableId,
-        settings: enterpriseData as Json,
+        enterprise_request_data: requestBody,
+        enterprise_response_data: enterpriseData as Json,
       });
-    if (enterpriseSettingsError) {
+    if (enterpriseHistoryError) {
       console.error(
-        "Error inserting enterprise settings:",
-        enterpriseSettingsError
+        "Error inserting enterprises_histories:",
+        enterpriseHistoryError
       );
-      throw new Error("Error inserting enterprise settings");
+      throw new Error("Error inserting enterprises_histories");
     }
 
     // projectsテーブルを更新し、enterprise_idをセット
     const { error: projectsError } = await supabase
       .from("projects")
-      .update({ enterprise_table_id: enterpriseTableId })
-      .eq("id", projectId);
+      .update({ enterprise_id: enterpriseTableId })
+      .eq("project_id", projectId);
     if (projectsError) {
       console.error("Error updating projects:", projectsError);
       throw new Error("Error updating projects");
@@ -139,11 +141,7 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    const enterpriseId = extractEnterpriseIdFromPath({
-      enterprisesName: enterpriseData.name,
-    });
-
-    redirect(`/projects/${enterpriseId}/devices`);
+    redirect(`/${enterpriseId}/devices`);
   }
   redirect("/error");
 }

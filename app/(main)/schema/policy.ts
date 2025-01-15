@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AndroidManagementPolicy, PolicyApps } from "../types/policy";
+import { AndroidManagementPolicy, PolicyApps } from "../../types/policy";
 
 const advancedSecurityOverridesSchema = z.object({
   untrustedAppsPolicy: z.enum([
@@ -105,7 +105,7 @@ export const policySchema = z.object({
   screenCaptureDisabled: z.boolean().default(false),
   cameraDisabled: z.boolean().default(false),
   advancedSecurityOverrides: advancedSecurityOverridesSchema,
-  bluetoothDisabled: z.boolean().default(false),
+  bluetoothConfigDisabled: z.boolean().default(false),
   locationMode: z.enum(["LOCATION_ENFORCED", "LOCATION_UNSPECIFIED"]),
   modifyAccountsDisabled: z.boolean().default(false),
   mountPhysicalMediaDisabled: z.boolean().default(false),
@@ -126,8 +126,8 @@ export const policyDisplayNameSchema = z.object({
 });
 
 export const formPolicySchema = z.object({
-  policy_config_data: policySchema,
-  display_name: z
+  policyData: policySchema,
+  policyDisplayName: z
     .string()
     .trim()
     .min(1, "ポリシー名を入力してください。")

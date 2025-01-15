@@ -163,7 +163,7 @@ host = "smtp.resend.com"
 port = 465
 user = "resend"
 pass = "env(SUPABAS_SMTP_RESEND_API_KEY)"
-admin_email = "noreply@devnoob-strategy-lab.site"
+admin_email = "noreply@myemm-next.online"
 sender_name = "MyEMM DEV"
 ## gmail smtp
 # host = "smtp.gmail.com"

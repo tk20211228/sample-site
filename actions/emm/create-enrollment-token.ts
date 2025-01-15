@@ -10,7 +10,8 @@ import { createAndroidManagementClient } from "./client";
  * 参考ドキュメント：https://developers.google.com/android/management/reference/rest/v1/enterprises.enrollmentTokens?hl=ja
  *
  */
-export const createEnrollmentToken = async (parent: string) => {
+export const createEnrollmentToken = async (enterpriseId: string) => {
+  const parent = `enterprises/${enterpriseId}`;
   const supabase = await createClient();
   const {
     data: { user },
@@ -21,10 +22,9 @@ export const createEnrollmentToken = async (parent: string) => {
   const androidmanagement = await createAndroidManagementClient();
   const { data } = await androidmanagement.enterprises.enrollmentTokens
     .create({
-      parent, // parent: "enterprises/my-enterprise",
+      parent,
       requestBody: {
         // request body parameters
-        // {
         additionalData: "登録トークンに関連付けられた任意のデータ",
         allowPersonalUsage: "ALLOW_PERSONAL_USAGE_UNSPECIFIED",
         //   "duration": "my_duration",
@@ -35,7 +35,6 @@ export const createEnrollmentToken = async (parent: string) => {
         //   "qrCode": "my_qrCode",
         //   "user": {},
         //   "value": "my_value"
-        // }
       },
     })
     .catch((error) => {

@@ -1,13 +1,22 @@
-import { DeviceOperation } from "../../../types/device";
+import { DeviceOperation } from "@/app/types/device";
+import { getDeviceDisplayName } from "@/app/data/device";
 
 /**
  * 'COMMAND'を受信した場合のメッセージを作成する
  * @param data デバイスのコマンドデータ
  * @returns 通知に使用するメッセージ
  */
-export const createCommandDescription = (data: DeviceOperation) => {
-  const operationDate = data as DeviceOperation;
-  const deviceId = operationDate.name?.split("/")[3];
+export const createCommandDescription = async ({
+  enterpriseId,
+  deviceIdentifier,
+  operationDate,
+}: {
+  enterpriseId: string;
+  deviceIdentifier: string;
+  operationDate: DeviceOperation;
+}) => {
+  const deviceDisplayName =
+    (await getDeviceDisplayName(enterpriseId, deviceIdentifier)) ?? "不明";
   const type = operationDate.metadata?.type;
   let status = "不明";
   if (type === "START_LOST_MODE") {
@@ -50,7 +59,8 @@ export const createCommandDescription = (data: DeviceOperation) => {
   }
   const description = `
       コマンドを受信しました。
-      デバイスID: ${deviceId} 
+      デバイスID: ${deviceIdentifier} 
+      デバイス名: ${deviceDisplayName}
       コマンドタイプ：${type}
       ステータス：${status}
       `;

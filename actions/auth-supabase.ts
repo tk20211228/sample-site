@@ -66,9 +66,15 @@ export const signUpNewUser = async (formData: SignUp) => {
   }
 
   const supabaseAdmin = createAdminClient();
-  const { error: dbError } = await supabaseAdmin
-    .from("users")
-    .insert([{ id: user.id, email, username }]);
+  const currentIsoTimestamp = new Date().toISOString();
+  const { error: dbError } = await supabaseAdmin.from("users").insert([
+    {
+      user_id: user.id,
+      email,
+      username,
+      updated_at: currentIsoTimestamp,
+    },
+  ]);
   if (dbError && dbError.code !== "23505") {
     console.error(dbError.message);
     // 23505 はすでにユーザー名が登録されている場合のエラーコード
@@ -102,7 +108,7 @@ async function signInWithUsername(formData: SignIn) {
   const { emailOrUserName: username, password } = formData;
   const { data: user, error: dbError } = await supabaseAdmin
     .from("users")
-    .select("id, email")
+    .select("user_id, email")
     .eq("username", username)
     .single();
   console.error(dbError?.message);
@@ -130,9 +136,6 @@ export const signInWithEmailOrUsername = async (formData: SignIn) => {
   isEmail
     ? await signInWithEmail(safeParsedFormData.data)
     : await signInWithUsername(safeParsedFormData.data);
-  // const path = "/projects";
-  // console.log("path", path);
-  // return path;
 };
 
 export const resendSignUpOPT = async ({
@@ -257,7 +260,6 @@ export async function resetPasswordVerify(formData: {
     const errorCode = error.code as SupabaseAuthErrorCode;
     throw new Error(await authErrorMessage(errorCode));
   }
-  // return redirect("/password-update");
 }
 
 export async function updatePassword(formData: PasswordUpdate) {
@@ -277,5 +279,4 @@ export async function updatePassword(formData: PasswordUpdate) {
     const errorCode = error.code as SupabaseAuthErrorCode;
     throw new Error(await authErrorMessage(errorCode));
   }
-  // return redirect("/projects");
 }

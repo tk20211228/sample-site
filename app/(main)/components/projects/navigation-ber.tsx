@@ -6,20 +6,20 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "@/public/images/logo.png";
 import { SiAndroid } from "@icons-pack/react-simple-icons";
-import {
-  CircleUserRoundIcon,
-  HomeIcon,
-  LayoutDashboardIcon,
-  ShieldCheckIcon,
-  SmartphoneIcon,
-} from "lucide-react";
+import { HomeIcon, ShieldCheckIcon, SmartphoneIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEnterprise } from "../../projects/[id]/providers/enterprise";
+import ProjectLinkButton from "../../projects/components/project-link-button";
 import SignOutButton from "../../projects/components/sign-out-button";
+import UserMenu from "./user-menu";
 
-export default function NavigationBar({ className }: { className?: string }) {
-  const { enterpriseId } = useEnterprise();
+export default function NavigationBar({
+  className,
+  enterpriseId,
+}: {
+  className?: string;
+  enterpriseId: string;
+}) {
   return (
     <div className={cn("relative w-14 h-dvh", className)}>
       <nav
@@ -41,21 +41,14 @@ export default function NavigationBar({ className }: { className?: string }) {
             </Link>
           </Button>
           <Button variant="ghost" className="relative gap-2" disabled={true}>
-            <HomeIcon size={20} className="absolute left-2" />
+            <HomeIcon size={20} className="absolute left-3" />
             <span className="opacity-0 group-hover:opacity-100">ホーム</span>
           </Button>
-          <Button variant="ghost" className="relative gap-2" asChild>
-            <Link href="/projects">
-              <LayoutDashboardIcon size={20} className="absolute left-2" />
-              <span className="opacity-0 group-hover:opacity-100">
-                プロジェクト
-              </span>
-            </Link>
-          </Button>
+          <ProjectLinkButton mode="hover" />
 
           <Button variant="ghost" className="relative gap-2" asChild>
-            <Link href={`/projects/${enterpriseId}/devices`}>
-              <SmartphoneIcon size={20} className="absolute left-2" />
+            <Link href={`/${enterpriseId}/devices`}>
+              <SmartphoneIcon size={20} className="absolute left-3" />
               <span className="opacity-0 group-hover:opacity-100">
                 デバイス
               </span>
@@ -63,16 +56,16 @@ export default function NavigationBar({ className }: { className?: string }) {
           </Button>
 
           <Button variant="ghost" className="relative gap-2" asChild>
-            <Link href={`/projects/${enterpriseId}/policies`}>
-              <ShieldCheckIcon size={20} className="absolute left-2" />
+            <Link href={`/${enterpriseId}/policies`}>
+              <ShieldCheckIcon size={20} className="absolute left-3" />
               <span className="opacity-0 group-hover:opacity-100">
                 ポリシー
               </span>
             </Link>
           </Button>
           <Button variant="ghost" className="relative gap-2" asChild>
-            <Link href={`/projects/${enterpriseId}/apps`}>
-              <SiAndroid size={20} className="absolute left-2" />
+            <Link href={`/${enterpriseId}/apps`}>
+              <SiAndroid size={20} className="absolute left-3" />
               <span className="opacity-0 group-hover:opacity-100">
                 アプリ管理
               </span>
@@ -82,15 +75,9 @@ export default function NavigationBar({ className }: { className?: string }) {
 
         <ul className="flex flex-col gap-2">
           <form action={signOut}>
-            <SignOutButton />
+            <SignOutButton mode="hover" />
           </form>
-          <Button
-            variant="ghost"
-            className="relative gap-2 group-hover:w-full transition-all duration-200"
-          >
-            <CircleUserRoundIcon size={20} className="absolute left-2" />
-            <span className="opacity-0 group-hover:opacity-100">ユーザー</span>
-          </Button>
+          <UserMenu mode="hover" />
         </ul>
       </nav>
     </div>

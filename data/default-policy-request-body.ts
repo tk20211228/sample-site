@@ -1,4 +1,4 @@
-import { Policy } from "@/app/(main)/types/policy";
+import { Policy } from "@/app/types/policy";
 
 // export const defaultPolicyRequestBody: AndroidManagementPolicy = {
 export const defaultPolicyRequestBody: Policy = {
@@ -26,7 +26,7 @@ export const defaultPolicyRequestBody: Policy = {
   //   "blockApplicationsEnabled": false,
   //   "bluetoothConfigDisabled": false, // Bluetooth設定の無効化
   //   "bluetoothContactSharingDisabled": false, // Bluetooth連絡先共有の無効化
-  bluetoothDisabled: false, // Bluetooth無効化
+  bluetoothConfigDisabled: false, // Bluetooth設定の無効化
   cameraDisabled: false, // カメラ無効化
   //   "cellBroadcastsConfigDisabled": false, // 緊急速報メールの設定が無効
   //   "choosePrivateKeyRules": [],

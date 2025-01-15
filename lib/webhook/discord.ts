@@ -28,16 +28,17 @@ export const sendDiscordWebhookMessage = async (
   const WEBHOOK_URL = process.env.DISCORD_PUBSUB_WEBHOOK_URL;
   if (!WEBHOOK_URL) throw new Error("Discord Webhook URL is not defined");
 
+  const NOTIFICATION_COLORS = {
+    STATUS_REPORT: 0x00ff00, // 緑
+    COMMAND: 0xffff00, // 黄
+    ENROLLMENT: 0x0000ff, // 青
+    USAGE_LOGS: 0xff00ff, // マゼンタ
+    test: 0xa78bfa, // 薄い青色
+  } as const;
+
   const color =
-    notificationType === "STATUS_REPORT"
-      ? 0x00ff00
-      : notificationType === "COMMAND"
-      ? 0xffff00
-      : notificationType === "ENROLLMENT"
-      ? 0x0000ff
-      : notificationType === "USAGE_LOGS"
-      ? 0xff00ff
-      : 0xff0000;
+    NOTIFICATION_COLORS[notificationType as keyof typeof NOTIFICATION_COLORS] ??
+    0xff0000; // デフォルト: 赤
 
   const payload: DiscordWebhookPayload = {
     content,
@@ -50,15 +51,13 @@ export const sendDiscordWebhookMessage = async (
     ],
   };
 
-  const response = await fetch(WEBHOOK_URL, {
+  await fetch(WEBHOOK_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
+  }).catch((error) => {
+    console.error(error);
   });
-
-  if (!response.ok) throw new Error("Failed to send message to Discord");
-
-  return response;
 };

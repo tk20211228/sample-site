@@ -60,6 +60,20 @@ pnpm supabase:generate-migration <マイグレーションタイトル> # マイ
 pnpm dlx supabase db push
 ```
 
+## Supabase 本番環境のリセットと、ローカルの状態をプッシュ
+
+```bash
+# 1.バックアップをとる。
+pnpm dlx supabase db dump -f backup.sql
+# 2..gitignore に[*backup.sql]を設定する
+# 3.ローカルのマイグレーションファイルを削除する。
+# 4.新しいマイグレーションファイルの作成
+pnpm supabase:generate-migration init_db_structure
+# 本番環境リセット
+pnpm dlx supabase db reset --linked
+pnpm dlx supabase db push
+```
+
 ### ストレージの設定
 
 上記コマンドではストレージの情報は反映されないので、

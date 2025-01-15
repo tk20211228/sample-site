@@ -37,12 +37,9 @@ export default function UsernamePasswordSignUpForm() {
     mode: "onChange",
     resolver: zodResolver(schema),
     defaultValues: {
-      username: "kubokidev",
-      email: "kubokidev@gmail.com",
-      password: "testTEST123!!",
-      // username: "",
-      // email: "",
-      // password: "",
+      username: process.env.NEXT_PUBLIC_DEV_USERNAME ?? "",
+      email: process.env.NEXT_PUBLIC_DEV_EMAIL ?? "",
+      password: process.env.NEXT_PUBLIC_DEV_PASSWORD ?? "",
     },
   });
 
