@@ -54,13 +54,12 @@ export default function PoliciesTableMenu({ row }: DataTableMenuProps) {
     console.log(parent);
   };
   const handleDelete = async () => {
-    const name = row.original.name.split("/")[3];
-    if (name === "default") {
+    const policyIdentifier = row.original.policyIdentifier;
+    if (policyIdentifier === "default") {
       toast.error("デフォルトポリシーは削除できません。");
       return;
     }
-    const policyId = row.original.policyId;
-    await deletePolicy(enterpriseId, policyId)
+    await deletePolicy(enterpriseId, policyIdentifier)
       .then(async () => {
         toast.success("ポリシーを削除しました。");
         revalidatePath(`/${enterpriseId}/policies`);
@@ -70,8 +69,8 @@ export default function PoliciesTableMenu({ row }: DataTableMenuProps) {
       });
   };
   const handleEditPolicy = async () => {
-    const policyId = row.original.policyId;
-    router.push(`/${enterpriseId}/policies/${policyId}/device-general`);
+    const policyIdentifier = row.original.policyIdentifier;
+    router.push(`/${enterpriseId}/policies/${policyIdentifier}/device-general`);
   };
 
   return (

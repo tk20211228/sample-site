@@ -30,20 +30,20 @@ export default function PolicyToolBar() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const searchPolicyId = searchParams.get("policyId");
+  const searchPolicyIdentifier = searchParams.get("id");
   const param = useParams<RouteParams>();
-  let policyId = param.policyId ?? "new";
-  if (searchPolicyId) {
-    policyId = searchPolicyId;
+  let policyIdentifier = param.policyIdentifier ?? "new";
+  if (searchPolicyIdentifier) {
+    policyIdentifier = searchPolicyIdentifier;
   }
   const enterpriseId = param.enterpriseId;
 
-  const policyBasePath = `/${enterpriseId}/policies/${policyId}`;
-  const currentBase = pathname.split(policyBasePath)[1];
+  const policyBasePath = `/${enterpriseId}/policies/${policyIdentifier}`;
+  const currentBase = pathname.split(policyBasePath)[1]; //device-general, device-security, etc.
 
   const handleSave = async (data: FormPolicy) => {
     startTransition(async () => {
-      if (!policyId) {
+      if (!policyIdentifier) {
         toast.error("ポリシーIDが取得できませんでした。");
         return;
       }
@@ -53,20 +53,20 @@ export default function PolicyToolBar() {
       }
       const policyDisplayName = data.policyDisplayName;
       const parsed = formPolicySchema.parse(data);
-
-      console.log("parsed", parsed);
-      const savedPolicyId = await createOrUpdateEnterprisePolicy({
+      const savedPolicyIdentifier = await createOrUpdateEnterprisePolicy({
         enterpriseId,
-        policyId,
+        policyIdentifier,
         policyDisplayName,
         requestBody: parsed.policyData,
       });
-      router.push(`/${enterpriseId}/policies/${savedPolicyId}/${currentBase}`);
+      router.push(
+        `/${enterpriseId}/policies/${savedPolicyIdentifier}/${currentBase}`
+      );
     });
   };
 
   const isLoading =
-    policyId !== "new" && // 新規作成時はローディングチェックをスキップ
+    policyIdentifier !== "new" && // 新規作成時はローディングチェックをスキップ
     !form.formState.isDirty && // フォームが一度も編集されていない
     !form.getValues("policyDisplayName");
 

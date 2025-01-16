@@ -1,7 +1,7 @@
 export const selectDevicesTableFields = `
         deviceId:device_id,
         enterpriseId:enterprise_id,
-        policyId:policy_id,
+        policyIdentifier:policy_identifier,
         deviceIdentifier:device_identifier,
         deviceDisplayName:device_display_name,
         device_data->>state,
@@ -16,21 +16,3 @@ export const selectDevicesTableFields = `
             policyDisplayName:policy_display_name
             )
     `;
-/**
- * 
-)
-isMobile
-const devices: {
-    id: string;
-    device_name: string;
-    display_name: string;
-    policy_name: string | null;
-    state: string;
-    lastSyncTime: string;
-    policyCompliant: string;
-    enrollmentTime: string;
-    lastStatusReportTime: string;
-    created_at: string;
-    updated_at: string;
-}[] | null
- */

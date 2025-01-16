@@ -16,11 +16,15 @@ import { FormPolicy } from "@/app/types/policy";
 // import { usePolicy } from "../../../data/use-policy";
 import { Loader2 } from "lucide-react";
 
-export default function DeviceGeneralForm({ policyId }: { policyId: string }) {
+export default function DeviceGeneralForm({
+  policyIdentifier,
+}: {
+  policyIdentifier: string;
+}) {
   const form = useFormContext<FormPolicy>();
 
   const isLoading =
-    policyId !== "new" && // 新規作成時はローディングチェックをスキップ
+    policyIdentifier !== "new" && // 新規作成時はローディングチェックをスキップ
     !form.formState.isDirty && // フォームが一度も編集されていない
     !form.getValues("policyDisplayName");
 

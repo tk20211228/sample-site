@@ -29,39 +29,3 @@ export const listPolicyDetails = async (
 
   return policyIds ?? [];
 };
-/**
- * defaultPolicyとIDのマッピングを取得
- * @returns {policyId: string, name: string}[]
- */
-export const getDefaultPolicyId = async (
-  enterpriseId: string
-): Promise<{
-  policyId: string;
-  name: string;
-}> => {
-  const searchPolicyName = `enterprises/${enterpriseId}/policies/default`;
-  const supabase = await createClient();
-  const { data: user } = await supabase.auth.getUser();
-  if (!user) {
-    throw new Error("User not authenticated");
-  }
-  const { data: policyIds, error } = await supabase
-    .from("policies")
-    .select(
-      `
-      policyId:policy_id,
-      name:policy_data->>name
-      `
-    )
-    .match({
-      enterprise_id: enterpriseId,
-      "policy_data->>name": searchPolicyName,
-    })
-    .single();
-  if (error) {
-    console.error("Error fetching policy names:", error);
-    throw new Error("Failed to fetch policies from database");
-  }
-
-  return policyIds ?? [];
-};

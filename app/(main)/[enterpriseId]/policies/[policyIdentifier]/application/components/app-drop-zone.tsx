@@ -5,28 +5,28 @@ import { cn } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/core";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { usePolicyForm } from "../../../../providers/policy-form-provider";
+import { Apps } from "@/app/types/policy";
 
-interface RestrictedAppsProps {
-  id?: string;
+interface AppDropZoneProps {
+  apps: Apps[];
+  id: "availableApps" | "restrictedApps" | "disabledApps";
+  title: string;
+  filterCondition: (app: Apps) => boolean;
 }
 
-export default function RestrictedApps({
-  id = "restrictedApps",
-}: RestrictedAppsProps) {
+export default function AppDropZone({
+  apps,
+  id,
+  title,
+  filterCondition,
+}: AppDropZoneProps) {
   const [isClient, setIsClient] = useState(false);
-  const { isOver, setNodeRef } = useDroppable({
-    id,
-  });
+  const { isOver, setNodeRef } = useDroppable({ id });
 
-  const { apps } = usePolicyForm();
-  const restrictedApps = useMemo(() => {
-    const appList = apps
-      .filter((app) => app.installType === "BLOCKED") //インストールタイプがBLOCKEDのみのアプリを返す
-      .filter((app) => app.disabled !== true); //無効化アプリを場外
-    //利用可能なアプリを返す
-    return appList;
-  }, [apps]);
+  const filteredApps = useMemo(
+    () => apps.filter(filterCondition),
+    [apps, filterCondition]
+  );
 
   useEffect(() => {
     setIsClient(true);
@@ -37,21 +37,18 @@ export default function RestrictedApps({
   }
 
   return (
-    <Card
-      ref={setNodeRef}
-      className={cn("", isOver ? " border-green-500" : "")}
-    >
+    <Card ref={setNodeRef} className={cn("", isOver ? "border-green-500" : "")}>
       <CardHeader>
-        <CardTitle>インストール不可</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        {restrictedApps.length === 0 ? (
+        {filteredApps.length === 0 ? (
           <p className="text-muted-foreground text-center">
             アプリケーションをドロップしてください
           </p>
         ) : (
           <div className="grid grid-cols-10 gap-2">
-            {restrictedApps.map((app) => (
+            {filteredApps.map((app) => (
               <Image
                 key={app.appId}
                 src={app.iconUrl}

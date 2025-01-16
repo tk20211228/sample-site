@@ -48,7 +48,7 @@ export const getDevicesData = async ({
 
 /**
  * デバイスを取得
- * @param deviceTableId
+ * @param deviceId
  * @returns device
  * デバイスの詳細情報を取得
  */
@@ -76,24 +76,31 @@ export const syncDeviceInfoFromDB = async ({
 }) => {
   const androidmanagement = await createAndroidManagementClient();
   const name = `enterprises/${enterpriseId}/devices/${deviceIdentifier}`;
-  const { data: device } = await androidmanagement.enterprises.devices.get({
-    name,
-  });
-  if (!device) {
-    throw new Error("Failed to fetch device from Google EMM");
-  }
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("devices")
-    .update({ device_data: device as Json })
-    .match({
-      enterprise_id: enterpriseId,
-      device_identifier: deviceIdentifier,
+  await androidmanagement.enterprises.devices
+    .get({
+      name,
+    })
+    .then(async (response) => {
+      const supabase = await createClient();
+      const { error } = await supabase
+        .from("devices")
+        .update({ device_data: response.data as Json })
+        .match({
+          enterprise_id: enterpriseId,
+          device_identifier: deviceIdentifier,
+        });
+      if (error) {
+        throw new Error("Failed to update device in database");
+      }
+    })
+    .catch((error) => {
+      // 404エラーの場合は、デバイスが存在しないか、デバイスが削除された可能性がある
+      if (error.response.status === 404) {
+        console.error(error.message);
+        throw error.message;
+      }
+      throw new Error("Failed to fetch device from Google EMM");
     });
 
-  if (error) {
-    throw new Error("Failed to update device in database");
-  }
-  //http://localhost:3000/XXXXXX/devices のバスを更新する
   revalidatePath(`/${enterpriseId}/devices`);
 };

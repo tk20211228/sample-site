@@ -62,7 +62,6 @@ export async function GET(request: NextRequest) {
         enterpriseToken,
         projectId: process.env.EMM_PROJECT_ID,
         signupUrlName,
-        // Request body metadata
         requestBody,
       })
       .catch((error) => {
@@ -105,13 +104,12 @@ export async function GET(request: NextRequest) {
     if (!enterprise) {
       throw new Error("Error upsert enterprise"); // RLSで、エンタープライズIDにアクセスできない場合にエラーをスローする
     }
-    const enterpriseTableId = enterprise.enterprise_id;
 
     // 応答文を　enterprise_settings_historyテーブルに保存
     const { error: enterpriseHistoryError } = await supabase
       .from("enterprises_histories")
       .insert({
-        enterprise_id: enterpriseTableId,
+        enterprise_id: enterpriseId,
         enterprise_request_data: requestBody,
         enterprise_response_data: enterpriseData as Json,
       });
@@ -126,7 +124,7 @@ export async function GET(request: NextRequest) {
     // projectsテーブルを更新し、enterprise_idをセット
     const { error: projectsError } = await supabase
       .from("projects")
-      .update({ enterprise_id: enterpriseTableId })
+      .update({ enterprise_id: enterpriseId })
       .eq("project_id", projectId);
     if (projectsError) {
       console.error("Error updating projects:", projectsError);
@@ -134,12 +132,10 @@ export async function GET(request: NextRequest) {
     }
 
     // defaultポリシーを作成
-    await createDefaultPolicy(enterpriseData.name, enterpriseTableId).catch(
-      (error) => {
-        console.error("Error creating default policy:", error);
-        throw new Error("Error creating default policy");
-      }
-    );
+    await createDefaultPolicy(enterpriseId).catch((error) => {
+      console.error("Error creating default policy:", error);
+      throw new Error("Error creating default policy");
+    });
 
     redirect(`/${enterpriseId}/devices`);
   }

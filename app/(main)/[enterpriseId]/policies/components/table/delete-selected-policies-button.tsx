@@ -19,26 +19,24 @@ export default function DeleteSelectedPoliciesButton<
 >({ table }: DeleteSelectedPoliciesButtonProps<TData>) {
   const [isPending, startTransition] = useTransition();
   const { enterpriseId } = usePoliciesTable();
-  // const router = useRouter();
-  // const enterpriseName = `enterprises/${enterpriseId}`;
-  // const key = `/api/policies/table/${enterpriseName}`;
-  // const { deletePoliciesTableData } = usePoliciesTableData(key, enterpriseName);
 
   const handleDeletePolicies = async () => {
-    const deletePolicyIdList = table.getSelectedRowModel().rows.map((row) => {
-      const name = row.original.name.split("/")[3];
+    const deletePolicyIdentifierList = table
+      .getSelectedRowModel()
+      .rows.map((row) => {
+        const policyIdentifier = row.original.policyIdentifier;
 
-      if (name === "default") {
-        alert(
-          "デフォルトポリシーは削除できません。デフォルトポリシー以外を削除します。"
-        );
-      }
-      return row.original.policyId;
-    });
+        if (policyIdentifier === "default") {
+          alert(
+            "デフォルトポリシーは削除できません。デフォルトポリシー以外を削除します。"
+          );
+        }
+        return row.original.policyIdentifier;
+      });
     startTransition(async () => {
       // return console.log("deletePolicyNameList", deletePolicyNameList);
       // return console.log("enterpriseId", enterpriseId);
-      await deleteSelectedPolicies(enterpriseId, deletePolicyIdList)
+      await deleteSelectedPolicies(enterpriseId, deletePolicyIdentifierList)
         .then(() => {
           toast.success("ポリシーを削除しました。");
         })

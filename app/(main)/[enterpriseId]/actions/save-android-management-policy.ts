@@ -14,7 +14,7 @@ export const saveAndroidManagementPolicy = async ({
   policyData?: AndroidManagementPolicy;
 }) => {
   // console.log("policyData", policyData);
-  const policyId = policyData?.name?.split(
+  const policyIdentifier = policyData?.name?.split(
     `enterprises/${enterpriseId}/policies/`
   )[1];
   const supabase = await createClient();
@@ -22,9 +22,9 @@ export const saveAndroidManagementPolicy = async ({
   const { data: saveData, error } = await supabase
     .from("policies")
     .insert({
-      policy_id: policyId,
-      policy_display_name: policyDisplayName,
       enterprise_id: enterpriseId,
+      policy_identifier: policyIdentifier,
+      policy_display_name: policyDisplayName,
       policy_data: (policyData as Json) ?? {}, // ポリシーデータが取得できない場合は、空のオブジェクトを保存する
       updated_at: new Date().toISOString(),
     })

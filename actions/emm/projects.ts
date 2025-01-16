@@ -12,7 +12,7 @@ type FormData = z.infer<typeof onboardingSchema>;
  * @returns project
  */
 export const createProject = async (data: FormData) => {
-  console.log("createProject", data);
+  // console.log("createProject", data);
   const parsedData = await onboardingSchema.safeParseAsync(data);
   if (parsedData.success === false) {
     console.error(parsedData.error);
@@ -71,7 +71,7 @@ export const createProject = async (data: FormData) => {
   // キャッシュの更新
   // revalidatePath("/projects");プロジェクトページはまだ作成していない
 
-  console.log("プロジェクト作成完了:", project);
+  // console.log("プロジェクト作成完了:", project);
 
   return project;
 };

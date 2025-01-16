@@ -16,27 +16,25 @@ import { revalidatePath } from "next/cache";
  */
 export const createOrUpdateEnterprisePolicy = async ({
   enterpriseId,
-  policyId,
+  policyIdentifier,
   policyDisplayName,
   requestBody,
 }: {
   enterpriseId: string;
-  policyId: string;
+  policyIdentifier: string;
   policyDisplayName: string;
   requestBody: AndroidManagementPolicy;
 }) => {
   // ポリシーを作成
-  let uniquePolicyId = policyId;
   const androidmanagement = await createAndroidManagementClient();
-  if (policyId === "new") {
-    policyId = crypto.randomUUID();
-    uniquePolicyId = policyId;
+  if (policyIdentifier === "new") {
+    policyIdentifier = crypto.randomUUID().replace(/-/g, "").substring(0, 6);
   }
-  // console.log("requestBody", requestBody);
+  console.log("requestBody", requestBody);
   const enterpriseName = `enterprises/${enterpriseId}`;
   const { data } = await androidmanagement.enterprises.policies
     .patch({
-      name: `${enterpriseName}/policies/${uniquePolicyId}`,
+      name: `${enterpriseName}/policies/${policyIdentifier}`,
       requestBody,
     })
     .catch((error) => {
@@ -48,16 +46,19 @@ export const createOrUpdateEnterprisePolicy = async ({
   const supabase = await createClient();
   const { data: policy, error } = await supabase
     .from("policies")
-    .upsert({
-      policy_id: uniquePolicyId,
-      enterprise_id: enterpriseId,
-      policy_display_name: policyDisplayName,
-      policy_data: data as Json,
-      updated_at: new Date().toISOString(),
-    })
+    .upsert(
+      {
+        enterprise_id: enterpriseId,
+        policy_identifier: policyIdentifier,
+        policy_display_name: policyDisplayName,
+        policy_data: data as Json,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "enterprise_id,policy_identifier" }
+    )
     .select(
       `
-    policy_id
+    policy_identifier
     `
     )
     .single();
@@ -67,5 +68,5 @@ export const createOrUpdateEnterprisePolicy = async ({
   }
 
   revalidatePath(`/${enterpriseId}/policies`);
-  return policy.policy_id;
+  return policy.policy_identifier;
 };

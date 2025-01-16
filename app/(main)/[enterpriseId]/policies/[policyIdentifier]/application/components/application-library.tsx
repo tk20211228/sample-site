@@ -11,24 +11,23 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { usePolicyForm } from "../../../../providers/policy-form-provider";
+import { Apps } from "@/app/types/policy";
 
-export default function ApplicationLibrary() {
-  const { apps } = usePolicyForm();
+export default function ApplicationLibrary({ apps }: { apps: Apps[] }) {
   const [filterApps, setFilterApps] = useState("");
   const [appType, setAppType] = useState("all");
   const [status, setStatus] = useState("all");
 
   const filteredApps = apps.filter((app) => {
     return (
-      app.title.toLowerCase().includes(filterApps.toLowerCase()) &&
-      (appType === "all" || app.appType === appType) &&
+      app.title.toLowerCase().includes(filterApps.toLowerCase()) && // アプリ名でフィルタリング
+      (appType === "all" || app.appType === appType) && // アプリ種別でフィルタリング
       (status === "all" ||
         (status === "disabled"
           ? app.disabled
           : (status === "UNSET" && !app.installType) || // installTypeが未設定の場合
             app.installType === status))
     );
-    // status === "disabled" の場合：無効化されたアプリ（app.disabled === true）のみを表示
   });
 
   return (

@@ -24,6 +24,7 @@ import {
   policyListItems,
   scheduleDeliveryItems,
 } from "../data/side-bar-menu-list";
+import { RouteParams } from "@/app/types/enterprise";
 
 /**
  * ポリシー一覧用のURL生成を作成するヘルパー関数
@@ -35,12 +36,12 @@ import {
 function createPolicyListUrl(
   base: string,
   path: string,
-  policyId: string | null
+  policyIdentifier: string | null
 ) {
   // pathが空文字の場合は、baseをそのまま返す
   const url = !path ? base : `${base}/${path}`;
   // return url;
-  return policyId !== "new" ? `${url}?policyId=${policyId}` : url;
+  return policyIdentifier !== "new" ? `${url}?id=${policyIdentifier}` : url;
 }
 
 /**
@@ -91,12 +92,13 @@ function SidebarMenuItemLink({
  */
 export function PolicySidebar({ className }: { className?: string }) {
   const searchParams = useSearchParams();
-  const searchPolicyId = searchParams.get("policyId");
-  const param = useParams<{ policyId: string; enterpriseId: string }>();
-  const policyId = searchPolicyId ?? param.policyId ?? "new";
+  const searchPolicyIdentifier = searchParams.get("id");
+  const param = useParams<RouteParams>();
+  const policyIdentifier =
+    searchPolicyIdentifier ?? param.policyIdentifier ?? "new";
   const enterpriseId = param.enterpriseId;
   const policyListPath = `/${enterpriseId}/policies`;
-  const policyBasePath = `/${enterpriseId}/policies/${policyId}`;
+  const policyBasePath = `/${enterpriseId}/policies/${policyIdentifier}`;
 
   return (
     <Sidebar className={cn("inset-x-14", className)}>
@@ -118,11 +120,11 @@ export function PolicySidebar({ className }: { className?: string }) {
                   href={createPolicyListUrl(
                     policyListPath, // ベースのURL
                     item.url, // パス
-                    policyId // 検索パラメーターのpolicyId
+                    policyIdentifier // 検索パラメーターのpolicyId
                   )}
                   icon={item.icon} // アイコン
                   title={item.title} // タイトル
-                  searchPolicyId={searchPolicyId}
+                  searchPolicyId={searchPolicyIdentifier}
                 />
               ))}
             </SidebarMenu>

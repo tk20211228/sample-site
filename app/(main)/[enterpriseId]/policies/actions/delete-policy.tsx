@@ -3,7 +3,6 @@
 import { createAndroidManagementClient } from "@/actions/emm/client";
 import { createClient } from "@/lib/supabase/server";
 import { Json } from "@/types/database";
-import { getDefaultPolicyId } from "../../../projects/data/policy";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -11,9 +10,11 @@ import { revalidatePath } from "next/cache";
  * @param policyName
  * @returns
  */
-export const deletePolicy = async (enterpriseId: string, policyId: string) => {
-  const defaultPolicyId = await getDefaultPolicyId(enterpriseId);
-  if (policyId === defaultPolicyId.policyId) {
+export const deletePolicy = async (
+  enterpriseId: string,
+  policyIdentifier: string
+) => {
+  if (policyIdentifier === "default") {
     throw new Error("デフォルトポリシーは削除できません。");
   }
   //認証
@@ -24,7 +25,10 @@ export const deletePolicy = async (enterpriseId: string, policyId: string) => {
   }
 
   // DBから対象のポリシーを使用している端末を取得
-  const devices = await getDevicesByPolicyId(policyId);
+  const devices = await getDevicesByPolicyIdentifier(
+    enterpriseId,
+    policyIdentifier
+  );
 
   // あればGoogle側デフォルトポリシーに変更する。
   // 変更したらDBにも反映
@@ -33,13 +37,12 @@ export const deletePolicy = async (enterpriseId: string, policyId: string) => {
       await updateDevicePolicyToDefault({
         enterpriseId,
         deviceIdentifier: device.deviceIdentifier,
-        defaultPolicyId: defaultPolicyId.policyId,
       });
     }
   }
 
   // GoogleとDBからポリシーを削除
-  await deletePolicyFromGoogleAndDB(enterpriseId, policyId);
+  await deletePolicyFromGoogleAndDB(enterpriseId, policyIdentifier);
 };
 
 /**
@@ -49,13 +52,12 @@ export const deletePolicy = async (enterpriseId: string, policyId: string) => {
  */
 export const deleteSelectedPolicies = async (
   enterpriseId: string,
-  deletePolicyIdList: string[]
+  deletePolicyIdentifierList: string[]
 ) => {
-  const defaultPolicyId = await getDefaultPolicyId(enterpriseId);
-  for (const policyId of deletePolicyIdList) {
+  for (const policyIdentifier of deletePolicyIdentifierList) {
     // デフォルトポリシーは削除できないのでスキップ
-    if (policyId === defaultPolicyId.policyId) continue;
-    await deletePolicy(enterpriseId, policyId);
+    if (policyIdentifier === "default") continue;
+    await deletePolicy(enterpriseId, policyIdentifier);
   }
   revalidatePath(`/${enterpriseId}/policies`);
 };
@@ -65,17 +67,23 @@ export const deleteSelectedPolicies = async (
  * @param policyId
  * @returns
  */
-async function getDevicesByPolicyId(policyId: string) {
+async function getDevicesByPolicyIdentifier(
+  enterpriseId: string,
+  policyIdentifier: string
+) {
   const supabase = await createClient();
   const { data: devices } = await supabase
     .from("devices")
     .select(
       `
-      deviceIdentifier:device_identifier,
-      policyId:policy_id
-      `
+    deviceIdentifier:device_identifier,
+    policyIdentifier:policy_identifier
+  `
     )
-    .eq("policy_id", policyId);
+    .match({
+      enterprise_id: enterpriseId,
+      policy_identifier: policyIdentifier,
+    });
   return devices;
 }
 
@@ -87,11 +95,9 @@ async function getDevicesByPolicyId(policyId: string) {
 async function updateDevicePolicyToDefault({
   enterpriseId,
   deviceIdentifier,
-  defaultPolicyId,
 }: {
   enterpriseId: string;
   deviceIdentifier: string;
-  defaultPolicyId: string;
 }) {
   const name = `enterprises/${enterpriseId}/devices/${deviceIdentifier}`;
   const requestBody = {
@@ -109,7 +115,7 @@ async function updateDevicePolicyToDefault({
       const { error: devicesError } = await supabase
         .from("devices")
         .update({
-          policy_id: defaultPolicyId,
+          policy_identifier: "default",
           updated_at: new Date().toISOString(),
           device_data: res.data as Json,
         })
@@ -147,9 +153,9 @@ async function updateDevicePolicyToDefault({
  */
 async function deletePolicyFromGoogleAndDB(
   enterpriseId: string,
-  policyId: string
+  policyIdentifier: string
 ) {
-  const name = `enterprises/${enterpriseId}/policies/${policyId}`;
+  const name = `enterprises/${enterpriseId}/policies/${policyIdentifier}`;
   console.log("name", name);
   // Googleでポリシーを削除
   const androidManagementClient = await createAndroidManagementClient();
@@ -165,10 +171,10 @@ async function deletePolicyFromGoogleAndDB(
 
   // DBからポリシーを削除
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("policies")
-    .delete()
-    .eq("policy_id", policyId);
+  const { error } = await supabase.from("policies").delete().match({
+    enterprise_id: enterpriseId,
+    policy_identifier: policyIdentifier,
+  });
   if (error) {
     console.error(error);
     throw new Error("Failed to delete policy from Supabase");

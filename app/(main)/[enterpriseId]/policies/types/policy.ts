@@ -7,11 +7,10 @@ import { z } from "zod";
 
 export type PolicyTableType = z.infer<typeof policyTableSchema>;
 export const policyTableSchema = z.object({
-  policyId: z.string(),
   enterpriseId: z.string(),
+  policyIdentifier: z.string(),
   policyDisplayName: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
   version: z.string(),
-  name: z.string(),
 });

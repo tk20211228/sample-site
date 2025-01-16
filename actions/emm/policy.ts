@@ -1,16 +1,12 @@
 import "server-only";
 
+import { AndroidManagementPolicy } from "@/app/types/policy";
 import { defaultPolicyRequestBody } from "@/data/default-policy-request-body";
 import { createClient } from "@/lib/supabase/server";
-import { androidmanagement_v1 } from "googleapis";
-import { createAndroidManagementClient } from "./client";
 import { Json } from "@/types/database";
-import { AndroidManagementPolicy } from "@/app/types/policy";
+import { createAndroidManagementClient } from "./client";
 
-export const createDefaultPolicy = async (
-  enterpriseName: string,
-  enterpriseTableId: string
-) => {
+export const createDefaultPolicy = async (enterpriseId: string) => {
   // ユーザー認証
   const supabase = await createClient();
   const {
@@ -23,11 +19,11 @@ export const createDefaultPolicy = async (
   // ポリシー作成
   const requestBody: AndroidManagementPolicy = defaultPolicyRequestBody;
   const androidmanagement = await createAndroidManagementClient();
+  const name = `enterprises/${enterpriseId}/policies/default`;
   const { data: PolicyResponseData } =
-    // const { data }: { data: PolicyDataSchema } =
     await androidmanagement.enterprises.policies
       .patch({
-        name: `${enterpriseName}/policies/default`,
+        name,
         requestBody,
       })
       .catch((error) => {
@@ -43,14 +39,14 @@ export const createDefaultPolicy = async (
     .from("policies")
     .upsert(
       {
-        enterprise_id: enterpriseTableId,
+        enterprise_id: enterpriseId,
+        policy_identifier: "default",
         policy_display_name: "デフォルトポリシー",
         policy_data: PolicyResponseData as Json,
+        is_default: true,
         updated_at: new Date().toISOString(),
       },
-      {
-        onConflict: "policy_id",
-      }
+      { onConflict: "enterprise_id,policy_identifier" }
     )
     .select()
     .single();

@@ -12,7 +12,7 @@ const getAdminListPolicyDetails = async (
   enterpriseId: string
 ): Promise<PolicySummary[]> => {
   // console.log("listPolicyDetails enterpriseId", enterpriseId);
-  const supabase = await createAdminClient();
+  const supabase = createAdminClient();
   const { data: policyIds, error } = await supabase
     .from("policies")
     .select(

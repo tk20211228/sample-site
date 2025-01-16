@@ -15,6 +15,7 @@ export type PolicyApps = androidmanagement_v1.Schema$ApplicationPolicy;
 export type Apps = {
   appId: string;
   enterpriseId: string;
+  packageName: string;
   title: string;
   iconUrl: string;
   appType: string;

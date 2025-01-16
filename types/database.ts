@@ -89,7 +89,7 @@ export type Database = {
           enterprise_id: string
           is_licensed: boolean
           operation_data: Json | null
-          policy_id: string | null
+          policy_identifier: string | null
           updated_at: string
         }
         Insert: {
@@ -101,7 +101,7 @@ export type Database = {
           enterprise_id: string
           is_licensed: boolean
           operation_data?: Json | null
-          policy_id?: string | null
+          policy_identifier?: string | null
           updated_at: string
         }
         Update: {
@@ -113,7 +113,7 @@ export type Database = {
           enterprise_id?: string
           is_licensed?: boolean
           operation_data?: Json | null
-          policy_id?: string | null
+          policy_identifier?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -125,11 +125,11 @@ export type Database = {
             referencedColumns: ["enterprise_id"]
           },
           {
-            foreignKeyName: "devices_policy_id_fkey"
-            columns: ["policy_id"]
+            foreignKeyName: "devices_policy_reference_fkey"
+            columns: ["enterprise_id", "policy_identifier"]
             isOneToOne: false
             referencedRelation: "policies"
-            referencedColumns: ["policy_id"]
+            referencedColumns: ["enterprise_id", "policy_identifier"]
           },
         ]
       }
@@ -318,6 +318,7 @@ export type Database = {
           policy_data: Json
           policy_display_name: string
           policy_id: string
+          policy_identifier: string
           updated_at: string
         }
         Insert: {
@@ -326,6 +327,7 @@ export type Database = {
           policy_data: Json
           policy_display_name: string
           policy_id?: string
+          policy_identifier?: string
           updated_at: string
         }
         Update: {
@@ -334,6 +336,7 @@ export type Database = {
           policy_data?: Json
           policy_display_name?: string
           policy_id?: string
+          policy_identifier?: string
           updated_at?: string
         }
         Relationships: [
@@ -785,6 +788,10 @@ export type Database = {
           separator: string
           overflow_prefix: string
         }
+        Returns: string
+      }
+      generate_policy_identifier: {
+        Args: Record<PropertyKey, never>
         Returns: string
       }
       is_active_subscriber: {

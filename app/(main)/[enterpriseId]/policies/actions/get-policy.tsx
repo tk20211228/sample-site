@@ -6,11 +6,13 @@ import { createClient } from "@/lib/supabase/server";
 
 /**
  * ポリシー情報をDBから取得
- * @param policyId
+ * @param policyIdentifier
  * @returns policy_config_data
  */
-export const getPolicyData = async (policyId: string) => {
-  console.log("policyId", policyId);
+export const getPolicyData = async (
+  enterpriseId: string,
+  policyIdentifier: string
+) => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("policies")
@@ -20,14 +22,11 @@ export const getPolicyData = async (policyId: string) => {
       policyData:policy_data
       `
     )
-    .eq("policy_id", policyId)
+    .match({ enterprise_id: enterpriseId, policy_identifier: policyIdentifier })
     .single();
-
   if (!data) {
     throw new Error("Policy not found");
   }
-  // console.log("data", data);
-
   const response = formPolicySchema.parse(data);
 
   return response;

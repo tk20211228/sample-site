@@ -18,13 +18,12 @@ export const getPoliciesFromDB = async ({
     .from("policies")
     .select(
       `
-      policyId:policy_id,
       enterpriseId:enterprise_id,
+      policyIdentifier:policy_identifier,
       policyDisplayName:policy_display_name,
       createdAt:created_at,
       updatedAt:updated_at,
-      version:policy_data->>version,
-      policy_data->>name
+      version:policy_data->>version
       `
     )
     .eq("enterprise_id", enterpriseId)

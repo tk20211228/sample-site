@@ -56,6 +56,6 @@ export const getSignUpUrl = async (
     path: "/",
   });
   const encryptedData = cookieStore.get("emm_signup_object");
-  console.log("encryptedData", encryptedData);
+  // console.log("encryptedData", encryptedData);
   redirect(data.url);
 };

@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 
-export const getPolicyApps = async (enterpriseId: string) => {
+export const getApps = async (enterpriseId: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("apps")
@@ -10,6 +10,7 @@ export const getPolicyApps = async (enterpriseId: string) => {
       `
       appId:app_id,
       enterpriseId:enterprise_id,
+      packageName:package_name,
       appType:app_type,
       iconUrl:app_data->>iconUrl,
       title:app_data->>title,
@@ -21,6 +22,6 @@ export const getPolicyApps = async (enterpriseId: string) => {
     console.error(error);
     return [];
   }
-  console.log("getApps data", data);
+  // console.log("getApps data", data);
   return data;
 };

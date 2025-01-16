@@ -63,8 +63,8 @@ pnpm dlx supabase db push
 ## Supabase 本番環境のリセットと、ローカルの状態をプッシュ
 
 ```bash
-# 1.バックアップをとる。
-pnpm dlx supabase db dump -f backup.sql
+# 1.バックアップをとる。 必要ないものは残さない。
+# pnpm dlx supabase db dump -f backup.sql
 # 2..gitignore に[*backup.sql]を設定する
 # 3.ローカルのマイグレーションファイルを削除する。
 # 4.新しいマイグレーションファイルの作成

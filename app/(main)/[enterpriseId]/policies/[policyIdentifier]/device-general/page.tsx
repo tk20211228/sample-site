@@ -6,11 +6,11 @@ export default async function Page({
 }: {
   params: Promise<RouteParams>;
 }) {
-  const policyId = (await params).policyId;
+  const policyIdentifier = (await params).policyIdentifier;
 
   return (
     <div>
-      <DeviceGeneralForm policyId={policyId} />
+      <DeviceGeneralForm policyIdentifier={policyIdentifier} />
     </div>
   );
 }
