@@ -33,16 +33,18 @@ erDiagram
     users ||--o{ enterprises : "has"
     users ||--o{ project_members : "has"
     users ||--o{ subscriptions : "has"
-    subscriptions ||--o{  subscription_plans : "has"
-    subscriptions ||--o{  subscription_usages : "has"
+    subscriptions ||--|| subscription_plans : "has"
+    subscriptions ||--|| subscription_usages : "has"
 
     %% プロジェクト管理
     enterprises ||--o{ projects : "has"
     projects ||--o{ project_members : "has users"
+
     %% ポリシー管理
     enterprises ||--o{ policies : "has"
     policies ||--o{ policies_histories : "has"
-    policies ||--o{ devices : "has"
+    policies ||--o{ devices : "applies to"
+
     %% デバイス管理
     enterprises ||--o{ devices : "has"
     devices ||--o{ application_reports : "generates"
@@ -51,45 +53,52 @@ erDiagram
     devices ||--o{ devices_histories : "has"
     devices ||--o{ operations : "has"
     devices ||--o{ usage_log_events : "has"
+
     %% アプリ管理
     enterprises ||--o{ apps : "has"
+
     %% PubSub管理
     pubsub_messages ||--o{ devices_histories : "records"
     pubsub_messages ||--o{ operations : "records"
-    pubsub_messages ||--o{ usage_log_events  : "records"
+    pubsub_messages ||--o{ usage_log_events : "records"
+
     %% エンタープライズ管理
     enterprises ||--o{ enterprises_histories : "has"
 
     users {
-        uuid user_id PK,FK "default auth.uid () , FK is Removed : Cascade"
-        text email UK
-        text username UK
+        uuid id PK,FK "default auth.uid(), FK is Removed: Cascade"
+        text email UK "メールアドレス"
+        text username UK "ユーザー名"
         timestamptz created_at "default now()"
         timestamptz updated_at
-    }
+}
+
     subscriptions {
-        uuid subscription_id PK "default gen_random_uuid ()"
-        uuid owner_id FK,UK " default auth.uid () , FK is Removed : Restrict"
-        text stripe_subscription_id UK
-        text status
-        jsonb plan_config
+        uuid id PK "default gen_random_uuid()"
+        uuid user_id FK,UK "default auth.uid(), FK is Removed: Restrict"
+        text stripe_subscription_id UK "Stripeサブスクリプション識別子"
+        text status "active, inactive, canceled等"
+        timestamptz current_period_start "現在の課金期間開始"
+        timestamptz current_period_end "現在の課金期間終了"
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     subscription_plans {
-        uuid plan_id PK "default gen_random_uuid ()"
-        uuid subscription_id FK "FK is delete cascade"
-        text plan_name
-        text interval
-        tebooleanxt email_support "default false"
+        uuid subscription_plans_id PK "default gen_random_uuid()"
+        uuid subscription_id FK,UK "FK is delete cascade"
+        text plan_name "プラン名"
+        text interval "monthly, yearly等"
+        boolean email_support "default false"
         boolean phone_support "default false"
         integer device_limit "default 1"
         integer policy_limit "default 1"
         integer project_limit "default 1"
-        boolean project_sharing "default 1"
+        integer project_sharing "default 1"
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     subscription_usages {
         uuid usage_id PK "default gen_random_uuid ()"
         uuid subscription_id FK "FK is delete cascade"
@@ -106,6 +115,7 @@ erDiagram
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     projects {
         uuid project_id PK "default gen_random_uuid ()"
         uuid owner_id FK "default auth.uid (), FK is Removed : Restrict"
@@ -115,6 +125,7 @@ erDiagram
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     project_members {
         uuid project_member_id PK "default gen_random_uuid ()"
         uuid project_id FK "FK is removed : Cascade"
@@ -123,6 +134,7 @@ erDiagram
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     enterprises {
         text enterprise_id PK
         uuid owner_id FK "default auth.uid (), FK is delete restrict"
@@ -139,6 +151,7 @@ erDiagram
         uuid created_by_user_id FK "default auth.uid (), FK is removed : Set Null"
         timestamp created_at "default now()"
     }
+
     apps {
         uuid app_id PK "default gen_random_uuid ()"
         text enterprise_id FK,UK "FK is removed : Cascade, UK(enterprise_id, package_name)"
@@ -148,6 +161,7 @@ erDiagram
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     policies {
         uuid policy_id PK "default gen_random_uuid ()"
         text enterprise_id FK "FK is removed : Cascade"
@@ -157,6 +171,7 @@ erDiagram
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     %% This table is retained for 30 days, after which it is automatically deleted.
     policies_histories {
         uuid policy_history_id PK "default gen_random_uuid ()"
@@ -166,6 +181,7 @@ erDiagram
         uuid updated_by_user_id FK "auth.user.id , FK is removed : Set Null"
         timestamptz created_at "default now()"
     }
+
     devices {
         uuid device_id PK "default gen_random_uuid ()"
         text enterprise_id FK,UK "FK is delete cascade, UK(enterprise_id, device_identifier)"
@@ -188,6 +204,7 @@ erDiagram
         uuid updated_by_user_id FK "default auth.uid () , FK row is removed : Set Null"
         timestamptz created_at "default now()"
     }
+
     application_reports {
         text enterprise_id PK,FK "FK is delete cascade"
         text device_identifier PK,FK "FK is delete cascade"
@@ -195,6 +212,7 @@ erDiagram
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     memory_events {
         text device_identifier PK,FK "FK is delete cascade"
         text enterprise_id PK,FK "FK is delete cascade"
@@ -202,6 +220,7 @@ erDiagram
         timestamptz created_at "default now()"
         timestamptz updated_at
     }
+
     power_management_events {
         text enterprise_id PK,FK "FK is removed : Cascade"
         text device_identifier PK,FK "FK is removed : Cascade"
@@ -220,6 +239,7 @@ erDiagram
         uuid created_by_user_id FK "default auth.uid () , FK is removed : Set Null"
         timestamptz created_at "default now()"
     }
+
     usage_log_events {
         uuid usage_log_event_id PK "default gen_random_uuid ()"
         text pubsub_message_id FK "FK is removed : Cascade"
