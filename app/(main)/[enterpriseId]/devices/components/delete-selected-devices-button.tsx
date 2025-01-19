@@ -21,17 +21,19 @@ export default function DeleteSelectedDevicesButton<TData>({
   const enterpriseId = params.enterpriseId;
   const [isPending, startTransition] = useTransition();
   const handleDeleteApps = async () => {
-    const deleteDeviceIdentifiers = table
+    const deviceIdentifiers = table
       .getSelectedRowModel()
       .rows.map((row) => {
         const deviceData = row.original as DeviceTableType;
         return deviceData.deviceIdentifier;
-      });
+      })
+      .filter((identifier): identifier is string => Boolean(identifier));
+
     startTransition(async () => {
-      toast.info("アプリを削除中...");
+      toast.info("デバイスを削除中...");
       await deleteSelectedDevices({
         enterpriseId,
-        deleteDeviceIdentifiers,
+        deviceIdentifiers,
         wipeDataFlags: ["WIPE_DATA_FLAG_UNSPECIFIED"],
       })
         .then(async () => {

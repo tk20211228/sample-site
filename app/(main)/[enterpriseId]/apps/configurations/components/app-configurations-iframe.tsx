@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -21,14 +21,16 @@ export default function AppConfigurationsIframe({
 }) {
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
+  const [currentUrl, setCurrentUrl] = useState<string>();
   const tokenType = "MANAGED_CONFIGURATIONS";
-  const { token, error } = useWebToken(enterpriseId, tokenType);
+  const { token, error } = useWebToken(enterpriseId, tokenType, currentUrl);
   const pathname = usePathname();
 
   const packageName = "com.lenovo.oemconfig.rel";
 
   const initialize = useCallback(
     (token: string) => {
+      setCurrentUrl(window.location.origin);
       if (isInitializedRef.current) {
         // console.log("既に初期化済みです"); // ２回目以降画面を開くと前回のトークンと最新トークンが取得されるため初期化が２回実行される。そのため、初期化フラグを設定
         return;
@@ -56,7 +58,7 @@ export default function AppConfigurationsIframe({
   );
 
   useEffect(() => {
-    // console.log("web token", token);
+    setCurrentUrl(window.location.origin);
     if (token && window.gapi) {
       // if (token && isLoaded) {
       initialize(token);

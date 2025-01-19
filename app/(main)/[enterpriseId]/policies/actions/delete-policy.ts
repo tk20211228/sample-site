@@ -34,9 +34,11 @@ export const deletePolicy = async (
   // 変更したらDBにも反映
   if (devices) {
     for (const device of devices) {
+      const deviceIdentifier = device.deviceIdentifier;
+      if (!deviceIdentifier) continue;
       await updateDevicePolicyToDefault({
         enterpriseId,
-        deviceIdentifier: device.deviceIdentifier,
+        deviceIdentifier: deviceIdentifier,
       });
     }
   }

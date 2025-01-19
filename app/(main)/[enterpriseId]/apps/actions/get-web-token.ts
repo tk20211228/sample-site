@@ -66,7 +66,7 @@ export const getWebToken = async ({
   if (!value) {
     throw new Error("Get AndroidManagementWebToken failed");
   }
-  console.log("Get AndroidManagementWebToken:", value);
+  // console.log("Get AndroidManagementWebToken:", value);
 
   return value;
 };

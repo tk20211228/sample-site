@@ -10,13 +10,16 @@ import { getBaseURL } from "@/lib/base-url/client";
  * @param tokenType　iframeの種類
  * @returns
  */
-export function useWebToken(enterpriseId: string, tokenType: IframeType) {
-  const currentUrl = window.location.origin;
+export function useWebToken(
+  enterpriseId: string,
+  tokenType: IframeType,
+  currentUrl?: string
+) {
   const parentFrameUrl = getBaseURL(currentUrl);
   const key = `/api/apps/${enterpriseId}/iframe/${tokenType}`;
 
   const { data, error, isLoading, mutate } = useSWR(
-    key,
+    currentUrl ? key : null,
     () => getWebToken({ enterpriseId, tokenType, parentFrameUrl }),
     {
       dedupingInterval: 3600000, // 1時間、関数を実行しない

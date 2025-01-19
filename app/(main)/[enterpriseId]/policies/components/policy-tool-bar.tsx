@@ -21,7 +21,7 @@ import {
 import { useTransition } from "react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
-import { createOrUpdateEnterprisePolicy } from "../actions/create-or-update-policy";
+import { createOrUpdatePolicy } from "../actions/policy";
 import { RouteParams } from "@/app/types/enterprise";
 
 export default function PolicyToolBar() {
@@ -53,7 +53,7 @@ export default function PolicyToolBar() {
       }
       const policyDisplayName = data.policyDisplayName;
       const parsed = formPolicySchema.parse(data);
-      const savedPolicyIdentifier = await createOrUpdateEnterprisePolicy({
+      const savedPolicyIdentifier = await createOrUpdatePolicy({
         enterpriseId,
         policyIdentifier,
         policyDisplayName,
@@ -77,7 +77,7 @@ export default function PolicyToolBar() {
   return (
     <form
       onSubmit={form.handleSubmit(handleSave)}
-      className="h-14 px-4 flex flex-row items-center gap-2"
+      className="h-12 px-4 flex flex-row items-center gap-2 border-b py-2"
     >
       <span className="text-sm">ポリシー名：</span>
       <FormField

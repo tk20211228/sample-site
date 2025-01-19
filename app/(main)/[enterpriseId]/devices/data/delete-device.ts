@@ -4,23 +4,23 @@ import { createAndroidManagementClient } from "@/actions/emm/client";
 /**
  * デバイスを削除
  * @param enterpriseId 企業ID
- * @param deleteDeviceIdentifier 削除するデバイスの識別子
+ * @param deviceIdentifier 削除するデバイスの識別子
  * @param wipeDataFlags データ削除フラグ
  * @param wipeReasonMessage データ削除理由 ※省略可
  */
 export const deleteManagedDevice = async ({
   enterpriseId,
-  deleteDeviceIdentifier,
+  deviceIdentifier,
   wipeDataFlags,
   wipeReasonMessage,
 }: {
   enterpriseId: string;
-  deleteDeviceIdentifier: string;
+  deviceIdentifier: string;
   wipeDataFlags: string[];
   wipeReasonMessage?: string;
 }) => {
   // const supabase = await createClient();
-  const name = `enterprises/${enterpriseId}/devices/${deleteDeviceIdentifier}`;
+  const name = `enterprises/${enterpriseId}/devices/${deviceIdentifier}`;
 
   // const { error } = await supabase.from("devices").delete().match({
   //   enterprise_id: enterpriseId,

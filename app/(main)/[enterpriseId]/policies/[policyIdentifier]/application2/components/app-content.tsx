@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import ApplicationLibrary from "./application-library";
 import { useFormContext } from "react-hook-form";
 import AppManagement from "./app-management";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 export default function AppContent({ appsData }: { appsData: PolicyApp[] }) {
   const [apps, setApps] = useState<Apps[]>([]); //アプリケーションのデータ
@@ -109,7 +111,12 @@ export default function AppContent({ appsData }: { appsData: PolicyApp[] }) {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-2 gap-8 px-4 py-8 overflow-hidden">
+      <div
+        className={cn(
+          `grid grid-cols-2 gap-8 px-4 py-8 h-full overflow-hidden`
+          // "overflow-y-auto"
+        )}
+      >
         <ApplicationLibrary apps={apps} />
         <AppManagement apps={apps} />
       </div>

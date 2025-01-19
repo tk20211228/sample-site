@@ -85,7 +85,7 @@ export type Database = {
           device_data: Json
           device_display_name: string | null
           device_id: string
-          device_identifier: string
+          device_identifier: string | null
           enterprise_id: string
           is_licensed: boolean
           operation_data: Json | null
@@ -97,9 +97,9 @@ export type Database = {
           device_data: Json
           device_display_name?: string | null
           device_id?: string
-          device_identifier: string
+          device_identifier?: string | null
           enterprise_id: string
-          is_licensed: boolean
+          is_licensed?: boolean
           operation_data?: Json | null
           policy_identifier?: string | null
           updated_at: string
@@ -109,7 +109,7 @@ export type Database = {
           device_data?: Json
           device_display_name?: string | null
           device_id?: string
-          device_identifier?: string
+          device_identifier?: string | null
           enterprise_id?: string
           is_licensed?: boolean
           operation_data?: Json | null
@@ -325,9 +325,9 @@ export type Database = {
           created_at?: string
           enterprise_id: string
           policy_data: Json
-          policy_display_name: string
+          policy_display_name?: string
           policy_id?: string
-          policy_identifier?: string
+          policy_identifier: string
           updated_at: string
         }
         Update: {

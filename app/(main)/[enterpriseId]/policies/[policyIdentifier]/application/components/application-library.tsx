@@ -1,7 +1,7 @@
 "use client";
 
+import { Apps } from "@/app/types/policy";
 import { Input } from "@/components/ui/input";
-import AppCard from "./app-card";
 import {
   Select,
   SelectContent,
@@ -10,8 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { usePolicyForm } from "../../../../providers/policy-form-provider";
-import { Apps } from "@/app/types/policy";
+import AppCard from "./app-card";
 
 export default function ApplicationLibrary({ apps }: { apps: Apps[] }) {
   const [filterApps, setFilterApps] = useState("");

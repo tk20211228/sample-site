@@ -1,5 +1,6 @@
 "use client";
 
+import { RouteParams } from "@/app/types/enterprise";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -67,12 +68,9 @@ export default function DeviceNavigationMenu({
 }: {
   className?: string;
 }) {
-  const params = useParams<{
-    enterpriseId: string;
-    deviceId: string;
-  }>();
+  const params = useParams<RouteParams>();
   const enterpriseId = params.enterpriseId;
-  const deviceId = params.deviceId;
+  const deviceIdentifier = params.deviceIdentifier;
 
   return (
     <Table
@@ -112,7 +110,7 @@ export default function DeviceNavigationMenu({
             </TableCell>
             <TableCell className="flex justify-center">
               <Link
-                href={`/${enterpriseId}/devices/${deviceId}/${category.link}`}
+                href={`/${enterpriseId}/devices/${deviceIdentifier}/${category.link}`}
               >
                 <ChevronRightIcon
                   size={20}

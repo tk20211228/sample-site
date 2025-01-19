@@ -1,5 +1,6 @@
 # EMM Enterprise 作成フロー
 
+```mermaid
 ---
 
 config:
@@ -40,3 +41,4 @@ participant DB
     Google EMM-->>-Route Handlers: 設定完了
 
     Route Handlers->>Frontend: ダッシュボード画面へリダイレクト
+```

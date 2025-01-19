@@ -1,16 +1,13 @@
 "use server";
 
 import { createAndroidManagementClient } from "@/actions/emm/client";
-import { AndroidManagementPolicy, PolicySummary } from "@/app/types/policy";
+import {
+  AndroidManagementPolicy,
+  ListPoliciesResponse,
+} from "@/app/types/policy";
 import { createClient } from "@/lib/supabase/server";
 import { Json } from "@/types/database";
-import { androidmanagement_v1 } from "googleapis";
 import { revalidatePath } from "next/cache";
-import { listPolicyDetails } from "../../../projects/data/policy";
-import { saveAndroidManagementPolicy } from "../../actions/save-android-management-policy";
-
-type NextPageToken = string | null | undefined;
-type ListPoliciesResponse = androidmanagement_v1.Schema$ListPoliciesResponse;
 
 /**
  * ポリシーをDBに保存する関数
@@ -20,43 +17,28 @@ type ListPoliciesResponse = androidmanagement_v1.Schema$ListPoliciesResponse;
  */
 const savePoliciesToDB = async (
   policies: AndroidManagementPolicy[],
-  enterpriseId: string,
-  policyDisplayNameIdPairs: PolicySummary[]
+  enterpriseId: string
 ) => {
   const supabase = await createClient();
   const policiesList = policies
-    .map(async (policy) => {
-      let policyId = policyDisplayNameIdPairs.find(
-        (policyDisplayNameIdPair) =>
-          policyDisplayNameIdPair.name === policy.name
-      )?.policyId;
-      let policyDisplayName = policyDisplayNameIdPairs.find(
-        (policyDisplayNameIdPair) =>
-          policyDisplayNameIdPair.policyId === policyId
-      )?.policyDisplayName;
-      if (!policyId || !policyDisplayName) {
-        // ポリシーデータをDBに保存
-        const saveData = await saveAndroidManagementPolicy({
-          enterpriseId,
-          policyDisplayName: "不明なポリシー",
-          policyData: policy,
-        });
-        policyId = saveData.policy_id;
-        policyDisplayName = saveData.policy_display_name;
-      }
+    .map((policy) => {
+      const currentPolicyName = policy.name;
+      if (!currentPolicyName) return;
+      const policyIdentifier = currentPolicyName.split(
+        `enterprises/${enterpriseId}/policies/`
+      )[1];
       return {
-        policy_id: policyId,
         enterprise_id: enterpriseId,
+        policy_identifier: policyIdentifier,
         policy_data: policy as Json,
-        policy_display_name: policyDisplayName,
         updated_at: new Date().toISOString(),
       };
     })
-    .filter((item): item is NonNullable<typeof item> => item !== undefined);
+    .filter((policy) => policy !== undefined);
 
-  const allPolicies = await Promise.all(policiesList);
-
-  const { error } = await supabase.from("policies").upsert(allPolicies);
+  const { error } = await supabase.from("policies").upsert(policiesList, {
+    onConflict: "enterprise_id,policy_identifier",
+  });
 
   if (error) {
     throw new Error(`Failed to save policies: ${error.message}`);
@@ -79,9 +61,8 @@ export const syncPoliciesWithGoogle = async (enterpriseId: string) => {
   if (!user) {
     throw new Error("User not found");
   }
-  const policyDisplayNameIdPairs = await listPolicyDetails(enterpriseId);
 
-  let nextPageToken: NextPageToken = undefined;
+  let nextPageToken: ListPoliciesResponse["nextPageToken"] = undefined;
   const androidmanagement = await createAndroidManagementClient();
   const enterpriseName = `enterprises/${enterpriseId}`;
 
@@ -99,7 +80,7 @@ export const syncPoliciesWithGoogle = async (enterpriseId: string) => {
     const { policies, nextPageToken: token } = data as ListPoliciesResponse;
     if (!policies) break;
     // １ページ毎にDBに保存
-    await savePoliciesToDB(policies, enterpriseId, policyDisplayNameIdPairs);
+    await savePoliciesToDB(policies, enterpriseId);
     nextPageToken = token;
   } while (nextPageToken);
   revalidatePath(`/${enterpriseId}/policies`);

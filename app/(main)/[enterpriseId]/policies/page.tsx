@@ -1,6 +1,6 @@
 import { RouteParams } from "@/app/types/enterprise";
 import PoliciesContent from "./components/policy-content";
-import { getPoliciesFromDB } from "./data/get-policies";
+import { getPolicies } from "./data/policy";
 
 export default async function Page({
   params,
@@ -8,7 +8,7 @@ export default async function Page({
   params: Promise<RouteParams>;
 }) {
   const enterpriseId = (await params).enterpriseId;
-  const policies = await getPoliciesFromDB({ enterpriseId });
+  const policies = await getPolicies({ enterpriseId });
 
   return (
     <div className="flex h-dvh">

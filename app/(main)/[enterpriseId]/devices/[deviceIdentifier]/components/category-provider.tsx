@@ -9,7 +9,7 @@ import { ReactNode, createContext, useContext } from "react";
 
 type ContextType = {
   enterpriseId: string;
-  deviceId: string;
+  deviceIdentifier: string;
   category: string;
 };
 
@@ -24,45 +24,55 @@ export function CategoryProvider({
 }) {
   const params = useParams<RouteParams>();
   const enterpriseId = params.enterpriseId;
-  const deviceId = params.deviceId;
+  const deviceIdentifier = params.deviceIdentifier;
   const category = params.category;
 
   return (
-    <Context.Provider value={{ enterpriseId, deviceId, category }}>
+    <Context.Provider value={{ enterpriseId, deviceIdentifier, category }}>
       <Tabs defaultValue={category} className={cn("w-[400px]", className)}>
         <TabsList className="mt-1.5 ml-2 ">
           <TabsTrigger value="hardware">
-            <Link href={`/${enterpriseId}/devices/${deviceId}/hardware`}>
+            <Link
+              href={`/${enterpriseId}/devices/${deviceIdentifier}/hardware`}
+            >
               ハードウェア情報
             </Link>
           </TabsTrigger>
           <TabsTrigger value="software">
-            <Link href={`/${enterpriseId}/devices/${deviceId}/software`}>
+            <Link
+              href={`/${enterpriseId}/devices/${deviceIdentifier}/software`}
+            >
               ソフトウェア情報
             </Link>
           </TabsTrigger>
           <TabsTrigger value="application">
-            <Link href={`/${enterpriseId}/devices/${deviceId}/application`}>
+            <Link
+              href={`/${enterpriseId}/devices/${deviceIdentifier}/application`}
+            >
               アプリケーションレポート
             </Link>
           </TabsTrigger>
           <TabsTrigger value="policy">
-            <Link href={`/${enterpriseId}/devices/${deviceId}/policy`}>
+            <Link href={`/${enterpriseId}/devices/${deviceIdentifier}/policy`}>
               ポリシー情報
             </Link>
           </TabsTrigger>
           <TabsTrigger value="network">
-            <Link href={`/${enterpriseId}/devices/${deviceId}/network`}>
+            <Link href={`/${enterpriseId}/devices/${deviceIdentifier}/network`}>
               ネットワーク情報
             </Link>
           </TabsTrigger>
           <TabsTrigger value="security">
-            <Link href={`/${enterpriseId}/devices/${deviceId}/security`}>
+            <Link
+              href={`/${enterpriseId}/devices/${deviceIdentifier}/security`}
+            >
               セキュリティ情報
             </Link>
           </TabsTrigger>
           <TabsTrigger value="log">
-            <Link href={`/${enterpriseId}/devices/${deviceId}/log`}>ログ</Link>
+            <Link href={`/${enterpriseId}/devices/${deviceIdentifier}/log`}>
+              ログ
+            </Link>
           </TabsTrigger>
         </TabsList>
         {children}

@@ -30,8 +30,12 @@
 ```mermaid
 erDiagram
     %% ユーザー管理
-    users ||--o{ enterprises : "owns"
-    users ||--o{ project_members : "participates"
+    users ||--o{ enterprises : "has"
+    users ||--o{ project_members : "has"
+    users ||--o{ subscriptions : "has"
+    subscriptions ||--o{  subscription_plans : "has"
+    subscriptions ||--o{  subscription_usages : "has"
+
     %% プロジェクト管理
     enterprises ||--o{ projects : "has"
     projects ||--o{ project_members : "has users"
@@ -57,132 +61,182 @@ erDiagram
     enterprises ||--o{ enterprises_histories : "has"
 
     users {
-        uuid user_id PK "auth.users.id , Action referenced row is removed : Set Null ?"
+        uuid user_id PK,FK "default auth.uid () , FK is Removed : Cascade"
         text email UK
         text username UK
-        text stripe_customer_id "Stripe顧客ID"
-        timestamptz created_at "Default Value : now()"
+        timestamptz created_at "default now()"
+        timestamptz updated_at
+    }
+    subscriptions {
+        uuid subscription_id PK "default gen_random_uuid ()"
+        uuid owner_id FK,UK " default auth.uid () , FK is Removed : Restrict"
+        text stripe_subscription_id UK
+        text status
+        jsonb plan_config
+        timestamptz created_at "default now()"
+        timestamptz updated_at
+    }
+    subscription_plans {
+        uuid plan_id PK "default gen_random_uuid ()"
+        uuid subscription_id FK "FK is delete cascade"
+        text plan_name
+        text interval
+        tebooleanxt email_support "default false"
+        boolean phone_support "default false"
+        integer device_limit "default 1"
+        integer policy_limit "default 1"
+        integer project_limit "default 1"
+        boolean project_sharing "default 1"
+        timestamptz created_at "default now()"
+        timestamptz updated_at
+    }
+    subscription_usages {
+        uuid usage_id PK "default gen_random_uuid ()"
+        uuid subscription_id FK "FK is delete cascade"
+        int monthly_messages "default 0"
+        int monthly_data_transfer "default 0"
+        int total_devices "default 0"
+        int active_devices "default 0"
+        int inactive_devices "default 0"
+        int total_policies "default 0"
+        int custom_policies "default 0"
+        int total_projects "default 0"
+        int shared_projects "default 0"
+        timestamptz last_reset
+        timestamptz created_at "default now()"
         timestamptz updated_at
     }
     projects {
-        uuid project_id PK
-        uuid owner_id FK "references users(user_id) , Action referenced row is removed : Set Null ?"
-        text enterprise_id FK "Action referenced row is removed : Cascade"
+        uuid project_id PK "default gen_random_uuid ()"
+        uuid owner_id FK "default auth.uid (), FK is Removed : Restrict"
+        text enterprise_id FK "FK is removed : Cascade , Is Nullable"
         text project_name
         text organization_name
-        timestamptz created_at "Default Value : now()"
+        timestamptz created_at "default now()"
         timestamptz updated_at
     }
     project_members {
-        uuid project_member_id PK "Default Value : gen_random_uuid()"
-        uuid project_id FK "Action referenced row is removed : Cascade"
-        uuid user_id FK "auth.users.id , Action referenced row is removed : Set Null ?"
-        timestamptz created_at "Default Value : now()"
+        uuid project_member_id PK "default gen_random_uuid ()"
+        uuid project_id FK "FK is removed : Cascade"
+        uuid user_id FK "FK is Removed : Cascade"
+        text role
+        timestamptz created_at "default now()"
         timestamptz updated_at
     }
     enterprises {
         text enterprise_id PK
-        uuid owner_id FK "users.id , Action referenced row is removed : Set Null ?"
-        jsonb enterprise_data "最新のresponse_data"
-        timestamp created_at "Default Value : now()"
-        timestamp updated_at
+        uuid owner_id FK "default auth.uid (), FK is delete restrict"
+        jsonb enterprise_data
+        timestamptz created_at "default now()"
+        timestamptz updated_at
     }
+    %% This table is retained for 30 days, after which it is automatically deleted.
     enterprises_histories {
-        uuid enterprises_history_id PK
-        text enterprise_id FK "Action referenced row is removed : Cascade"
-        jsonb request_data
-        jsonb response_data
-        uuid created_by_user_id FK "auth.user.id , Action referenced row is removed : No action ?"
-        timestamp created_at "Default Value : now()"
+        uuid enterprises_history_id PK "default gen_random_uuid ()"
+        text enterprise_id FK "Action Removed : Cascade"
+        jsonb enterprise_request_data
+        jsonb enterprise_response_data
+        uuid created_by_user_id FK "default auth.uid (), FK is removed : Set Null"
+        timestamp created_at "default now()"
     }
     apps {
-        text app_id PK "packageName"
-        text enterprise_id FK "Action referenced row is removed : Cascade"
+        uuid app_id PK "default gen_random_uuid ()"
+        text enterprise_id FK,UK "FK is removed : Cascade, UK(enterprise_id, package_name)"
+        text package_name UK "UK(enterprise_id, package_name)"
         text app_type
         jsonb app_data
-        timestamptz created_at "Default Value : now()"
+        timestamptz created_at "default now()"
         timestamptz updated_at
     }
     policies {
-        text policy_name PK "displayNameとして使用"
-        text enterprise_id PK,FK "Action referenced row is removed : Cascade"
-        %% uuid policy_id PK "gen_random_uuid()"
-        %% text enterprise_id FK "Action referenced row is removed : Cascade"
-        %% text policy_display_name "複合キーにしてindexを設定する?"
-        jsonb policy_data "最新のresponse_data"
-        timestamptz created_at "Default Value : now()"
+        uuid policy_id PK "default gen_random_uuid ()"
+        text enterprise_id FK "FK is removed : Cascade"
+        text policy_identifier UK "unique (enterprise_id, policy_identifier)"
+        text policy_display_name
+        jsonb policy_data
+        timestamptz created_at "default now()"
         timestamptz updated_at
     }
+    %% This table is retained for 30 days, after which it is automatically deleted.
     policies_histories {
-        uuid policy_history_id PK "gen_random_uuid()"
-        uuid policy_id FK "Action referenced row is removed : Cascade"
-        jsonb request_data
-        jsonb response_data
-        uuid updated_by_user_id FK "auth.user.id , Action referenced row is removed : No action ?"
-        timestamptz created_at "Default Value : now()"
-        timestamptz updated_at
+        uuid policy_history_id PK "default gen_random_uuid ()"
+        uuid policy_id FK "FK is removed : Cascade"
+        jsonb policy_request_data
+        jsonb policy_response_data
+        uuid updated_by_user_id FK "auth.user.id , FK is removed : Set Null"
+        timestamptz created_at "default now()"
     }
     devices {
-        uuid device_id PK
-        text enterprise_id FK "Action referenced row is removed : Cascade"
-        uuid policy_id FK "Action referenced row is removed : Set Null "
-        text device_display_name
-        jsonb device_data "最新のdevices_historiesのresponse_data"
-        jsonb command_data "最新のoperationsのresponse_data, Is Nullable"
-        timestamptz created_at "Default Value : now()"
+        uuid device_id PK "default gen_random_uuid ()"
+        text enterprise_id FK,UK "FK is delete cascade, UK(enterprise_id, device_identifier)"
+        text device_identifier UK "FK is delete set null, UK(enterprise_id, device_identifier)"
+        text policy_identifier FK,UK  "FK is delete set null, UK(enterprise_id, policy_identifier)"
+        text device_display_name "Is Nullable"
+        boolean is_licensed  "default false"
+        jsonb device_data "devices_historiesの最新response_data "
+        jsonb operation_data "operationsの最新operation_response_data, Is Nullable"
+        timestamptz created_at "default now()"
         timestamptz updated_at
     }
+    %% This table is retained for 30 days, after which it is automatically deleted.
     devices_histories {
-        uuid device_history_id PK "gen_random_uuid()"
-        uuid device_id FK  "Action referenced row is removed : Cascade"
-        jsonb request_data "Is Nullable"
-        jsonb response_data
-        uuid updated_by_user_id FK "auth.user.id , Action referenced row is removed : No action ?,Is Nullable"
-        timestamptz created_at "Default Value : now()"
-        timestamptz updated_at
+        uuid device_history_id PK "default gen_random_uuid ()"
+        text enterprise_id FK "delete cascad"
+        text device_identifier FK "delete cascad"
+        jsonb device_request_data "Is Nullable"
+        jsonb device_response_data
+        uuid updated_by_user_id FK "default auth.uid () , FK row is removed : Set Null"
+        timestamptz created_at "default now()"
     }
     application_reports {
-        uuid application_report_id PK "gen_random_uuid()"
-        uuid device_history_id FK "Action referenced row is removed : Cascade"
-        uuid device_id FK
+        text enterprise_id PK,FK "FK is delete cascade"
+        text device_identifier PK,FK "FK is delete cascade"
         jsonb application_report_data
-        timestamptz created_at "Default Value : now()"
+        timestamptz created_at "default now()"
+        timestamptz updated_at
     }
     memory_events {
-        uuid memory_event_id PK "gen_random_uuid()"
-        uuid device_history_id FK "Action referenced row is removed : Cascade"
-        uuid device_id FK
+        text device_identifier PK,FK "FK is delete cascade"
+        text enterprise_id PK,FK "FK is delete cascade"
         jsonb memory_event_data
-        timestamptz created_at "Default Value : now()"
+        timestamptz created_at "default now()"
+        timestamptz updated_at
     }
     power_management_events {
-        uuid power_management_event_id PK "gen_random_uuid()"
-        uuid device_history_id FK "Action referenced row is removed : Cascade"
-        uuid device_id FK
+        text enterprise_id PK,FK "FK is removed : Cascade"
+        text device_identifier PK,FK "FK is removed : Cascade"
         jsonb power_management_event_data
-        timestamptz created_at "Default Value : now()"
+        timestamptz created_at "default now()"
+        timestamptz updated_at
     }
+    %% This table is retained for 90 days, after which it is automatically deleted.
     operations {
-        uuid operation_id PK "gen_random_uuid()"
+        uuid operation_id PK "default gen_random_uuid ()"
+        text device_identifier FK
         text enterprise_id FK "Action referenced row is removed : Cascade"
-        jsonb request_data
-        jsonb response_data
-        uuid created_by_user_id FK "auth.user.id , Action referenced row is removed : No action ?"
-        timestamptz created_at "Default Value : now()"
+        text operation_name "operations/{unique_id} の{unique_id} のみ ※getOperationで使用"
+        jsonb operation_request_data "Is Nullable"
+        jsonb operation_response_data
+        uuid created_by_user_id FK "default auth.uid () , FK is removed : Set Null"
+        timestamptz created_at "default now()"
     }
     usage_log_events {
-        uuid usage_log_event_id PK "gen_random_uuid()"
-        text enterprise_id FK "Action referenced row is removed : Cascade"
-        jsonb usage_log_event_data
-        timestamptz created_at "Default Value : now()"
+        uuid usage_log_event_id PK "default gen_random_uuid ()"
+        text pubsub_message_id FK "FK is removed : Cascade"
+        timestamptz usage_log_event_time "UsageLogEvent.eventTime"
+        text usage_log_event_type
+        jsonb event_data
+        timestamptz created_at "default now()"
     }
+    %% This table is retained for 90 days, after which it is automatically deleted.
     pubsub_messages {
         text pubsub_message_id PK
-        text enterprise_id FK "Action referenced row is removed : Cascade"
+        text enterprise_id FK "Is Nullable, FK is delete cascade"
+        text device_identifier "Is Nullable"
         text notification_type
         jsonb pubsub_message_data
-        timestamptz pubish_time
-        timestamptz created_at "Default Value : now()"
+        jsonb pubsub_message_attributes_data
+        timestamptz publish_time
+        timestamptz created_at "default now()"
     }
-
 ```

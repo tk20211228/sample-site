@@ -4,6 +4,8 @@ import { z } from "zod";
 import { DevicesTableSchema } from "../(main)/schema/devices";
 
 export type AndroidManagementDevice = androidmanagement_v1.Schema$Device;
+export type ListDevicesResponse =
+  androidmanagement_v1.Schema$ListDevicesResponse;
 export type DeviceTableType = z.infer<typeof DevicesTableSchema>;
 
 // route.tsで使用

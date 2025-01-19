@@ -1,79 +1,9 @@
 import "server-only";
 
-import { getGooglePolicyData } from "@/app/(main)/lib/get-policy-data";
 import { AndroidManagementDevice } from "@/app/types/device";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Json } from "@/types/database";
-
-import { PolicySummary } from "@/app/types/policy";
-
-const getAdminListPolicyDetails = async (
-  enterpriseId: string
-): Promise<PolicySummary[]> => {
-  // console.log("listPolicyDetails enterpriseId", enterpriseId);
-  const supabase = createAdminClient();
-  const { data: policyIds, error } = await supabase
-    .from("policies")
-    .select(
-      `
-      policyId:policy_id,
-      policy_data->>name,
-      policyDisplayName:policy_display_name
-      `
-    )
-    .eq("enterprise_id", enterpriseId);
-  // console.log("listPolicyDetails policyIds", policyIds);
-  if (error) {
-    console.error("Error fetching policy names:", error);
-    throw new Error("Failed to fetch policies from database");
-  }
-
-  return policyIds ?? [];
-};
-/**
- * ポリシーの存在確認と必要に応じて保存
- * @param enterpriseId エンタープライズID
- * @param policyName ポリシー名
- * @param policyDetails ポリシーのリスト
- * @returns policy_id ポリシーID
- */
-const ensurePolicy = async ({
-  enterpriseId,
-  policyName,
-  policyDetails,
-}: {
-  enterpriseId: string;
-  policyName?: string | null;
-  policyDetails: PolicySummary[];
-}): Promise<string> => {
-  // console.log("ensurePolicy", policyName);
-  // console.log("policyDetails", policyDetails);
-  const existingPolicy = policyDetails.find(
-    (policy) => policy.name === policyName
-  );
-  if (existingPolicy) return existingPolicy.policyId;
-  const supabase = createAdminClient();
-  let policyData;
-  if (policyName) {
-    policyData = await getGooglePolicyData({ policyName });
-  }
-  const { data, error } = await supabase
-    .from("policies")
-    .insert({
-      policy_display_name: "不明なポリシー",
-      enterprise_id: enterpriseId,
-      policy_data: (policyData as Json) ?? {},
-      updated_at: new Date().toISOString(),
-    })
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to save policy: ${error.message}`);
-  }
-  return data.policy_id;
-};
 
 /**
  * デバイスデータから不要なイベントデータを除外
@@ -99,23 +29,20 @@ export const saveDeviceStatus = async ({
   device: AndroidManagementDevice;
 }) => {
   const supabase = createAdminClient();
-  const policyDetails = await getAdminListPolicyDetails(enterpriseId);
+  // const policyDetails = await getAdminListPolicyDetails(enterpriseId);
   const policyName = device.policyName;
+  const policyIdentifier = policyName?.includes(
+    `enterprises/${enterpriseId}/policies/`
+  )
+    ? policyName.split(`enterprises/${enterpriseId}/policies/`)[1] || null
+    : null;
 
   try {
-    // ポリシーの確認と保存
-    const policyId = await ensurePolicy({
-      enterpriseId,
-      policyName,
-      policyDetails,
-    });
-
     // デバイスデータの準備
     const deviceData = {
-      device_identifier: deviceIdentifier,
       enterprise_id: enterpriseId,
-      policy_id: policyId,
-      is_licensed: true,
+      device_identifier: deviceIdentifier,
+      policy_identifier: policyIdentifier,
       device_data: prepareDeviceData(device) as Json,
       updated_at: new Date().toISOString(),
     };

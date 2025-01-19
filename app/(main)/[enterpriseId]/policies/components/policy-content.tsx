@@ -2,7 +2,7 @@
 
 import { Loader2Icon } from "lucide-react";
 import useSWR from "swr";
-import { getPoliciesFromDB } from "../data/get-policies";
+import { getPolicies } from "../data/policy";
 import { PolicyTableType } from "../types/policy";
 import { PoliciesTableProvider } from "./policies-table-provider";
 import { policyColumns } from "./table/policies-table-columns";
@@ -20,19 +20,15 @@ export default function PoliciesContent({
     data: policies,
     error,
     isValidating,
-  } = useSWR<PolicyTableType[]>(
-    key,
-    () => getPoliciesFromDB({ enterpriseId }),
-    {
-      suspense: true,
-      fallbackData: data,
-      // dedupingInterval: 3600000, // が同じ場合は1時間、関数を実行しない
-      revalidateOnFocus: false, // タブ移動しても関数を実行しない
-      revalidateIfStale: false, // 追加: キャッシュが古くても再検証しない ※画面のレンダリング時のデータ更新を防ぐため
-      // revalidateOnMount: true, //  コンポーネントマウント時に必ず再検証
-      // keepPreviousData: false, // 前のデータを保持しない
-    }
-  );
+  } = useSWR<PolicyTableType[]>(key, () => getPolicies({ enterpriseId }), {
+    suspense: true,
+    fallbackData: data,
+    // dedupingInterval: 3600000, // が同じ場合は1時間、関数を実行しない
+    revalidateOnFocus: false, // タブ移動しても関数を実行しない
+    revalidateIfStale: false, // 追加: キャッシュが古くても再検証しない ※画面のレンダリング時のデータ更新を防ぐため
+    // revalidateOnMount: true, //  コンポーネントマウント時に必ず再検証
+    // keepPreviousData: false, // 前のデータを保持しない
+  });
 
   if (error) return <div>Error</div>;
   if (isValidating)

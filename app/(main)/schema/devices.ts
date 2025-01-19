@@ -3,8 +3,8 @@ import { z } from "zod";
 export const DevicesTableSchema = z.object({
   deviceId: z.string(),
   enterpriseId: z.string(),
-  policyId: z.string().nullable(),
-  deviceIdentifier: z.string(),
+  policyIdentifier: z.string().nullable(),
+  deviceIdentifier: z.string().nullable(),
   deviceDisplayName: z.string().nullable(),
   state: z.string(),
   appliedState: z.string(),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -21,14 +21,14 @@ export default function PrivateAppIframe({
 }) {
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
+  const [currentUrl, setCurrentUrl] = useState<string>();
   const tokenType = "PRIVATE_APPS";
-  const { token, error } = useWebToken(enterpriseId, tokenType);
   const pathname = usePathname();
+  const { token, error } = useWebToken(enterpriseId, tokenType, currentUrl);
 
   const initialize = useCallback(
     (token: string) => {
       if (isInitializedRef.current) {
-        // console.log("既に初期化済みです");
         // ２回目以降画面を開くと前回のトークンと最新トークンが取得されるため初期化が２回実行される。そのため、初期化フラグを設定
         return;
       }
@@ -54,6 +54,7 @@ export default function PrivateAppIframe({
   );
 
   useEffect(() => {
+    setCurrentUrl(window.location.origin);
     if (token && window.gapi) {
       initialize(token);
     }

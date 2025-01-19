@@ -43,7 +43,6 @@ export const createDefaultPolicy = async (enterpriseId: string) => {
         policy_identifier: "default",
         policy_display_name: "デフォルトポリシー",
         policy_data: PolicyResponseData as Json,
-        is_default: true,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "enterprise_id,policy_identifier" }

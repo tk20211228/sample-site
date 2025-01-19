@@ -20,11 +20,11 @@ export const deleteApp = async (appName: string) => {
  */
 export const deleteSelectedDevices = async ({
   enterpriseId,
-  deleteDeviceIdentifiers,
+  deviceIdentifiers,
   wipeDataFlags = ["WIPE_DATA_FLAG_UNSPECIFIED"],
 }: {
   enterpriseId: string;
-  deleteDeviceIdentifiers: string[];
+  deviceIdentifiers: string[];
   wipeDataFlags: string[];
 }) => {
   // 認証
@@ -37,10 +37,10 @@ export const deleteSelectedDevices = async ({
   }
   // 一台づつ、Google EMM APIでデバイスを削除したのち、DBから削除
   await Promise.all(
-    deleteDeviceIdentifiers.map((deleteDeviceIdentifier) => {
+    deviceIdentifiers.map((deviceIdentifier) => {
       return deleteManagedDevice({
         enterpriseId,
-        deleteDeviceIdentifier,
+        deviceIdentifier,
         wipeDataFlags,
       });
     })
@@ -57,11 +57,11 @@ export const deleteSelectedDevices = async ({
  */
 export const deleteDevice = async ({
   enterpriseId,
-  deleteDeviceIdentifier,
+  deviceIdentifier,
   wipeDataFlags,
 }: {
   enterpriseId: string;
-  deleteDeviceIdentifier: string;
+  deviceIdentifier: string;
   wipeDataFlags: string[];
 }) => {
   const supabase = await createClient();
@@ -73,7 +73,7 @@ export const deleteDevice = async ({
   // Google EMM APIでデバイスを削除
   await deleteManagedDevice({
     enterpriseId,
-    deleteDeviceIdentifier,
+    deviceIdentifier,
     wipeDataFlags,
   }).catch((error) => {
     console.error("Error Delete device:", error.message);

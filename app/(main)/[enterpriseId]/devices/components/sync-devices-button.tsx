@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
-import { syncDevicesWithGoogle } from "../data/sync-google-devices";
+import { syncDevicesWithGoogle } from "../data/device-google";
 
 export default function SyncDevicesButton({
   enterpriseId,

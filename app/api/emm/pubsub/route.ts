@@ -52,7 +52,8 @@ export async function POST(request: Request) {
 
     // デバイス名の取得ロジックをマッピングオブジェクトで単純化
     const deviceNameExtractors = {
-      COMMAND: (data: DeviceOperation) => data.name?.split("/operations/")[0],
+      COMMAND: (data: DeviceOperation) =>
+        data.name?.split("/operations/")[0] ?? null,
       USAGE_LOGS: (data: BatchUsageLogEvents) => data.device,
       STATUS_REPORT: (data: AndroidManagementDevice) => data.name,
       ENROLLMENT: (data: AndroidManagementDevice) => data.name,
@@ -80,16 +81,17 @@ export async function POST(request: Request) {
 
     if (deviceName) {
       // enterprises/の後ろの文字列を取得
-      const enterpriseParts = deviceName.split("enterprises/")[1];
+      const enterpriseParts = deviceName.split("enterprises/")[1] ?? null;
       if (enterpriseParts) {
         // 最初の/までの文字列をenterpriseIdとして取得
         enterpriseId = enterpriseParts.split("/")[0];
         // devices/の後ろの文字列をdeviceIdentifierとして取得
         deviceIdentifier = deviceName.split("/devices/")[1];
       }
+    } else {
+      // nullのまま処理を続行するとエラーが発生するため、警告を出力して処理を続行
+      console.warn("Failed to parse device name:", deviceName);
     }
-    // nullのまま処理を続行するとエラーが発生するため、警告を出力して処理を続行
-    console.warn("Failed to parse device name:", deviceName);
 
     const pubsubMessageId = body.message.messageId;
     //pubsub_logsにデータを保存

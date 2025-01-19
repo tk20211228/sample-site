@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 
 import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
-import { syncPoliciesWithGoogle } from "../data/sync-google-policies";
+// import { syncPoliciesWithGoogle } from "../data/sync-google-policies";
 import { toast } from "sonner";
+import { syncPoliciesWithGoogle } from "../data/policy-google";
 
 export default function SyncPoliciesButton({
   enterpriseId,

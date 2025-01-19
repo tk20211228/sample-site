@@ -5,6 +5,7 @@ import { AndroidManagementPolicy } from "@/app/types/policy";
 import { createClient } from "@/lib/supabase/server";
 import { Json } from "@/types/database";
 import { revalidatePath } from "next/cache";
+import { v7 as uuidv7 } from "uuid";
 
 /**
  * ポリシーを更新しDBに保存
@@ -14,7 +15,7 @@ import { revalidatePath } from "next/cache";
  * @param requestBody
  * @returns
  */
-export const createOrUpdateEnterprisePolicy = async ({
+export const createOrUpdatePolicy = async ({
   enterpriseId,
   policyIdentifier,
   policyDisplayName,
@@ -28,9 +29,9 @@ export const createOrUpdateEnterprisePolicy = async ({
   // ポリシーを作成
   const androidmanagement = await createAndroidManagementClient();
   if (policyIdentifier === "new") {
-    policyIdentifier = crypto.randomUUID().replace(/-/g, "").substring(0, 6);
+    policyIdentifier = uuidv7();
   }
-  console.log("requestBody", requestBody);
+  // console.log("requestBody", requestBody);
   const enterpriseName = `enterprises/${enterpriseId}`;
   const { data } = await androidmanagement.enterprises.policies
     .patch({

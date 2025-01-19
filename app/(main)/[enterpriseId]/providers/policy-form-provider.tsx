@@ -1,30 +1,21 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { formPolicySchema } from "@/app/(main)/schema/policy";
 import { RouteParams } from "@/app/types/enterprise";
-import { Apps, FormPolicy, PolicyApps } from "@/app/types/policy";
+import { FormPolicy } from "@/app/types/policy";
 import { Form } from "@/components/ui/form";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
 import { defaultGeneralConfig } from "../policies/[policyIdentifier]/device-general/data/default-general-config";
 import { getPolicyData } from "../policies/actions/get-policy";
 
-type ContextType = {};
+// type ContextType = {};
 
-const Context = createContext<ContextType>({
-  apps: [],
-  setApps: () => {},
-} as ContextType);
+// const Context = createContext<ContextType>({} as ContextType);
 
 export function PolicyFormProvider({ children }: { children: ReactNode }) {
   const params = useParams<RouteParams>();
@@ -61,9 +52,10 @@ export function PolicyFormProvider({ children }: { children: ReactNode }) {
 
   return (
     <Form {...form}>
-      <Context.Provider value={{}}>{children}</Context.Provider>
+      {/* <Context.Provider value={{}}>{children}</Context.Provider> */}
+      {children}
     </Form>
   );
 }
 
-export const usePolicyForm = () => useContext(Context);
+// export const usePolicyForm = () => useContext(Context);

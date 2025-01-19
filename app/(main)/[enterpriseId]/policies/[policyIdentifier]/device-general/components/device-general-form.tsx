@@ -36,7 +36,7 @@ export default function DeviceGeneralForm({
     );
   }
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 px-2">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <FormField
         control={form.control}
         name="policyData.screenCaptureDisabled"

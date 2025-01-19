@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
  * @returns policies
  * DBからポリシーを取得
  */
-export const getPoliciesFromDB = async ({
+export const getPolicies = async ({
   enterpriseId,
 }: {
   enterpriseId: string;

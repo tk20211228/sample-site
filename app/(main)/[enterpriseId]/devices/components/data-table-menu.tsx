@@ -49,7 +49,6 @@ import { syncDeviceInfoFromDB } from "../data/device";
 
 interface DataTableMenuProps {
   row: Row<DeviceTableType>;
-  // column: Column<DeviceTable>;
 }
 
 export default function DataTableMenu({ row }: DataTableMenuProps) {
@@ -57,39 +56,22 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
   const [initializationOption, setInitializationOption] = useState(
     "WIPE_DATA_FLAG_UNSPECIFIED"
   );
-  // const [device, setDevice] = useState<AndroidManagementDevice>();
   const [isLostMode, setIsLostMode] = useState(false);
   const params = useParams<RouteParams>();
   const enterpriseId = params.enterpriseId;
   const router = useRouter();
-  // デバイス情報を正しく取得
-  // const device = row.original.device_config_data;
 
-  // const onClick = async () => {
-  //   console.log(parent);
-  // setQrCode(null);
-  // const qrData = await createEnrollmentToken(parent);
-  // console.log("qrData", qrData);
-  // if (qrData) {
-  // setQrCode(qrData);
-  // setQrCode(`http://192.168.10.117:3000/api/emm/qr?parent=${parent}`);
-  // setQrCode(`https://enterprise.google.com/android/enroll?et=${qrData}`);
-  // }
-  // };
-
-  const handleDeviceInfo = async (columnId: string) => {
-    router.push(`/${enterpriseId}/devices/${columnId}`);
-    // console.log(columnId);
-    // const device = await fetchDeviceInfoFromDB(columnId);
-    // setDevice(device);
-    // setIsDetailsDialogOpen(true);
-    // console.log(columnId);
+  const handleDeviceInfo = async (deviceIdentifier: string | null) => {
+    if (!enterpriseId || !deviceIdentifier) {
+      toast.error("デバイス情報は確認できません。");
+      return;
+    }
+    router.push(`/${enterpriseId}/devices/${deviceIdentifier}`);
   };
 
-  const handleSyncDeviceInfo = async (deviceIdentifier: string) => {
-    // console.log(deviceIdentifier);
-    if (!enterpriseId) {
-      toast.error("企業IDが取得できませんでした。");
+  const handleSyncDeviceInfo = async (deviceIdentifier: string | null) => {
+    if (!enterpriseId || !deviceIdentifier) {
+      toast.error("デバイス情報の取得に失敗しました。");
       return;
     }
     await syncDeviceInfoFromDB({
@@ -101,36 +83,57 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
     });
   };
 
-  const handleDeviceAction = async (action: string) => {
-    console.log(action);
+  const handleDeviceAction = async (deviceIdentifier: string | null) => {
+    if (!enterpriseId || !deviceIdentifier) {
+      toast.error("失敗しました。");
+      return;
+    }
+    console.log(deviceIdentifier);
   };
 
-  const handleStartLostMode = async (deviceIdentifier: string) => {
-    await startLostModeSelectedDevice(enterpriseId, deviceIdentifier).then(
-      () => {
+  const handleStartLostMode = async (deviceIdentifier: string | null) => {
+    if (!enterpriseId || !deviceIdentifier) {
+      toast.error("紛失モードに失敗しました。");
+      return;
+    }
+
+    await startLostModeSelectedDevice(enterpriseId, deviceIdentifier)
+      .then(() => {
         toast.success("紛失モードを有効にしました");
         setIsLostMode(true);
-      }
-    );
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
-  const handleStopLostMode = async (deviceIdentifier: string) => {
-    await stopLostModeSelectedDevice(enterpriseId, deviceIdentifier).then(
-      () => {
+  const handleStopLostMode = async (deviceIdentifier: string | null) => {
+    if (!enterpriseId || !deviceIdentifier) {
+      toast.error("紛失モードの解除に失敗しました。");
+      return;
+    }
+    await stopLostModeSelectedDevice(enterpriseId, deviceIdentifier)
+      .then(() => {
         toast.success("紛失モードを無効にしました");
         setIsLostMode(false);
-      }
-    );
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   const handleDeviceDelete = async (
     wipeDataFlag: string,
-    deleteDeviceIdentifier: string
+    deviceIdentifier: string | null
   ) => {
+    if (!enterpriseId || !deviceIdentifier) {
+      toast.error("紛失モードの解除に失敗しました。");
+      return;
+    }
     toast.info("デバイスを削除中...");
     await deleteDevice({
       enterpriseId,
-      deleteDeviceIdentifier,
+      deviceIdentifier,
       wipeDataFlags: [wipeDataFlag],
     })
       .then(() => {
@@ -152,7 +155,7 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className=" space-y-1 px-2" align="end">
           <DropdownMenuItem
-            onSelect={() => handleDeviceInfo(row.original.deviceId)}
+            onSelect={() => handleDeviceInfo(row.original.deviceIdentifier)}
           >
             <Smartphone className="mr-4 h-4 w-4" />
             <span>デバイス詳細</span>
@@ -164,7 +167,9 @@ export default function DataTableMenu({ row }: DataTableMenuProps) {
             <span>デバイス情報取得</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => handleDeviceAction(row.original.deviceIdentifier)}
+            onClick={() =>
+              handleDeviceAction(row.original.deviceIdentifier ?? "")
+            }
           >
             <Lock className="mr-4 h-4 w-4" />
             <span>リモートロック</span>

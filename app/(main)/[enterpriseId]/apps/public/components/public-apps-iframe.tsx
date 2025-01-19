@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -27,8 +27,9 @@ export default function PublicAppsIframe({
 }) {
   const containerRef = useRef<HTMLDivElement>(null); // iframeを配置するコンテナ
   const isInitializedRef = useRef(false); // 初期化フラグ
+  const [currentUrl, setCurrentUrl] = useState<string>();
   const tokenType = "PLAY_SEARCH";
-  const { token, error } = useWebToken(enterpriseId, tokenType);
+  const { token, error } = useWebToken(enterpriseId, tokenType, currentUrl);
   const pathname = usePathname();
 
   const initialize = useCallback(
@@ -60,6 +61,7 @@ export default function PublicAppsIframe({
   );
 
   useEffect(() => {
+    setCurrentUrl(window.location.origin);
     if (token && window.gapi) {
       initialize(token);
     }
