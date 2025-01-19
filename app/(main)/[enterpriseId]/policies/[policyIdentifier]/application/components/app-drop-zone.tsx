@@ -1,13 +1,13 @@
 "use client";
 
-import { Apps } from "@/app/types/policy";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/core";
-import { CircleX } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { Apps } from "@/app/types/policy";
+import { Button } from "@/components/ui/button";
+import { CircleX } from "lucide-react";
 
 interface AppDropZoneProps {
   apps: Apps[];
@@ -49,19 +49,19 @@ export default function AppDropZone({
             アプリケーションをドロップしてください
           </p>
         ) : (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap  gap-2">
             {filteredApps.map((app) => (
-              <div key={app.appId} className="relative">
-                <div className="relative border rounded-md size-12 overflow-hidden group">
+              <div key={app.appId} className="relative group">
+                <div className="relative border rounded-md size-12 overflow-hidden ">
                   <Image src={app.iconUrl} alt={app.title} fill sizes="60px" />
                 </div>
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="absolute -top-4 -right-3 size-5 opacity-0 group-hover:opacity-100 m-2"
-                  asChild
+                  className="absolute -top-4 -right-4 size-6 opacity-0 group-hover:opacity-100 rounded-full m-1"
+                  // asChild
                 >
-                  <CircleX className="text-muted-foreground/50" />
+                  <CircleX className="text-muted-foreground" />
                 </Button>
               </div>
             ))}

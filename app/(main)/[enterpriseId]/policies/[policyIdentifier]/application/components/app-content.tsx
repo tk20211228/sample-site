@@ -1,11 +1,12 @@
 "use client";
 
 import { Apps, FormPolicy, PolicyApp } from "@/app/types/policy";
+import { cn } from "@/lib/utils";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useEffect, useState } from "react";
-import ApplicationLibrary from "./application-library";
 import { useFormContext } from "react-hook-form";
 import AppManagement from "./app-management";
+import ApplicationLibrary from "./application-library";
 
 export default function AppContent({ appsData }: { appsData: PolicyApp[] }) {
   const [apps, setApps] = useState<Apps[]>([]); //アプリケーションのデータ
@@ -109,7 +110,12 @@ export default function AppContent({ appsData }: { appsData: PolicyApp[] }) {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-2 gap-8 px-4 py-8 overflow-hidden">
+      <div
+        className={cn(
+          `grid grid-cols-2 gap-8 px-4 py-8 h-full overflow-hidden`
+          // "overflow-y-auto"
+        )}
+      >
         <ApplicationLibrary apps={apps} />
         <AppManagement apps={apps} />
       </div>

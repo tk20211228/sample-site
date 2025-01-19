@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import AppCard from "./app-card";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 export default function ApplicationLibrary({ apps }: { apps: Apps[] }) {
   const [filterApps, setFilterApps] = useState("");
@@ -30,50 +31,55 @@ export default function ApplicationLibrary({ apps }: { apps: Apps[] }) {
   });
 
   return (
-    <div className="">
-      <h2 className="text-2xl font-bold mb-4">アプリケーション一覧</h2>
-      <div className="flex flex-wrap gap-2 mb-4">
-        <Input
-          type="text"
-          placeholder="アプリケーション名を検索"
-          value={filterApps}
-          onChange={(e) => setFilterApps(e.target.value)}
-        />
-        <Select value={appType} onValueChange={setAppType}>
-          <SelectTrigger className="w-1/3">
-            <SelectValue placeholder="アプリ種別" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">全てのアプリ種類</SelectItem>
-            <SelectItem value="PUBLIC">Google Play</SelectItem>
-            <SelectItem value="PRIVATE">限定公開</SelectItem>
-            <SelectItem value="WEB">WEB</SelectItem>
-            <SelectItem value="CUSTOM">カスタム</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-1/3">
-            <SelectValue placeholder="ステータス" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">全てのステータス</SelectItem>
-            <SelectItem value="UNSET">未設定</SelectItem>
-            <SelectItem value="FORCE_INSTALLED">
-              利用可能(自動インストール)
-            </SelectItem>
-            <SelectItem value="BLOCKED">インストール不可</SelectItem>
-            <SelectItem value="AVAILABLE">
-              利用可能(手動インストール)
-            </SelectItem>
-            <SelectItem value="disabled">アプリ無効</SelectItem>
-          </SelectContent>
-        </Select>
+    <div className="flex flex-col h-full">
+      <div className="space-y-4 mb-4">
+        <h2 className="text-2xl font-bold">アプリケーション一覧</h2>
+        <div className="flex flex-wrap gap-2">
+          <Input
+            type="text"
+            placeholder="アプリケーション名を検索"
+            value={filterApps}
+            onChange={(e) => setFilterApps(e.target.value)}
+          />
+          <Select value={appType} onValueChange={setAppType}>
+            <SelectTrigger className="w-1/3">
+              <SelectValue placeholder="アプリ種別" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全てのアプリ種類</SelectItem>
+              <SelectItem value="PUBLIC">Google Play</SelectItem>
+              <SelectItem value="PRIVATE">限定公開</SelectItem>
+              <SelectItem value="WEB">WEB</SelectItem>
+              <SelectItem value="CUSTOM">カスタム</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger className="w-1/3">
+              <SelectValue placeholder="ステータス" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全てのステータス</SelectItem>
+              <SelectItem value="UNSET">未設定</SelectItem>
+              <SelectItem value="FORCE_INSTALLED">
+                利用可能(自動インストール)
+              </SelectItem>
+              <SelectItem value="BLOCKED">インストール不可</SelectItem>
+              <SelectItem value="AVAILABLE">
+                利用可能(手動インストール)
+              </SelectItem>
+              <SelectItem value="disabled">アプリ無効</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-      <div className="grid grid-cols-1 space-y-1">
-        {filteredApps.map((app) => (
-          <AppCard key={app.appId} app={app} />
-        ))}
-      </div>
+      <ScrollArea className="flex-1 min-h-0">
+        <div className="space-y-2">
+          {filteredApps.map((app) => (
+            <AppCard key={app.appId} app={app} />
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   );
 }

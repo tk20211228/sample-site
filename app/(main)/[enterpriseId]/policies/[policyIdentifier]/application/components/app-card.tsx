@@ -8,7 +8,13 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { SiGoogleplay } from "@icons-pack/react-simple-icons";
-import { EllipsisIcon, GlobeLockIcon, LockIcon, RefreshCw } from "lucide-react";
+import {
+  GlobeLockIcon,
+  GripVertical,
+  List,
+  LockIcon,
+  RefreshCw,
+} from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -29,6 +35,8 @@ export default function AppCard({ app }: { app: Apps }) {
   const style = transform
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        opacity: 0.5,
+        boxShadow: "0 5px 15px rgba(0,0,0,0.15)",
       }
     : undefined;
 
@@ -46,19 +54,24 @@ export default function AppCard({ app }: { app: Apps }) {
   }
 
   return (
-    <Card
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-      className="cursor-grab relative"
-    >
+    <Card ref={setNodeRef} style={style} className="relative  hover:shadow-md">
       <CardContent
         className={cn(
           "flex items-center space-x-2 p-4"
           // app.installType === "BLOCKED" ? "bg-muted/50" : "",
         )}
       >
+        {" "}
+        <Button
+          size="icon"
+          variant="ghost"
+          className="text-muted-foreground size-10 cursor-grab w-fit p-2 z-10"
+          {...listeners}
+          {...attributes}
+        >
+          <GripVertical className="size-4" />
+          <span className="sr-only">ドラッグハンドル</span>
+        </Button>
         <div className="relative">
           <div className="relative border rounded-md size-10 overflow-hidden">
             <Image src={app.iconUrl} alt={app.title} fill sizes="40px" />
@@ -71,19 +84,18 @@ export default function AppCard({ app }: { app: Apps }) {
             <GlobeLockIcon className="size-4 text-muted-foreground absolute -top-3 -right-3" />
           )}
         </div>
-
         <CardTitle className="truncate text-lg pl-2 w-full" title={app.title}>
           {app.title}
         </CardTitle>
         {/* <span className="flex-1"></span> */}
         <Separator orientation="vertical" className="h-10 mx-1" />
-
         {(app.installType || app.disabled) && (
-          <div className="w-[205px]">
+          <div className="w-[200px]">
             <Badge
               variant={
                 app.installType === "BLOCKED" ? "destructive" : "secondary"
               }
+              className=""
             >
               {app.installType === "BLOCKED"
                 ? "インストール不可"
@@ -95,25 +107,17 @@ export default function AppCard({ app }: { app: Apps }) {
             </Badge>
           </div>
         )}
-
-        {/* <Button variant="ghost" size="icon" className="z-10">
-          <MenuIcon className="size-4 mx-2" />
-        </Button> */}
-        <DropdownMenu data-no-dnd>
-          <DropdownMenuTrigger asChild data-no-dnd>
-            <Button variant="ghost" size="icon" className="z-10" data-no-dnd>
-              <EllipsisIcon className="size-4 mx-2" data-no-dnd />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="z-10">
+              <List className="size-4 mx-2" />
               <span className="sr-only">メニューを開く</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuPortal>
-            <DropdownMenuContent
-              className=" space-y-1 px-2"
-              align="end"
-              data-no-dnd
-            >
-              <DropdownMenuItem onSelect={handleResetAppPolicy} data-no-dnd>
-                <RefreshCw className="mr-4 size-4" data-no-dnd />
+            <DropdownMenuContent className=" space-y-1 px-2" align="end">
+              <DropdownMenuItem onSelect={handleResetAppPolicy}>
+                <RefreshCw className="mr-4 size-4" />
                 <span>設定をリセット</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
