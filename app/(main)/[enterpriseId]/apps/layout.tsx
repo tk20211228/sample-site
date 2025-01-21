@@ -17,7 +17,6 @@ export default function RootLayout({
     <AppsInfoSheetProvider>
       <div className="flex">
         <AppsSidebar className="hidden xl:block" />
-        {/* <AppsMenuBar className="hidden xl:block" /> */}
         <div className="flex-1 min-w-0">{children}</div>
       </div>
     </AppsInfoSheetProvider>

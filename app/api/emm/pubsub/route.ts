@@ -26,11 +26,11 @@ interface PubSubMessage {
   subscription: string;
 }
 export type notificationType =
-  | "COMMAND"
-  | "USAGE_LOGS"
-  | "STATUS_REPORT"
-  | "ENROLLMENT"
-  | "test";
+  | "COMMAND" //デバイス コマンドが完了すると送信される通知。
+  | "USAGE_LOGS" //デバイスが BatchUsageLogEvents を送信したときに送信される通知。
+  | "STATUS_REPORT" //デバイスがステータス レポートを発行したときに送信される通知。
+  | "ENROLLMENT" //デバイスが登録されたときに送信される通知。
+  | "test"; //enterpriseIdの作成、更新の際、テスト用で送信される通知
 
 /**
  * Pub/Subのメッセージを受信する

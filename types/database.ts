@@ -33,11 +33,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "application_reports_device_identifier_enterprise_id_fkey"
-            columns: ["device_identifier", "enterprise_id"]
+            foreignKeyName: "application_reports_enterprise_id_device_identifier_fkey"
+            columns: ["enterprise_id", "device_identifier"]
             isOneToOne: true
             referencedRelation: "devices"
-            referencedColumns: ["device_identifier", "enterprise_id"]
+            referencedColumns: ["enterprise_id", "device_identifier"]
           },
         ]
       }
@@ -163,11 +163,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "devices_histories_device_identifier_enterprise_id_fkey"
-            columns: ["device_identifier", "enterprise_id"]
+            foreignKeyName: "devices_histories_enterprise_id_device_identifier_fkey"
+            columns: ["enterprise_id", "device_identifier"]
             isOneToOne: false
             referencedRelation: "devices"
-            referencedColumns: ["device_identifier", "enterprise_id"]
+            referencedColumns: ["enterprise_id", "device_identifier"]
           },
         ]
       }
@@ -262,11 +262,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "memory_events_device_identifier_enterprise_id_fkey"
-            columns: ["device_identifier", "enterprise_id"]
-            isOneToOne: true
+            foreignKeyName: "memory_events_enterprise_id_device_identifier_fkey"
+            columns: ["enterprise_id", "device_identifier"]
+            isOneToOne: false
             referencedRelation: "devices"
-            referencedColumns: ["device_identifier", "enterprise_id"]
+            referencedColumns: ["enterprise_id", "device_identifier"]
           },
         ]
       }
@@ -303,11 +303,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "operations_device_identifier_enterprise_id_fkey"
-            columns: ["device_identifier", "enterprise_id"]
+            foreignKeyName: "operations_enterprise_id_device_identifier_fkey"
+            columns: ["enterprise_id", "device_identifier"]
             isOneToOne: false
             referencedRelation: "devices"
-            referencedColumns: ["device_identifier", "enterprise_id"]
+            referencedColumns: ["enterprise_id", "device_identifier"]
           },
         ]
       }
@@ -408,11 +408,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "power_management_events_device_identifier_enterprise_id_fkey"
-            columns: ["device_identifier", "enterprise_id"]
-            isOneToOne: true
+            foreignKeyName: "power_management_events_enterprise_id_device_identifier_fkey"
+            columns: ["enterprise_id", "device_identifier"]
+            isOneToOne: false
             referencedRelation: "devices"
-            referencedColumns: ["device_identifier", "enterprise_id"]
+            referencedColumns: ["enterprise_id", "device_identifier"]
           },
         ]
       }
@@ -423,7 +423,7 @@ export type Database = {
           project_member_id: string
           role: string
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -431,7 +431,7 @@ export type Database = {
           project_member_id?: string
           role: string
           updated_at: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -439,7 +439,7 @@ export type Database = {
           project_member_id?: string
           role?: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -620,7 +620,7 @@ export type Database = {
           total_devices?: number
           total_policies?: number
           total_projects?: number
-          updated_at?: string
+          updated_at: string
           usage_id?: string
         }
         Update: {

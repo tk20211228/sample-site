@@ -5,40 +5,22 @@ import { cn } from "@/lib/utils";
 import { Loader2Icon, LogOutIcon } from "lucide-react";
 import { useFormStatus } from "react-dom";
 
-export default function SignOutButton({ mode }: { mode?: "hover" }) {
+export default function SignOutButton({ className }: { className?: string }) {
   const status = useFormStatus();
   return (
     <Button
       variant="ghost"
-      className={cn(
-        "relative gap-2 transition-all duration-200 w-full",
-        mode === "hover" && "group-hover:w-full"
-      )}
+      className={cn("gap-2 w-full justify-start px-3 py-1 h-8", className)}
     >
       {status.pending ? (
         <>
-          <Loader2Icon
-            size={20}
-            className={cn("animate-spin absolute left-3")}
-          />
-          <span
-            className={cn(
-              mode === "hover" && "opacity-0 transition group-hover:opacity-100"
-            )}
-          >
-            サインアウト中...
-          </span>
+          <Loader2Icon size={20} />
+          <span>サインアウト中...</span>
         </>
       ) : (
         <>
-          <LogOutIcon size={20} className="absolute left-3" />
-          <span
-            className={cn(
-              mode === "hover" && "opacity-0 transition group-hover:opacity-100"
-            )}
-          >
-            サインアウト
-          </span>
+          <LogOutIcon size={20} className="" />
+          <span>サインアウト</span>
         </>
       )}
     </Button>

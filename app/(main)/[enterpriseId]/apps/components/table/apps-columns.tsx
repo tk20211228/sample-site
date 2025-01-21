@@ -8,7 +8,7 @@ import Image from "next/image";
 import { DataTableColumnSortHeader } from "../../../../projects/components/table/data-table-column-sort-header";
 import AppsTableMenu from "./apps-table-menu";
 
-export type AppsColumnDef = ColumnDef<AppsTableType>;
+type AppsColumnDef = ColumnDef<AppsTableType>;
 
 export const appsColumns: AppsColumnDef[] = [
   {

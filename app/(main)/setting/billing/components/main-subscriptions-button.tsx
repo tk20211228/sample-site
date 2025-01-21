@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
-export default function StartSubscriptionButton({
+export default function MainSubscriptionButton({
   className,
   isLoading,
 }: {

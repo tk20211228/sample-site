@@ -1,20 +1,19 @@
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Geist, Geist_Mono } from "next/font/google";
 
 import { ThemeProvider } from "@/components/theme-provider";
-import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const fontSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const fontMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
@@ -29,9 +28,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body
+      {/* <body
         className={cn(
           `${geistSans.variable} ${geistMono.variable} antialiased`,
+          "min-h-dvh flex flex-col"
+        )}
+        suppressHydrationWarning
+      > */}
+      <body
+        className={cn(
+          `${fontSans.variable} ${fontMono.variable} antialiased `,
           "min-h-dvh flex flex-col"
         )}
         suppressHydrationWarning

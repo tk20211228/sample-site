@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import SignOutButton from "../../projects/components/sign-out-button";
+import { signOut } from "@/actions/auth-social ";
 
 export default function UserMenu({ mode }: { mode?: "hover" }) {
   return (
@@ -37,13 +39,14 @@ export default function UserMenu({ mode }: { mode?: "hover" }) {
         <Button
           variant="ghost"
           className={cn(
-            "relative gap-2 transition-all duration-200",
+            "relative gap-2 transition-all duration-200 justify-start",
             mode === "hover" && "group-hover:w-full"
           )}
         >
           <CircleUserRoundIcon size={20} className="absolute left-3" />
           <span
             className={cn(
+              "absolute left-12",
               mode === "hover" && "opacity-0 transition group-hover:opacity-100"
             )}
           >
@@ -53,7 +56,7 @@ export default function UserMenu({ mode }: { mode?: "hover" }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <div className="flex items-center justify-between">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>アカウント情報</DropdownMenuLabel>
           <ModeToggle />
         </div>
         <DropdownMenuSeparator />
@@ -65,12 +68,6 @@ export default function UserMenu({ mode }: { mode?: "hover" }) {
           <DropdownMenuItem disabled>
             <CreditCard size={20} className="mr-2" />
             <span>請求管理</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/plans">
-              <BadgeCheck size={20} className="mr-2" />
-              <span>支払いプラン</span>
-            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/setting/billing">
@@ -118,6 +115,9 @@ export default function UserMenu({ mode }: { mode?: "hover" }) {
           <LifeBuoy size={20} className="mr-2" />
           <span>サポート</span>
         </DropdownMenuItem>
+        <form action={signOut}>
+          <SignOutButton />
+        </form>
       </DropdownMenuContent>
     </DropdownMenu>
   );

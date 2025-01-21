@@ -9,5 +9,4 @@ export type ListDevicesResponse =
 export type DeviceTableType = z.infer<typeof DevicesTableSchema>;
 
 // route.tsで使用
-export type DeviceCommand = androidmanagement_v1.Schema$Command;
 export type DeviceOperation = androidmanagement_v1.Schema$Operation;

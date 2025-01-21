@@ -7,6 +7,7 @@ import { saveDeviceStatus } from "./save-device";
 import { notificationType } from "../../route";
 import { BatchUsageLogEvents } from "@/app/api/types/event";
 import { saveUsageLogs } from "./save-usage-logs";
+import { saveDeviceInfoSubscriptions } from "./save-device-info-subscriptions";
 // import { saveDeviceInfoSubscriptions } from "./save-device-info-subscriptions";
 
 export const dispatchDeviceEvent = async ({
@@ -39,7 +40,7 @@ export const dispatchDeviceEvent = async ({
         deviceIdentifier,
         device: data as AndroidManagementDevice,
       }).then(() => {
-        // saveDeviceInfoSubscriptions(enterpriseId);
+        saveDeviceInfoSubscriptions(enterpriseId);
       });
       break;
 

@@ -57,28 +57,23 @@ const statusReportingSettingsSchema = z.object({
   }),
   commonCriteriaModeEnabled: z.boolean().default(true),
 });
-
-export const managedConfigurationTemplateSchema = z
+const managedConfigurationTemplateSchema = z
   .object({
     // ManagedConfigurationTemplate の詳細なスキーマが必要な場合は追加
   })
   .optional();
-
-export const permissionGrantSchema = z.object({
+const permissionGrantSchema = z.object({
   // PermissionGrant の詳細なスキーマが必要な場合は追加
 });
-
-export const installConstraintSchema = z.object({
+const installConstraintSchema = z.object({
   // InstallConstraint の詳細なスキーマが必要な場合は追加
 });
-
-export const extensionConfigSchema = z
+const extensionConfigSchema = z
   .object({
     // ExtensionConfig の詳細なスキーマが必要な場合は追加
   })
   .optional();
-
-export const applicationsSchema = z.object({
+const applicationsSchema = z.object({
   accessibleTrackIds: z.array(z.string()).nullable().optional(),
   alwaysOnVpnLockdownExemption: z.string().nullable().optional(),
   autoUpdateMode: z.string().nullable().optional(),
@@ -116,14 +111,6 @@ export const policySchema = z.object({
   statusReportingSettings: statusReportingSettingsSchema,
   applications: z.array(applicationsSchema).optional(),
 }) satisfies z.ZodType<AndroidManagementPolicy>;
-
-export const policyDisplayNameSchema = z.object({
-  display_name: z
-    .string()
-    .trim()
-    .min(1, "ポリシー名を入力してください。")
-    .optional(),
-});
 
 export const formPolicySchema = z.object({
   policyData: policySchema,

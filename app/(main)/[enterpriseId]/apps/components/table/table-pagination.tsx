@@ -16,25 +16,20 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-interface ManagementAppsTablePaginationProps<TData> {
+interface TablePaginationProps<TData> {
   table: Table<TData>;
   className?: string;
 }
 
-export function ManagementAppsTablePagination<TData>({
+export function TablePagination<TData>({
   className,
   table,
-}: ManagementAppsTablePaginationProps<TData>) {
-  const isSelected = table.getFilteredSelectedRowModel().rows.length > 0;
+}: TablePaginationProps<TData>) {
   return (
     <div className={cn("flex items-center justify-between px-2", className)}>
       <div className="flex-1 text-sm text-muted-foreground">
-        {isSelected && (
-          <>
-            {table.getFilteredSelectedRowModel().rows.length} /{" "}
-            {table.getFilteredRowModel().rows.length} 選択中
-          </>
-        )}
+        {table.getFilteredSelectedRowModel().rows.length} /{" "}
+        {table.getFilteredRowModel().rows.length}
       </div>
       <div className="flex items-center space-x-4 lg:space-x-8">
         <div className="flex items-center space-x-2">

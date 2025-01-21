@@ -1,13 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, createContext, useEffect, useState } from "react";
 
 type ContextType = {
   isLoaded: boolean;
@@ -45,5 +39,3 @@ export function GapiIframesProvider({ children }: { children: ReactNode }) {
     </Context.Provider>
   );
 }
-
-export const useGapiIframes = () => useContext(Context);

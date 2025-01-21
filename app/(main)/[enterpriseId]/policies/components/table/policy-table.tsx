@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/table-resizing";
 
 import { cn } from "@/lib/utils";
+import { TablePagination } from "../../../apps/components/table/table-pagination";
 import { useResizeColumn } from "../../../providers/policies-table";
 import { PolicyTableType } from "../../types/policy";
 import { usePoliciesTable } from "../policies-table-provider";
-import { PoliciesTablePagination } from "./policies-table-pagination";
 import { PoliciesTableToolbar } from "./policies-table-toolbar";
 
 interface DataTableProps<TData extends PolicyTableType, TValue> {
@@ -129,7 +129,7 @@ export default function PoliciesTable<TData extends PolicyTableType, TValue>({
           )}
         </TableBody>
       </Table>
-      <PoliciesTablePagination table={table} className="pt-1" />
+      <TablePagination table={table} className="pt-1" />
     </div>
   );
 }

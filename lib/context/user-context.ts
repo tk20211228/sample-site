@@ -3,7 +3,7 @@ import IPinfoWrapper from "node-ipinfo";
 
 const ipinfoClient = new IPinfoWrapper(process.env.IPINFO_TOKEN || "");
 
-export type UserContextData = {
+type UserContextData = {
   ip_address: string;
   location: string;
   city?: string;

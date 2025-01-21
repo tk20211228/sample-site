@@ -1,5 +1,5 @@
 import "server-only";
-
+import { v7 as uuidv7 } from "uuid";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const saveDeviceInfoSubscriptions = async (enterpriseId: string) => {
@@ -7,7 +7,14 @@ export const saveDeviceInfoSubscriptions = async (enterpriseId: string) => {
   // まず owner_id を取得
   const { data: enterpriseData, error: enterpriseError } = await supabase
     .from("enterprises")
-    .select("owner_id")
+    .select(
+      `
+      owner_id,
+      ...subscriptions(
+        subscription_id
+      )
+    `
+    )
     .eq("enterprise_id", enterpriseId)
     .single();
 
@@ -27,21 +34,24 @@ export const saveDeviceInfoSubscriptions = async (enterpriseId: string) => {
   if (countError) throw countError;
   if (count === null) throw new Error("Failed to count devices");
 
-  //enterpriseIdでenterprisesテーブルとsubscriptionテーブルを結合して、subscription.plan_configに合計のデバイスを記録
-  const { error: subscriptionsError } = await supabase
-    .from("subscriptions")
-    .update({
-      plan_config: {
-        usage: {
-          devices: {
-            total: count,
-            active: count,
-            inactive: 0,
-          },
-        },
+  // subscription.plan_configに合計のデバイスを記録
+  const { data: subscriptionsData, error: subscriptionsError } = await supabase
+    .from("subscription_usages")
+    .upsert(
+      {
+        usage_id: uuidv7(),
+        subscription_id: enterpriseData.subscription_id,
+        total_devices: count,
+        updated_at: new Date().toISOString(),
       },
-    })
-    .eq("owner_id", enterpriseData.owner_id);
+      {
+        onConflict: "subscription_id",
+      }
+    )
+    .select();
+
+  console.log("saveDeviceInfoSubscriptions", subscriptionsData);
+
   if (subscriptionsError) {
     console.error(subscriptionsError);
     return;

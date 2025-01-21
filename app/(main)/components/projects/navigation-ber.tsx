@@ -1,6 +1,5 @@
 "use client";
 
-import { signOut } from "@/actions/auth-social ";
 import { AppConfig } from "@/app.config";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,7 +9,6 @@ import { HomeIcon, ShieldCheckIcon, SmartphoneIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import ProjectLinkButton from "../../projects/components/project-link-button";
-import SignOutButton from "../../projects/components/sign-out-button";
 import UserMenu from "./user-menu";
 
 export default function NavigationBar({
@@ -73,10 +71,7 @@ export default function NavigationBar({
           </Button>
         </ul>
 
-        <ul className="flex flex-col gap-2">
-          <form action={signOut}>
-            <SignOutButton mode="hover" />
-          </form>
+        <ul className="flex flex-col gap-2 pb-1">
           <UserMenu mode="hover" />
         </ul>
       </nav>

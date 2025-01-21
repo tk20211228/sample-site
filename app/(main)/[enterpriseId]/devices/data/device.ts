@@ -1,7 +1,6 @@
 "use server";
 
 import { createAndroidManagementClient } from "@/actions/emm/client";
-import { AndroidManagementDevice } from "@/app/types/device";
 import { createClient } from "@/lib/supabase/server";
 import { Json } from "@/types/database";
 import { revalidatePath } from "next/cache";
@@ -44,27 +43,6 @@ export const getDevicesData = async ({
   }
 
   return devices;
-};
-
-/**
- * デバイスを取得
- * @param deviceId
- * @returns device
- * デバイスの詳細情報を取得
- */
-export const fetchDeviceInfoFromDB = async (deviceId: string) => {
-  const supabase = await createClient();
-  const { data: device } = await supabase
-    .from("devices")
-    .select("device_data")
-    .eq("deviceId", deviceId)
-    .single();
-
-  if (!device) {
-    throw new Error("Failed to fetch device from database");
-  }
-
-  return device.device_data as AndroidManagementDevice;
 };
 
 export const syncDeviceInfoFromDB = async ({

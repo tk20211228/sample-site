@@ -9,7 +9,7 @@ import { encryptData } from "./crypto";
 /**
  *　サインアップURLを取得する
  * @param projectId ProjectテーブルのテーブルID
- * @param url リダイレクト先のURL　例: `${process.env.HOST}/api/emm/callback`　※https必須
+ * @param url リダイレクト先のURL
  */
 export const getSignUpUrl = async (
   projectId: string,
@@ -26,8 +26,6 @@ export const getSignUpUrl = async (
   const androidmanagement = await createAndroidManagementClient();
   const { data } = await androidmanagement.signupUrls
     .create({
-      // callbackUrl: process.env.EMM_SIGNUP_URL + "/api/emm/callback",
-      // callbackUrl: `${process.env.HOST}/api/emm/callback
       callbackUrl: `${url}/api/emm/callback`,
       projectId: process.env.EMM_PROJECT_ID,
     })

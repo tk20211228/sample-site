@@ -1,7 +1,7 @@
 // 参考①：supabase-doc https://supabase.com/docs/guides/auth/debugging/error-codes
 // 参考②：supabase-mdx https://github.com/supabase/supabase/blob/master/apps/docs/components/MDX/auth_error_codes_table.mdx
 // 参考③：nino+ https://gist.github.com/dninomiya/53e0054e72bb6da54bd8419b1e62a187
-export const supabaseAuthErrors = {
+const supabaseAuthErrors = {
   anonymous_provider_disabled: "匿名サインインが無効です。",
   bad_code_verifier:
     "提供されたコード検証値が正しいものと一致しません。クライアントライブラリの実装にバグがあります。",
