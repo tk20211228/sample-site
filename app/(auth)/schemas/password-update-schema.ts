@@ -1,7 +1,7 @@
 import { isStrongPassword } from "validator"; // pnpm install --save @types/validator > pnpm install --save @types/validator
 import { z } from "zod";
 
-export const passwordSchema = z
+const passwordSchema = z
   .string()
   .min(8, "最小8文字以上で設定してください")
   .refine(

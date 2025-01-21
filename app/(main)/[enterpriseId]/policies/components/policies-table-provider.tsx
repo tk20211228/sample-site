@@ -17,6 +17,7 @@ import {
 
 import { ReactNode, createContext, useContext, useState } from "react";
 import { ResizeColumnProvider } from "../../providers/policies-table";
+
 import { PolicyTableType } from "../types/policy";
 
 type ContextType = {

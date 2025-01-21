@@ -4,12 +4,22 @@ import { createOrRetrieveCustomer } from "@/data/stripe/get-customer";
 import { stripe } from "@/lib/stripe";
 import { redirect } from "next/navigation";
 
-export const redirectToCheckout = async (lookupKey: string, url: string) => {
+/**
+ * オプションサブスクリプションのチェックアウト
+ * @param lookupKey 価格キー
+ * @param url リダイレクト先URL
+ */
+export const redirectToOptionSubscriptionCheckout = async (
+  lookupKey: string,
+  url: string
+) => {
   const price = await stripe.prices.list({
     lookup_keys: [lookupKey],
   });
-
+  const customer = await createOrRetrieveCustomer();
   const session = await stripe.checkout.sessions.create({
+    customer,
+    billing_address_collection: "auto",
     payment_method_types: ["card"],
     line_items: [
       {
@@ -17,7 +27,7 @@ export const redirectToCheckout = async (lookupKey: string, url: string) => {
         quantity: 1,
       },
     ],
-    mode: "payment",
+    mode: "subscription",
     success_url: `${url}/plans`,
     cancel_url: `${url}/plans`,
   });
@@ -28,19 +38,23 @@ export const redirectToCheckout = async (lookupKey: string, url: string) => {
   redirect(session.url);
 };
 
-export const redirectToSubscriptionCheckout = async (
+/**
+ * デバイス-サブスクリプションのチェックアウト
+ * @param lookupKey 価格キー
+ * @param url リダイレクト先URL
+ * @param quantity 数量
+ * 参考URL https://docs.stripe.com/api/prices/list
+ */
+export const redirectToDeviceSubscriptionCheckout = async (
   lookupKey: string,
   url: string,
   quantity: number
 ) => {
-  // https://docs.stripe.com/api/prices/list
+  //
   const prices = await stripe.prices.list({
     lookup_keys: [lookupKey],
     expand: ["data.product"],
   });
-  console.log("prices", prices);
-
-  // console.log("redirectToSubscriptionCheckout paries", prices);
   const customer = await createOrRetrieveCustomer();
   const session = await stripe.checkout.sessions.create({
     customer,

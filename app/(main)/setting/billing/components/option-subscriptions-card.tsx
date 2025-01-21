@@ -1,3 +1,5 @@
+import { Price } from "@/app/types/stripe";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,15 +8,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import StartOptionSubscriptionButton from "./start-option-subscriptions-button";
 import { CheckIcon } from "lucide-react";
-import { Price } from "@/app/types/stripe";
-import { Button } from "@/components/ui/button";
+import { redirectToOptionSubscriptionCheckout } from "../actions/stripe";
+import { optionList } from "../data/option-list";
+import OptionSubscriptionButton from "./option-subscriptions-button";
 
-export default function AddOptionSubscriptionsCard({
+export default function OptionSubscriptionsCard({
   prices,
+  url,
 }: {
   prices: Price[];
+  url: string;
 }) {
   return (
     <Card className="mt-4 border-blue-600/50 rounded-xl relative">
@@ -22,20 +26,27 @@ export default function AddOptionSubscriptionsCard({
         <CardTitle className="tracking-wide">追加オプション</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-1 xl:grid-cols-4 gap-4 divide-y-4 xl:divide-y-0 xl:divide-x">
-        {option.map((item) => {
+        {optionList.map((item) => {
           const price = prices.find(
             (price) => price.lookupKey === item.lookupKey
           );
           return (
-            <div key={item.lookupKey} className="pl-5 pr-1 py-6">
+            <form
+              action={redirectToOptionSubscriptionCheckout.bind(
+                null,
+                item.lookupKey,
+                url
+              )}
+              key={item.lookupKey}
+              className="pl-5 pr-1 py-6"
+            >
               {price && (
                 <>
                   <CardTitle className="tracking-wide">{price.name}</CardTitle>
                   <CardDescription className="py-4 whitespace-pre-line">
                     {item.description}
                   </CardDescription>
-                  <StartOptionSubscriptionButton />
-
+                  <OptionSubscriptionButton />
                   <div className="mt-6">
                     <span className="text-5xl font-sans">
                       ¥{price.amount.toLocaleString()}
@@ -80,53 +91,10 @@ export default function AddOptionSubscriptionsCard({
                   ))}
                 </ul>
               </div>
-            </div>
+            </form>
           );
         })}
       </CardContent>
     </Card>
   );
 }
-
-const option = [
-  {
-    lookupKey: "light",
-    description: `下記の機能、
-    サポートが拡張されます。`,
-    functionList: ["プロジェクト : 2個", "ポリシー : 5個"],
-  },
-  {
-    lookupKey: "standard",
-    description: `下記の機能、
-    サポートが拡張されます。`,
-    functionList: [
-      "プロジェクト : 5個",
-      "ポリシー : 50個",
-      "メールサポート (営業時間内)",
-    ],
-  },
-  {
-    lookupKey: "premium",
-    description: `下記の機能、
-    サポートが拡張されます。`,
-    functionList: [
-      "プロジェクト : 10個",
-      "ポリシー : 100個",
-      "メールサポート (営業時間内)",
-      "電話サポート (営業時間内)",
-    ],
-  },
-  {
-    lookupKey: "custom",
-    description: `ご希望に合わせ、
-    サポートをカスタマイズします。`,
-    functionList: [
-      "無制限のプロジェクト作成",
-      "無制限のポリシー作成",
-      "メールサポート (営業時間内)",
-      "電話サポート (営業時間内)",
-      "担当営業による訪問サポート",
-      "プロジェクトを複数ユーザーに共有",
-    ],
-  },
-];

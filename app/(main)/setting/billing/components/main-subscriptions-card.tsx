@@ -22,8 +22,8 @@ import { CheckIcon } from "lucide-react";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { redirectToSubscriptionCheckout } from "../actions/stripe";
-import StartSubscriptionButton from "./start-subscriptions-button";
+import { redirectToDeviceSubscriptionCheckout } from "../actions/stripe";
+import MainSubscriptionButton from "./main-subscriptions-button";
 
 export default function MainSubscriptionsCard({
   url,
@@ -46,13 +46,15 @@ export default function MainSubscriptionsCard({
   const handleSubscriptionCheckout = async (data: SubscriptionDevice) => {
     const quantity = data.quantity;
     startTransition(async () => {
-      await redirectToSubscriptionCheckout(lookupKey, url, quantity).catch(
-        (error) => {
-          toast.error("エラーが発生しました", {
-            description: error.message,
-          });
-        }
-      );
+      await redirectToDeviceSubscriptionCheckout(
+        lookupKey,
+        url,
+        quantity
+      ).catch((error) => {
+        toast.error("エラーが発生しました", {
+          description: error.message,
+        });
+      });
     });
   };
   const currentQuantity = form.watch("quantity");
@@ -66,7 +68,7 @@ export default function MainSubscriptionsCard({
             <CardTitle className="text-blue-500">ライセンスを購入</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center">
-            <StartSubscriptionButton isLoading={isLoading} />
+            <MainSubscriptionButton isLoading={isLoading} />
             {prices.map((price) => (
               <div
                 key={price.lookupKey}
@@ -95,13 +97,6 @@ export default function MainSubscriptionsCard({
                               autoComplete="off"
                               onChange={(e) => {
                                 const value = e.target.value;
-                                // console.log("value", value);
-                                // console.log("typeof value", typeof value);
-                                // console.log("Number(value)", Number(value));
-                                // console.log(
-                                //   "field.value",
-                                //   typeof Number(value)
-                                // );
                                 field.onChange(Number(value));
                               }}
                               min={1}

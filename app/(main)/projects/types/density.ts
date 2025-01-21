@@ -10,22 +10,22 @@ import {
 
 // 新しい機能のカスタム状態のタイプを定義
 // 行の密度の状態
-export type DensityState = "sm" | "md" | "lg" | "xl";
-export interface DensityTableState {
+type DensityState = "sm" | "md" | "lg" | "xl";
+interface DensityTableState {
   density: DensityState;
 }
 
 // 新しい機能のテーブル オプションのタイプ
-export interface DensityOptions {
+interface DensityOptions {
   enableDensity?: boolean; // 行の密度を有効にするかどうか
   onDensityChange?: OnChangeFn<DensityState>; // 行の密度が変更されたときの処理
 }
 
 // 新しい機能のテーブル API のタイプを定義
-export interface DensityInstance {
-  setDensity: (updater: Updater<DensityState>) => void; // 行の密度を設定する
-  toggleDensity: (value?: DensityState) => void; // 行の密度を切り替える
-}
+// interface DensityInstance {
+//   setDensity: (updater: Updater<DensityState>) => void; // 行の密度を設定する
+//   toggleDensity: (value?: DensityState) => void; // 行の密度を切り替える
+// }
 
 // 宣言マージを使用して、新しい機能 API と状態タイプを TanStack テーブルの既存のタイプに追加
 declare module "@tanstack/react-table" {

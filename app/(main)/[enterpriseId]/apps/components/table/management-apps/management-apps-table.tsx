@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 import LoaderTable from "../loader-table";
-import { ManagementAppsTablePagination } from "./management-apps-table-pagination";
+import { TablePagination } from "../table-pagination";
 import { ManagementAppsTableToolbar } from "./management-apps-table-toolbar";
 
 interface DataTableProps<TData> {
@@ -171,7 +171,7 @@ export default function ManagementAppsTable<TData>({
           )}
         </TableBody>
       </Table>
-      <ManagementAppsTablePagination table={table} className="pt-1" />
+      <TablePagination table={table} className="pt-1" />
     </div>
   );
 }

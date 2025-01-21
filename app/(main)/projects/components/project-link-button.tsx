@@ -13,13 +13,14 @@ export default function ProjectLinkButton({
   return (
     <Button
       variant="ghost"
-      className={cn("relative gap-2", isActive && "bg-accent")}
+      className={cn("relative gap-2 justify-start", isActive && "bg-accent")}
       asChild
     >
       <Link href="/projects">
         <LayoutDashboardIcon size={20} className="absolute left-3" />
         <span
           className={cn(
+            "absolute left-12",
             mode === "hover" &&
               "opacity-0 group-hover:opacity-100 transition-all"
           )}

@@ -2,7 +2,7 @@
  * 紛失モード中のデバイスから位置情報を取得した際のメッセージ
  * 参考URL：https://developers.google.com/android/management/reference/rest/v1/BatchUsageLogEvents?hl=ja#usagelogevent
  */
-export const usageLogEvent = {
+const usageLogEvent = {
   // デバイスのロック状態関連
   KEYGUARD_DISMISSED: "デバイスのロック画面が解除されました。",
   KEYGUARD_DISMISS_AUTH_ATTEMPT: "デバイスのロック解除が試行されました。",

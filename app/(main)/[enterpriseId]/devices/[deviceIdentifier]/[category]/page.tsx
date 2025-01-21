@@ -7,6 +7,13 @@ import {
   CATEGORY_NAMES,
   CategoryType,
 } from "../../data/categories";
+import HardwareInfo from "./components/hardware-info";
+import SoftwareInfo from "./components/software-info";
+import ApplicationReport from "./components/application-report";
+import PolicyInfo from "./components/policy-info";
+import NetworkInfo from "./components/network-info";
+import SecurityInfo from "./components/security";
+import DeviceLog from "./components/device-log";
 
 export default async function Page({
   params,
@@ -23,13 +30,27 @@ export default async function Page({
   return (
     <div>
       <CategoryProvider className="hidden lg:block">
-        <TabsContent value="hardware">ハードウェア情報</TabsContent>
-        <TabsContent value="software">ソフトウエア情報</TabsContent>
-        <TabsContent value="application">アプリケーションレポート</TabsContent>
-        <TabsContent value="policy">ポリシー情報</TabsContent>
-        <TabsContent value="network">ネットワーク情報</TabsContent>
-        <TabsContent value="security">セキュリティ情報</TabsContent>
-        <TabsContent value="log">ログ</TabsContent>
+        <TabsContent value="hardware">
+          <HardwareInfo />
+        </TabsContent>
+        <TabsContent value="software">
+          <SoftwareInfo />
+        </TabsContent>
+        <TabsContent value="application">
+          <ApplicationReport />
+        </TabsContent>
+        <TabsContent value="policy">
+          <PolicyInfo />
+        </TabsContent>
+        <TabsContent value="network">
+          <NetworkInfo />
+        </TabsContent>
+        <TabsContent value="security">
+          <SecurityInfo />
+        </TabsContent>
+        <TabsContent value="log">
+          <DeviceLog />
+        </TabsContent>
       </CategoryProvider>
       <div className="lg:hidden">{categoryName}</div>
     </div>

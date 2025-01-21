@@ -1,8 +1,7 @@
 import { getBaseURL } from "@/lib/base-url/client";
-import AddOptionSubscriptionsCard from "./components/add-option-subscriptions-card";
-import AssortSubscriptionsCard from "./components/assort-subscriptions-card";
-import MainSubscriptionsCard from "./components/main-subscriptions-card";
 import { getPrices } from "./actions/stripe";
+import MainSubscriptionsCard from "./components/main-subscriptions-card";
+import OptionSubscriptionsCard from "./components/option-subscriptions-card";
 
 export default async function Page() {
   const mainPrices = await getPrices(main);
@@ -11,8 +10,7 @@ export default async function Page() {
   return (
     <div className="container mx-auto mt-4 px-4 pb-20 lg:mt-6">
       <MainSubscriptionsCard url={url} prices={mainPrices} />
-      <AddOptionSubscriptionsCard prices={optionPrices} />
-      <AssortSubscriptionsCard />
+      <OptionSubscriptionsCard url={url} prices={optionPrices} />
     </div>
   );
 }

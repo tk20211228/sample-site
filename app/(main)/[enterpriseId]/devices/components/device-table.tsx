@@ -26,7 +26,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { ManagementAppsTablePagination } from "../../apps/components/table/management-apps/management-apps-table-pagination";
+import { TablePagination } from "../../apps/components/table/table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
@@ -174,7 +174,7 @@ export default function DeviceTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <ManagementAppsTablePagination table={table} className="pt-1" />
+      <TablePagination table={table} className="pt-1" />
     </div>
   );
 }
