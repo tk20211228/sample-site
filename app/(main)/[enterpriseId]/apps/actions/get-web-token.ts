@@ -56,7 +56,6 @@ export const getWebToken = async ({
       requestBody: {
         enabledFeatures: iframeFeatures,
         parentFrameUrl,
-        // parentFrameUrl: process.env.HOST,
       },
     })
     .catch((error) => {
